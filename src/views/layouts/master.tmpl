@@ -1,0 +1,79 @@
+<% c++ #include "contents/content.h" %>
+<% skin %>
+<% view master uses contents::BaseContent %>
+
+
+<% template body() %>
+    <div id="annexe_content">
+	    <% include annexe_content() %>
+    </div>
+    <div id="main_content">
+        <% include main_content()%>
+    </div>
+<% end %>
+
+
+
+<% template header() %>
+<title><% include title() %></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link
+    href="<% config.css_path %>/layouts/default.css"
+    rel="stylesheet"
+    type="text/css"
+/>
+<link 
+    href="
+        <% config.css_path %>/style-
+        <% if rtl %>
+            rtl
+        <% else %>
+            ltr
+        <%end%>
+        .css" 
+    rel="stylesheet"
+    type="text/css"
+/>
+
+<% end template %>
+
+
+<% template render() %>
+<!DOCTYPE HTML>
+<html>
+<head>
+<% include header() %>
+</head>
+<body>
+		<div id="header">
+		</div>
+		<div id="container">
+				<% include body() %>
+		</div>
+		<div id="footer">
+		</div>
+	</div>
+</body>
+</html>
+<% end template %>
+
+<% template title() %>you're not supposed to view this<% end template %>
+
+
+<% template annexe_content() %>
+    <div class="module">
+        you're not supposed to view this
+    </div>
+<% end template %>
+
+
+<% template main_content() %>
+    <div class="module">
+        you're not supposed to view this
+    </div>
+<% end template %>
+
+
+<% end view %>
+<% end skin %>
+
