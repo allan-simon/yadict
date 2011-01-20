@@ -4,11 +4,11 @@
 
 
 <% template body() %>
-    <div id="annexe_content">
-	    <% include annexe_content() %>
-    </div>
     <div id="main_content">
         <% include main_content()%>
+    </div>
+    <div id="annexe_content">
+	    <% include annexe_content() %>
     </div>
 <% end %>
 
@@ -17,6 +17,7 @@
 <% template header() %>
 <title><% include title() %></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--
 <link
     href="<% config.css_path %>/layouts/default.css"
     rel="stylesheet"
@@ -34,7 +35,7 @@
     rel="stylesheet"
     type="text/css"
 />
-
+-->
 <% end template %>
 
 

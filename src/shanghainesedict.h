@@ -8,7 +8,7 @@
 #include <contents/content.h>
 
 #include "controllers/Pages.h"
-//#include "controllers/Words.h"
+#include "controllers/Words.h"
 //#include "controllers/Users.h"
 
 
@@ -24,7 +24,7 @@ class Shanghainesedict : public cppcms::application {
 
 private:
 	controllers::Pages pc;
-	//controllers::Words wc;
+	controllers::Words wc;
 	//controllers::Users uc;
     std::map<std::string,std::string> lang_map;
 

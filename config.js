@@ -23,7 +23,7 @@
         }
     },
 	"shanghainesedict" : {
-        "dictxml" : "../doc/dict.xml",
+        "dictxml" : "../doc/shdict.xml",
 		"css" : "/css",
 		"img" : "/img",
         "web" : "http://127.0.0.1:4224/",

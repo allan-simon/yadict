@@ -1,0 +1,18 @@
+<%c++ #include "contents/words.h" %>
+<% skin %>
+<% view words_show uses contents::Words extends master %>
+<% template title() %><% gt "Word show"  %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <% c++ if(content.fetcher->items[0] != NULL) { %>
+            <% c++ out() << content.fetcher->items[0]->str ;%> 
+        <% c++ } else { %>
+        this word does not exist
+        <% c++ } %>
+    </div>
+<% end %>
+
+
+<% end view %>
+<% end skin %>

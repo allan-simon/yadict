@@ -6,7 +6,7 @@
 #include <cppcms/applications_pool.h>
 #include <cppdb/frontend.h>
 
-//#include "models/TatoDB.h"
+#include "models/TatoHyperDB.h"
 
 using namespace std;
 using namespace cppcms;
@@ -22,12 +22,13 @@ int main(int argc,char ** argv)
         // in order to have the pointer shared by every thread
         // :TODO: remember to free tatoDB
         string dictPath = app.settings().get<string>("shanghainesedict.dictxml");
-        //TatoDB::getInstance(dictPath);
+        TatoHyperDB::getInstance(dictPath);
         cout << "[NOTICE] database loaded" << endl;
 
 
+        booster::intrusive_ptr<apps::Shanghainesedict> shdictapp = new apps::Shanghainesedict(app);
         app.applications_pool().mount(
-            applications_factory<apps::Shanghainesedict>()
+            shdictapp
         );
         app.run();
         cout << "prout prout";
