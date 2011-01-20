@@ -8,8 +8,9 @@
         <% c++ if(content.fetcher->items[0] != NULL) { %>
             <% c++ out() << content.fetcher->items[0]->str ;%> 
         <% c++ } else { %>
-        this word does not exist
+            this word does not exist
         <% c++ } %>
+        <% c++ tato_hyper_item_fetcher_free(content.fetcher); %>
     </div>
 <% end %>
 

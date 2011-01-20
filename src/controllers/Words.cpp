@@ -38,11 +38,9 @@ void Words::show(std::string str) {
 void Words::show_all() {
 
 	contents::Words c;
-    //initContent(c);
+    initContent(c);
 
-    std::ostringstream oss;
-    oss << wordModel.getRandomWordId();
-    std::cout << "lang = " << c.lang << std::endl; 
+    c.fetcher = wordModel.getAllWords();
 
     render ("words_show_all", c);
 }

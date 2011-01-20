@@ -1,0 +1,23 @@
+<%c++ #include "contents/words.h" %>
+<% skin %>
+<% view words_show_all uses contents::Words extends master %>
+<% template title() %><% gt "Show all words"  %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <% c++ if(content.fetcher->items[0] != NULL) { %>
+            <% c++ for(int i = 0; i < content.fetcher->size ; i++) { %>
+                <div>
+                    <% c++ out() << content.fetcher->items[i]->str ;%> 
+                </div>
+            <% c++ } %>
+        <% c++ } else { %>
+            No words in the database yet
+        <% c++ } %>
+        <% c++ tato_hyper_item_fetcher_free(content.fetcher); %>
+    </div>
+<% end %>
+
+
+<% end view %>
+<% end skin %>

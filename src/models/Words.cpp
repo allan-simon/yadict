@@ -39,6 +39,24 @@ TatoHyperItemFetcher* Words::getWordsWithStr(std::string str, int size, int offs
 }
 
 
+/**
+ *
+ */
+TatoHyperItemFetcher* Words::getAllWords() {
+    return getAllWords(10, 0);
+}
+
+TatoHyperItemFetcher* Words::getAllWords(int size, int offset) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+
+    TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);
+    tato_hyper_db_items_get_seq(tatoHyperDb, fetcher);
+
+    return fetcher;
+}
+
+
+
 
 /**
  *
