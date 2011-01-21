@@ -24,6 +24,12 @@ class Words : public Controller {
         void show_all(int size, int offset);
         void show_all(std::string lang);
         void show_all(std::string lang, int size, int offset);
+
+        void add();
+        void add_treat();
+
+        void edit(std::string wordId);
+        void edit_treat();
 };
 
 } // End namespace

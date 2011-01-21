@@ -85,4 +85,28 @@ TatoHyperItemFetcher *Words::getRandomWord() {
     return fetcher;
 }
 
+/**
+ *
+ */
+bool Words::addWord(std::string lang, std::string str) {
+    return addWord(lang, str, 0);
+}
+
+bool Words::addWord(
+    std::string lang,
+    std::string str,
+    TatoHyperItemFlags flags
+) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+
+    tato_hyper_db_item_add(
+        tatoHyperDb,
+        lang.c_str(),
+        str.c_str(),
+        flags
+    );
+    // TODO handle errors
+    return true;
+}
+
 }// end of models::Words

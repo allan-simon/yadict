@@ -2,7 +2,7 @@
 #define CONTENTS_BASE_CONTENT_H
 
 #include <cppcms/view.h>
-#include "login_form.h"
+#include "forms/login_form.h"
 
 
 namespace contents {

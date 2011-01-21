@@ -13,6 +13,12 @@ Words::Words(apps::Shanghainesedict& shdictapp) : Controller(shdictapp) {
   	shdictapp.dispatcher().assign("/words/show/(.+)", &Words::show, this, 1);
   	shdictapp.dispatcher().assign("/words/show_all", &Words::show_all, this);
   	shdictapp.dispatcher().assign("/words/show_random", &Words::show_random, this);
+
+  	shdictapp.dispatcher().assign("/words/add", &Words::add, this);
+  	shdictapp.dispatcher().assign("/words/add_treat", &Words::add_treat, this);
+
+  	shdictapp.dispatcher().assign("/words/edit/(\\d+)", &Words::edit, this, 1);
+  	shdictapp.dispatcher().assign("/words/edit_treat", &Words::edit_treat, this);
 }
 
 /**
@@ -57,10 +63,6 @@ void Words::show_random() {
 
     c.fetcher =  wordModel.getRandomWord();
     if (c.fetcher->items[0] != NULL) {
-        std::cout << "Will redirect to : " <<
-            "/" + c.lang +"/words/show/" + std::string(c.fetcher->items[0]->str)
-            << std::endl ;
-
         response().set_redirect_header(
             "/" + c.lang +"/words/show/" + std::string(c.fetcher->items[0]->str)
         );
@@ -72,6 +74,81 @@ void Words::show_random() {
     }
 
 }
+
+/**
+ * Display the page with a form to add new words
+ */
+void Words::add() {
+
+	contents::WordsAdd c;
+    initContent(c);
+
+    render("words_add",c);
+}
+
+
+/**
+ * virtual page, used to received the data from the words/add form
+ * and treat them
+ */
+void Words::add_treat() {
+
+	contents::WordsAdd c;
+    initContent(c);
+    c.addWord.load(context());
+    
+    if (c.addWord.validate()) {
+        // TODO : handle if something wrong happen while saving
+        wordModel.addWord(
+            c.addWord.wordLang.selected_id(),
+            c.addWord.wordString.value()
+        );
+    }
+
+    response().set_redirect_header(
+        "/" + c.lang +"/words/show_all"
+    );
+}
+
+/**
+ * Display the page with a form to edit the information about a word
+ */
+void Words::edit(std::string wordId) {
+
+	contents::WordsAdd c;
+    initContent(c);
+
+    render("words_edit",c);
+}
+
+
+/**
+ * virtual page, used to received the data from the words/edit form
+ * and treat them
+ */
+void Words::edit_treat() {
+
+	contents::WordsAdd c;
+    initContent(c);
+    c.addWord.load(context());
+    
+    if (c.addWord.validate()) {
+        // TODO : handle if something wrong happen while saving
+        /*
+        wordModel.editWord(
+            c.addWord.wordLang.selected_id(),
+            c.addWord.wordString.value()
+        );
+        */
+    }
+
+    response().set_redirect_header(
+        "/" + c.lang +"/words/show_all"
+    );
+}
+
+
+
 
 
 } // End namespace

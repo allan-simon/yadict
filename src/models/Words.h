@@ -5,6 +5,7 @@
 
 extern "C" {
 #include "tato/fetcher.h"
+#include "tato/hyperitem.h"
 }
 
 namespace models {
@@ -31,9 +32,17 @@ class Words {
             int offset
         );
 
-
         int getRandomWordId();
         TatoHyperItemFetcher* getRandomWord();
+
+        //TODO maybe replace bool by an fetcher if we want to
+        //display the newly added word
+        bool addWord(std::string lang, std::string str);
+        bool addWord(
+            std::string lang,
+            std::string str,
+            TatoHyperItemFlags flags
+        );
 };
 
 }

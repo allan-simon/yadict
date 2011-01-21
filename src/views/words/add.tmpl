@@ -1,0 +1,16 @@
+<%c++ #include "contents/words.h" %>
+<% skin %>
+<% view words_add uses contents::WordsAdd extends master %>
+<% template title() %><% gt "Word show"  %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <form method="POST" action="<% url "/words/add_treat" %>" >
+            <% form as_p addWord %>
+        </form>
+    </div>
+<% end %>
+
+
+<% end view %>
+<% end skin %>
