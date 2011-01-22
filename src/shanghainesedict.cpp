@@ -13,15 +13,15 @@
 namespace apps {
 
 
-Shanghainesedict::Shanghainesedict(cppcms::service &w) : 
-	cppcms::application(w),
-	pc(*this),
-	wc(*this)
+Shanghainesedict::Shanghainesedict(cppcms::service &serv) : 
+	cppcms::application(serv),
+	pc(serv),
+	wc(serv)
 	//uc(*this)
 {
 
-	add(pc);
-	add(wc);
+	add(pc,"^$",0);
+	add(wc,"^/words(.*)",1);
 	//add(uc);
 
     cppcms::json::object langs = settings().at("shanghainesedict.languages").object();

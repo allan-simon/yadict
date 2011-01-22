@@ -7,20 +7,22 @@
 
 namespace controllers {
 
-Words::Words(apps::Shanghainesedict& shdictapp) : Controller(shdictapp) {
-    // TODO have /words/  and /words/show directing to some "index" page 
+Words::Words(cppcms::service &serv) : Controller(serv) {
+    // TODO have /  and /show directing to some "index" page 
     // as cburgmer pointed out, some people do navigate by crafting url
-  	shdictapp.dispatcher().assign("/words/show/(.+)", &Words::show, this, 1);
-  	shdictapp.dispatcher().assign("/words/show_all", &Words::show_all, this);
-  	shdictapp.dispatcher().assign("/words/show_random", &Words::show_random, this);
+    cppcms::url_dispatcher* disp = &dispatcher();
 
-  	shdictapp.dispatcher().assign("/words/add", &Words::add, this);
-  	shdictapp.dispatcher().assign("/words/add_treat", &Words::add_treat, this);
+  	disp->assign("/show/(.+)", &Words::show, this, 1);
+  	disp->assign("/show_all", &Words::show_all, this);
+  	disp->assign("/show_random", &Words::show_random, this);
 
-  	shdictapp.dispatcher().assign("/words/edit/(\\d+)", &Words::edit, this, 1);
-  	shdictapp.dispatcher().assign("/words/edit_treat", &Words::edit_treat, this);
+  	disp->assign("/add", &Words::add, this);
+  	disp->assign("/add_treat", &Words::add_treat, this);
 
-  	shdictapp.dispatcher().assign("/words/delete_by_id/(\\d+)", &Words::delete_by_id, this, 1);
+  	disp->assign("/edit/(\\d+)", &Words::edit, this, 1);
+  	disp->assign("/edit_treat", &Words::edit_treat, this);
+
+  	disp->assign("/delete_by_id/(\\d+)", &Words::delete_by_id, this, 1);
 }
 
 /**

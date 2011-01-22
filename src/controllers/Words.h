@@ -17,7 +17,7 @@ class Words : public Controller {
     private:
         models::Words wordModel;
 	public:
-		Words(apps::Shanghainesedict& shdictapp);
+		Words(cppcms::service &serv);
 		void show(std::string word_str);
         void show_random();
         void show_all();

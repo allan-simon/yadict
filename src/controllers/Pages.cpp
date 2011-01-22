@@ -5,8 +5,8 @@
 
 namespace controllers {
 
-Pages::Pages(apps::Shanghainesedict& shdictapp) : controllers::Controller(shdictapp) {
-    shdictapp.dispatcher().assign("", &Pages::homepage, this);
+Pages::Pages(cppcms::service &serv) : controllers::Controller(serv) {
+    dispatcher().assign("", &Pages::homepage, this);
 }
 
 void Pages::homepage() {

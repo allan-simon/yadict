@@ -15,10 +15,9 @@ namespace controllers {
 class Controller : public cppcms::application {
 	protected:
 		contents::ConfigContent configContent;
-		apps::Shanghainesedict &shdictapp;
         void initContent(contents::BaseContent& content);
 	public:
-		Controller(apps::Shanghainesedict &shdictapp);
+		Controller(cppcms::service &serv);
 };
 
 } // End namespace

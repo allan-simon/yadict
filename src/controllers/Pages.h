@@ -7,7 +7,7 @@ namespace controllers {
 
 class Pages : public Controller {
 	public:
-		Pages(apps::Shanghainesedict& shdictApp);
+		Pages(cppcms::service &serv);
 		void homepage();
 };
 
