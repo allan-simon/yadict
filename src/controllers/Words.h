@@ -30,6 +30,8 @@ class Words : public Controller {
 
         void edit(std::string wordId);
         void edit_treat();
+
+        void delete_by_id(std::string wordId);
 };
 
 } // End namespace

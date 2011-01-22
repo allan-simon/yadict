@@ -19,6 +19,8 @@ Words::Words(apps::Shanghainesedict& shdictapp) : Controller(shdictapp) {
 
   	shdictapp.dispatcher().assign("/words/edit/(\\d+)", &Words::edit, this, 1);
   	shdictapp.dispatcher().assign("/words/edit_treat", &Words::edit_treat, this);
+
+  	shdictapp.dispatcher().assign("/words/delete_by_id/(\\d+)", &Words::delete_by_id, this, 1);
 }
 
 /**
@@ -31,7 +33,7 @@ Words::Words(apps::Shanghainesedict& shdictapp) : Controller(shdictapp) {
 void Words::show(std::string str) {
 
 	contents::Words c;
-    //initContent(c);
+    initContent(c);
 
     c.fetcher = wordModel.getWordsWithStr(str);
     render ("words_show", c);
@@ -114,9 +116,30 @@ void Words::add_treat() {
  * Display the page with a form to edit the information about a word
  */
 void Words::edit(std::string wordId) {
+	int id = atoi(wordId.c_str());
 
-	contents::WordsAdd c;
+	contents::WordsEdit c;
     initContent(c);
+
+    c.fetcher = wordModel.getWordWithId(id);
+    // if no item with this id
+    if (c.fetcher->items[0] == NULL) {
+        response().set_redirect_header(
+            "/" + c.lang +"/words/show_all"
+        );
+        tato_hyper_item_fetcher_free(c.fetcher);
+        return;
+    }
+
+    // Set the value of the form to the current value
+    // So one will know what he is editing
+    c.editWord.wordId.value(wordId);
+    c.editWord.wordLang.selected_id(
+        std::string(c.fetcher->items[0]->lang->code)
+    );
+    c.editWord.wordString.value(
+        std::string(c.fetcher->items[0]->str)
+    );
 
     render("words_edit",c);
 }
@@ -128,19 +151,35 @@ void Words::edit(std::string wordId) {
  */
 void Words::edit_treat() {
 
+	contents::WordsEdit c;
+    initContent(c);
+    c.editWord.load(context());
+    
+    if (c.editWord.validate()) {
+        // TODO : handle if something wrong happen while saving
+        wordModel.editWord(
+            atoi(c.editWord.wordId.value().c_str()), 
+            c.editWord.wordLang.selected_id(),
+            c.editWord.wordString.value()
+        );
+    }
+
+    response().set_redirect_header(
+        "/" + c.lang +"/words/show_all"
+    );
+}
+
+/**
+ * virtual page, delete the item with the given id
+ */
+void Words::delete_by_id(std::string wordId) {
+
 	contents::WordsAdd c;
     initContent(c);
-    c.addWord.load(context());
     
-    if (c.addWord.validate()) {
-        // TODO : handle if something wrong happen while saving
-        /*
-        wordModel.editWord(
-            c.addWord.wordLang.selected_id(),
-            c.addWord.wordString.value()
-        );
-        */
-    }
+    //TODO test before if we really have an integer inside the string
+    //TODO handle return value    
+    wordModel.deleteWord(atoi(wordId.c_str()));
 
     response().set_redirect_header(
         "/" + c.lang +"/words/show_all"

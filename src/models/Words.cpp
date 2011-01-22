@@ -109,4 +109,53 @@ bool Words::addWord(
     return true;
 }
 
+/**
+ *
+ */
+bool Words::editWord(int id, std::string lang, std::string str) {
+    return editWord(id, lang, str, 0);
+}
+
+bool Words::editWord(
+    int id,
+    std::string lang,
+    std::string str,
+    TatoHyperItemFlags flags
+) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperItem *word= tato_hyper_db_item_find(tatoHyperDb, id);
+    if (word != NULL) {
+        // update the lang
+        // TODO maybe it's worth to check if the lang has actually changed
+        // as well as string and flag 
+        TatoHyperItemLang *tatoLang = tato_hyper_db_lang_find(
+            tatoHyperDb,
+            lang.c_str()
+        );
+        if (tatoLang != NULL) {
+            tato_hyper_item_lang_set(word, tatoLang);
+        }
+        //update the string 
+        tato_hyper_item_str_set(word, str.c_str());
+
+        //update the flag
+        tato_hyper_item_flags_set(word, flags);
+    }
+    // TODO handle errors
+    return true;
+}
+
+/**
+ *
+ */
+
+bool Words::deleteWord(int id) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    return tato_hyper_db_item_delete(tatoHyperDb, id);
+}
+
+
+
+
+
 }// end of models::Words

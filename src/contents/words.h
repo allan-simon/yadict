@@ -3,6 +3,7 @@
 
 #include "contents/content.h"
 #include "contents/forms/add_word.h"
+#include "contents/forms/edit_word.h"
 
 extern "C" {
 #include <tato/fetcher.h>
@@ -18,6 +19,11 @@ struct Words : public BaseContent {
 
 struct WordsAdd : public BaseContent {
     forms::AddWord addWord; 
+};
+
+
+struct WordsEdit : public Words {
+    forms::EditWord editWord; 
 };
 
 

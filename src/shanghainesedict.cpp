@@ -39,20 +39,28 @@ void Shanghainesedict::main(std::string url) {
         std::string(matches[1])
     );
 
-    if (p == lang_map.end()) {
-        session()["lang"] = "eng";
-	    if (!dispatcher().dispatch(matches[1])) {
-            response().set_redirect_header("/eng/" + matches[1] + matches[2] );
-        } else {
-		    response().make_error_response(cppcms::http::response::not_found);
-        }
-    }
-    else {
+    // if we known the language
+    if (p != lang_map.end()) {
 	    context().locale(p->second);
         session()["lang"] = p->first;
+        // if the other part of the url is random crap => 404
 	    if (!dispatcher().dispatch(matches[2])) {
 		    response().make_error_response(cppcms::http::response::not_found);
 	    }
+    // if we don't know the lang / the lang is missing in the url
+    } else {
+        // we set it to english
+        // TODO should be the lang provided by the web browser
+        session()["lang"] = "eng";
+        //if we know how to dispatch the url
+        //then it means that only the /lang/ was missing
+	    if (!dispatcher().dispatch(matches[1]+matches[2])) {
+            response().set_redirect_header("/eng/" + matches[1] + matches[2] );
+        } else {
+            // otherwise we generate a 404
+		    response().make_error_response(cppcms::http::response::not_found);
+        }
+
     }
 }
 

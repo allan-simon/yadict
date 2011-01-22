@@ -43,6 +43,23 @@ class Words {
             std::string str,
             TatoHyperItemFlags flags
         );
+
+        //TODO maybe replace bool by an fetcher if we want to
+        //display the edited word
+        bool editWord(
+            int id,
+            std::string lang,
+            std::string str
+        );
+        bool editWord(
+            int id,
+            std::string lang,
+            std::string str,
+            TatoHyperItemFlags flags
+        );
+
+        //
+        bool deleteWord(int id);
 };
 
 }

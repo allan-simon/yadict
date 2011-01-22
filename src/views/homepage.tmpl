@@ -10,8 +10,9 @@
 
 <% template main_content() %> 
     <div class="module">
-        <h1>*<% text %>*</h1>
-        You're on homepage<br />
+        <a href="<% url "/words/add"%>" >add a new word</a>
+        <a href="<% url "/words/show_all"%>" >show all words</a>
+        <a href="<% url "/words/show_random"%>" >browse random</a>
     </div>
 <% end template %>
 

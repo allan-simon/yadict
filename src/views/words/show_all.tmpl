@@ -7,14 +7,25 @@
     <div class="module">
         <% c++ if(content.fetcher->items[0] != NULL) { %>
             <% c++ for(int i = 0; i < content.fetcher->size ; i++) { %>
+                <% c++ int id = content.fetcher->items[i]->id ; %>
+                <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>
                 <div>
-                    <% c++ out() << content.fetcher->items[i]->str ;%> 
+                    <span><% c++ out() << id ;%></span> 
+                    <span><% c++ out() << str ;%></span>
+                    <span><% c++ out() << content.fetcher->items[i]->lang->code ;%></span> 
+                    <a href="<% url "/words/show/" %><% c++ out() << str; %>">show</a>
+                    <a href="<% url "/words/edit/" %><% c++ out() << id; %>">edit</a>
+                    <a href="<% url "/words/delete_by_id/" %><% c++ out() << id; %>">delete</a>
                 </div>
             <% c++ } %>
         <% c++ } else { %>
             No words in the database yet
         <% c++ } %>
         <% c++ tato_hyper_item_fetcher_free(content.fetcher); %>
+    </div>
+    <div class="module">
+        <a href="<% url "/words/add"%>" >add a new word</a>
+        <a href="<% url "" %>" >back to homepage</a>
     </div>
 <% end %>
 

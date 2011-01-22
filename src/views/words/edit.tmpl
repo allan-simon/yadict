@@ -1,12 +1,12 @@
 <%c++ #include "contents/words.h" %>
 <% skin %>
-<% view words_add uses contents::WordsAdd extends master %>
-<% template title() %><% gt "Word add"  %><% end template %>
+<% view words_edit uses contents::WordsEdit extends master %>
+<% template title() %><% gt "Word edit"  %><% end template %>
 
 <% template main_content() %>
     <div class="module">
-        <form method="POST" action="<% url "/words/add_treat" %>" >
-            <% form as_p addWord %>
+        <form method="POST" action="<% url "/words/edit_treat" %>" >
+            <% form as_p editWord %>
         </form>
     </div>
     <div class="module">
@@ -17,3 +17,4 @@
 
 <% end view %>
 <% end skin %>
+
