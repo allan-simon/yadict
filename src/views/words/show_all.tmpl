@@ -15,7 +15,7 @@
                     <span><% c++ out() << content.fetcher->items[i]->lang->code ;%></span> 
                     <a href="<% url "/words/show/" %><% c++ out() << str; %>">show</a>
                     <a href="<% url "/words/edit/" %><% c++ out() << id; %>">edit</a>
-                    <a href="<% url "/words/delete_by_id/" %><% c++ out() << id; %>">delete</a>
+                    <a href="<% url "/words/delete-by-id/" %><% c++ out() << id; %>">delete</a>
                 </div>
             <% c++ } %>
         <% c++ } else { %>

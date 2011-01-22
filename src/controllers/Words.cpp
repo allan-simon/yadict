@@ -13,16 +13,16 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
     cppcms::url_dispatcher* disp = &dispatcher();
 
   	disp->assign("/show/(.+)", &Words::show, this, 1);
-  	disp->assign("/show_all", &Words::show_all, this);
-  	disp->assign("/show_random", &Words::show_random, this);
+  	disp->assign("/show-all", &Words::show_all, this);
+  	disp->assign("/show-random", &Words::show_random, this);
 
   	disp->assign("/add", &Words::add, this);
-  	disp->assign("/add_treat", &Words::add_treat, this);
+  	disp->assign("/add-treat", &Words::add_treat, this);
 
   	disp->assign("/edit/(\\d+)", &Words::edit, this, 1);
-  	disp->assign("/edit_treat", &Words::edit_treat, this);
+  	disp->assign("/edit-treat", &Words::edit_treat, this);
 
-  	disp->assign("/delete_by_id/(\\d+)", &Words::delete_by_id, this, 1);
+  	disp->assign("/delete-by-id/(\\d+)", &Words::delete_by_id, this, 1);
 }
 
 /**
@@ -110,7 +110,7 @@ void Words::add_treat() {
     }
 
     response().set_redirect_header(
-        "/" + c.lang +"/words/show_all"
+        "/" + c.lang +"/words/show-all"
     );
 }
 
@@ -127,7 +127,7 @@ void Words::edit(std::string wordId) {
     // if no item with this id
     if (c.fetcher->items[0] == NULL) {
         response().set_redirect_header(
-            "/" + c.lang +"/words/show_all"
+            "/" + c.lang +"/words/show-all"
         );
         tato_hyper_item_fetcher_free(c.fetcher);
         return;
@@ -167,7 +167,7 @@ void Words::edit_treat() {
     }
 
     response().set_redirect_header(
-        "/" + c.lang +"/words/show_all"
+        "/" + c.lang +"/words/show-all"
     );
 }
 
@@ -184,7 +184,7 @@ void Words::delete_by_id(std::string wordId) {
     wordModel.deleteWord(atoi(wordId.c_str()));
 
     response().set_redirect_header(
-        "/" + c.lang +"/words/show_all"
+        "/" + c.lang +"/words/show-all"
     );
 }
 
