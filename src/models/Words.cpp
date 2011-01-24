@@ -199,5 +199,33 @@ int  Words::getTranslationRelation(TatoHyperItem *word) {
     
 }
 
+/**
+ *
+ */
+TranslationsMap Words::packTranslations(
+    TatoHyperItemFetcher* fetcher
+) {
+    TranslationsMap packedTrans;
+    if (fetcher->items[0] == NULL) {
+        return packedTrans; 
+    }
+	
+
+	TatoHyperRelationsNode *it;
+	TATO_HYPER_RELATIONS_FOREACH(fetcher->items[0]->startofs, it) {
+        if (it->relation->type == SHDICT_TRANSLATION_REL_FLAG) {
+		    TatoHyperItemsNode *it2;
+            TATO_HYPER_ITEMS_FOREACH(it->relation->ends, it2) {
+                std::string lang(it2->item->lang->code); 
+                std::cout << "add " << it2->item->str << " in " << lang << std::endl;
+                packedTrans[lang].push_front(it2->item);
+            }
+            break;
+        }
+
+	}
+    return packedTrans;
+
+}
 
 }// end of models::Words

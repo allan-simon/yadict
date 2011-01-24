@@ -39,6 +39,8 @@ void Words::show(std::string str) {
     initContent(c);
 
     whc.fetcher = wordModel.getWordsWithStr(str);
+    whc.packedTrans = wordModel.packTranslations(whc.fetcher); 
+
     c.whc = whc;
     render ("words_show", c);
     tato_hyper_item_fetcher_free(whc.fetcher);

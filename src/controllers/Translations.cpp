@@ -16,6 +16,7 @@ Translations::Translations(cppcms::service &serv): Controller(serv) {
 
     d->assign("/add-to/(\\d+)", &Translations::add_to, this, 1);
     d->assign("/add-to-treat", &Translations::add_to_treat, this);
+    d->assign("/remove/(\\d+)/from/(\\d+)", &Translations::remove, this, 1, 2);
 }
 
 /**
@@ -32,6 +33,8 @@ void Translations::add_to(std::string origWordId) {
     models::Words wordsModel;
     
     whc.fetcher = wordsModel.getWordWithId(origId);
+    whc.packedTrans = wordsModel.packTranslations(whc.fetcher); 
+
     TatoHyperItem* word = whc.fetcher->items[0];
      // if no item with this id
 
@@ -42,7 +45,7 @@ void Translations::add_to(std::string origWordId) {
         tato_hyper_item_fetcher_free(whc.fetcher);
         return;
     }
-
+    // set the hidden value of the form
     std::ostringstream oss;
     oss << wordsModel.getTranslationRelation(word);
 
@@ -96,6 +99,12 @@ void Translations::add_to_treat() {
                 atoi(c.addTranslation.translationId.value().c_str()),
                 translation->id
             );
+
+            transModel.add_to(
+                translation->id,
+                0,
+                origWordId
+            );
         };
 
         redirectUrl = "/" + c.lang +"/translations/add-to/" + strOrigWordId;
@@ -105,6 +114,21 @@ void Translations::add_to_treat() {
     //TODO handle if the ID of original word send in headers 
     //are not an id
     response().set_redirect_header(redirectUrl);
+}
+
+/**
+ *
+ */
+void Translations::remove(std::string transIdStr, std::string origIdStr) {
+    int transId = atoi(transIdStr.c_str());
+    int origId = atoi(origIdStr.c_str());
+
+    transModel.remove(transId, origId);
+    transModel.remove(origId, transId);
+
+    response().set_redirect_header(
+        request().http_referer()
+    );
 }
 
 }

@@ -11,17 +11,30 @@
     <% template word_group() %>
         <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
         <% c++ out() << item->str ;%> 
-        <h1>Translations</h1>
-        <% c++ TatoHyperRelationsNode *it; %>
-        <% c++ TATO_HYPER_RELATIONS_FOREACH(item->startofs, it) {%>
-            <% c++ if (it->relation->type == SHDICT_TRANSLATION_REL_FLAG) {%>
-                <% c++ TatoHyperItemsNode *it2; %>
-                <% c++ TATO_HYPER_ITEMS_FOREACH(it->relation->ends, it2) {%>
-                    <% c++ out() << it2->item->str << " ";%>
-                <% c++ }%>
-                <% c++ break;%>
-            <% c++ }%>
-        <% c++ }%>
+        <h2>Translations</h2>
+        <% foreach languages in packedTrans %>
+            <% item %>
+                <div>
+                    <h3><% languages.first %></h3>
+                    <% foreach translation in languages.second %>
+                        <ul>
+                        <% item %>
+                            <li>
+                                <a href="/words/show/<% translation->str %>" >
+                                    <% translation->str %>
+                                </a>
+                                <a href="/translations/remove/<% translation->id %>/from/<% c++ out() << item->id ;%>">
+                                remove
+                                </a>
+                            </li>
+                        <% end %>
+                        </ul>
+                    <% end %>  
+                </div>
+            <% end %>
+        <% empty %>
+            No translations yet
+        <% end%>
     <% end template %>
 
 
@@ -44,6 +57,15 @@
                 <a href="/words/delete-by-id/<% c++ out() << id; %>">delete</a>
             </div>
         <% c++ } %>
-    <%end template %>
+    <% end template %>
+
+    <% template translate_word_link() %>
+        <% if not is_empty() %>
+            <% c++ int id = content.fetcher->items[0]->id ;%>
+            <a href="/translations/add-to/<% c++ out() << id ;%>" >
+                translate
+            </a> 
+        <% end %>
+    <% end template %>
 <% end view %>
 <% end skin %>

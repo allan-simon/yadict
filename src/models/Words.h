@@ -2,13 +2,17 @@
 #define MODELS_WORDS_H
 
 #include "models/TatoHyperDB.h"
-
+#include <list>
+#include <map>
 extern "C" {
 #include "tato/fetcher.h"
 #include "tato/hyperitem.h"
 }
 
 namespace models {
+
+typedef std::list<TatoHyperItem*> TatoHyperItemPList;
+typedef std::map<std::string, TatoHyperItemPList> TranslationsMap;
 
 class Words {
     public:
@@ -69,6 +73,12 @@ class Words {
         bool deleteWord(int id);
 
         int getTranslationRelation(TatoHyperItem* word);
+
+
+        TranslationsMap packTranslations(
+            TatoHyperItemFetcher* fetcher
+        );
+
 };
 
 }

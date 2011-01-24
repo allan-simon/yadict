@@ -22,6 +22,11 @@ class Translations {
             int translationRelId,
             int toWordId
         );
+
+        bool remove(
+            int transId,
+            int origId
+        );
 };
 
 }

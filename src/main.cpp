@@ -33,6 +33,8 @@ int main(int argc,char ** argv)
         // :TODO: remember to free tatoDB
         // We dump the data once the server is going to close
         // TODO add the dump path in the config.js
+        //
+        cout << "[NOTICE] going to dump the database" << endl;
         TatoHyperDB::getInstance("")->dump("dump.xml");
 
     } catch(std::exception const &e) {

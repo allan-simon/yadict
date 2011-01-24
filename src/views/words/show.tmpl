@@ -5,14 +5,16 @@
 
 <% template main_content() %>
     <div class="module">
-        <% c++ if(!content.whc.is_empty()) { %>
-            <% c++ words_helper wh(out(), content.whc); %>
+        <% c++ words_helper wh(out(), content.whc); %>
+        <% if not whc.is_empty() %>
             <% c++ wh.word_group() ;%> 
-        <% c++ } else { %>
+        <% else %>
             this word does not exist
-        <% c++ } %>
+        <% end %>
     </div>
     <div class="module">
+        
+        <% c++ wh.translate_word_link() ;%> 
         <a href="<% url "/words/show-random"%>" >browse random</a>
         <a href="<% url "" %>" >back to homepage</a>
     </div>

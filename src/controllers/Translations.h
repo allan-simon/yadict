@@ -24,6 +24,8 @@ class Translations : public Controller {
         void add_to(std::string origWordId);
         void add_to_treat();
 
+        void remove(std::string transIdStr, std::string origIdStr);
+
 };
 }
 
