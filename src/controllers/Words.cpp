@@ -35,10 +35,13 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
 void Words::show(std::string str) {
 
 	contents::Words c;
+	contents::WordsHelper whc;
     initContent(c);
 
-    c.fetcher = wordModel.getWordsWithStr(str);
+    whc.fetcher = wordModel.getWordsWithStr(str);
+    c.whc = whc;
     render ("words_show", c);
+    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 /**
@@ -48,11 +51,14 @@ void Words::show(std::string str) {
 void Words::show_all() {
 
 	contents::Words c;
+	contents::WordsHelper whc;
     initContent(c);
 
-    c.fetcher = wordModel.getAllWords();
+    whc.fetcher = wordModel.getAllWords();
 
+    c.whc = whc;
     render ("words_show_all", c);
+    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 
@@ -63,12 +69,13 @@ void Words::show_all() {
 void Words::show_random() {
 
 	contents::Words c;
+	contents::WordsHelper whc;
     initContent(c);
 
-    c.fetcher =  wordModel.getRandomWord();
-    if (c.fetcher->items[0] != NULL) {
+    whc.fetcher =  wordModel.getRandomWord();
+    if (whc.fetcher->items[0] != NULL) {
         response().set_redirect_header(
-            "/" + c.lang +"/words/show/" + std::string(c.fetcher->items[0]->str)
+            "/" + c.lang +"/words/show/" + std::string(whc.fetcher->items[0]->str)
         );
 
      } else { // if there's no word in the database
@@ -76,7 +83,7 @@ void Words::show_random() {
         // with an error message in session to explain no words exist
         response().set_redirect_header("/" + c.lang );
     }
-
+    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 /**
@@ -121,15 +128,17 @@ void Words::edit(std::string wordId) {
 	int id = atoi(wordId.c_str());
 
 	contents::WordsEdit c;
+	contents::WordsHelper whc;
+
     initContent(c);
 
-    c.fetcher = wordModel.getWordWithId(id);
+    whc.fetcher = wordModel.getWordWithId(id);
     // if no item with this id
-    if (c.fetcher->items[0] == NULL) {
+    if (whc.fetcher->items[0] == NULL) {
         response().set_redirect_header(
             "/" + c.lang +"/words/show-all"
         );
-        tato_hyper_item_fetcher_free(c.fetcher);
+        tato_hyper_item_fetcher_free(whc.fetcher);
         return;
     }
 
@@ -137,13 +146,15 @@ void Words::edit(std::string wordId) {
     // So one will know what he is editing
     c.editWord.wordId.value(wordId);
     c.editWord.wordLang.selected_id(
-        std::string(c.fetcher->items[0]->lang->code)
+        std::string(whc.fetcher->items[0]->lang->code)
     );
     c.editWord.wordString.value(
-        std::string(c.fetcher->items[0]->str)
+        std::string(whc.fetcher->items[0]->str)
     );
 
+    c.whc = whc;
     render("words_edit",c);
+    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 

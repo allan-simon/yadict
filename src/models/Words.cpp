@@ -1,5 +1,6 @@
 #include <sstream>
 #include "models/Words.h"
+#include "models/Translations.h"
 
 namespace models {
 
@@ -20,6 +21,32 @@ TatoHyperItemFetcher* Words::getWordWithId(int id) {
 
     return fetcher;
 }
+
+/**
+ *
+ */
+TatoHyperItem* Words::getWordWithLangStr(
+    std::string lang,
+    std::string str    
+) {
+
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperItem *word = NULL;
+    TatoHyperItemLang *tatoLang= tato_hyper_db_lang_find(
+        tatoHyperDb,
+        lang.c_str()
+    );
+    if (tatoLang != NULL) {
+        word = tato_hyper_item_lang_item_find(tatoLang, str.c_str());
+    }
+    /*
+    TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(1, 0);
+    tato_hyper_item_fetcher_add(fetcher, word);
+    */
+
+    return word;
+}
+
 
 
 /**
@@ -88,25 +115,25 @@ TatoHyperItemFetcher *Words::getRandomWord() {
 /**
  *
  */
-bool Words::addWord(std::string lang, std::string str) {
+TatoHyperItem* Words::addWord(std::string lang, std::string str) {
     return addWord(lang, str, 0);
 }
 
-bool Words::addWord(
+TatoHyperItem* Words::addWord(
     std::string lang,
     std::string str,
     TatoHyperItemFlags flags
 ) {
     TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
-
-    tato_hyper_db_item_add(
+    // TODO use exceptions when the word can is not added 
+    // to signal either it is due to an internal error or because
+    // we're trying to add a duplicate
+    return tato_hyper_db_item_add(
         tatoHyperDb,
         lang.c_str(),
         str.c_str(),
         flags
     );
-    // TODO handle errors
-    return true;
 }
 
 /**
@@ -154,8 +181,23 @@ bool Words::deleteWord(int id) {
     return tato_hyper_db_item_delete(tatoHyperDb, id);
 }
 
+/**
+ *
+ */
+int  Words::getTranslationRelation(TatoHyperItem *word) {
+    if (word == NULL) {
+        return -1;
+    }
 
-
+    TatoHyperRelationsNode *it;
+    TATO_HYPER_RELATIONS_FOREACH(word->startofs, it) {
+        if (it->relation->type & SHDICT_TRANSLATION_REL_FLAG != 0) {
+            return it->relation->id;
+        }
+    }
+    return 0;
+    
+}
 
 
 }// end of models::Words

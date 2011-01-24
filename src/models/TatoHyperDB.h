@@ -19,6 +19,7 @@ class TatoHyperDB : public Singleton<TatoHyperDB>{
 
     public:
         TatoHyperDb *getDatabasePointer();
+        void dump(std::string path);
         
 
 };

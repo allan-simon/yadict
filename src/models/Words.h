@@ -14,6 +14,10 @@ class Words {
     public:
         Words();
         TatoHyperItemFetcher* getWordWithId(int id);
+        TatoHyperItem* getWordWithLangStr(
+            std::string lang,
+            std::string str
+        );
         TatoHyperItemFetcher* getWordsWithStr(std::string str);
         TatoHyperItemFetcher* getWordsWithStr(
             std::string str,
@@ -37,8 +41,11 @@ class Words {
 
         //TODO maybe replace bool by an fetcher if we want to
         //display the newly added word
-        bool addWord(std::string lang, std::string str);
-        bool addWord(
+        TatoHyperItem* addWord(
+            std::string lang,
+            std::string str
+        );
+        TatoHyperItem* addWord(
             std::string lang,
             std::string str,
             TatoHyperItemFlags flags
@@ -60,6 +67,8 @@ class Words {
 
         //
         bool deleteWord(int id);
+
+        int getTranslationRelation(TatoHyperItem* word);
 };
 
 }

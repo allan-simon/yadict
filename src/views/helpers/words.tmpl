@@ -1,0 +1,49 @@
+<%c++ extern "C" { %> 
+<%c++    #include "tato/fetcher.h" %>
+<%c++    #include "tato/hyperitem.h" %>
+<%c++ } %>
+<%c++ #include "contents/helpers/words.h" %>
+<% skin %>
+<% view words_helper uses contents::WordsHelper %>
+
+
+
+    <% template word_group() %>
+        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
+        <% c++ out() << item->str ;%> 
+        <h1>Translations</h1>
+        <% c++ TatoHyperRelationsNode *it; %>
+        <% c++ TATO_HYPER_RELATIONS_FOREACH(item->startofs, it) {%>
+            <% c++ if (it->relation->type == SHDICT_TRANSLATION_REL_FLAG) {%>
+                <% c++ TatoHyperItemsNode *it2; %>
+                <% c++ TATO_HYPER_ITEMS_FOREACH(it->relation->ends, it2) {%>
+                    <% c++ out() << it2->item->str << " ";%>
+                <% c++ }%>
+                <% c++ break;%>
+            <% c++ }%>
+        <% c++ }%>
+    <% end template %>
+
+
+
+
+    <% template words_list() %>
+        <% c++ for(int i = 0; i < content.fetcher->size ; i++) { %>
+            <% c++ int id = content.fetcher->items[i]->id ; %>
+            <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>
+            <div>
+                <span><% c++ out() << id ;%></span> 
+                <span><% c++ out() << str ;%></span>
+                <span><% c++ out() << content.fetcher->items[i]->lang->code ;%></span> 
+                <!--
+                    TODO once we will have a singleton class to store lang etc, need to
+                    put again url tag
+                -->
+                <a href="/words/show/<% c++ out() << str; %>">show</a>
+                <a href="/words/edit/<% c++ out() << id; %>">edit</a>
+                <a href="/words/delete-by-id/<% c++ out() << id; %>">delete</a>
+            </div>
+        <% c++ } %>
+    <%end template %>
+<% end view %>
+<% end skin %>

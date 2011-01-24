@@ -4,16 +4,12 @@
 #include "contents/content.h"
 #include "contents/forms/add_word.h"
 #include "contents/forms/edit_word.h"
-
-extern "C" {
-#include <tato/fetcher.h>
-#include <tato/hyperitem.h>
-}
+#include "contents/helpers/words.h"
 
 namespace contents {
 
 struct Words : public BaseContent {
-    TatoHyperItemFetcher *fetcher;
+    WordsHelper whc;
 };
 
 

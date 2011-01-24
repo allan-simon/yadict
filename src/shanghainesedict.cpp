@@ -16,12 +16,16 @@ namespace apps {
 Shanghainesedict::Shanghainesedict(cppcms::service &serv) : 
 	cppcms::application(serv),
 	pc(serv),
-	wc(serv)
+	wc(serv),
+    tc(serv)
 	//uc(*this)
 {
 
-	add(pc,"^$",0);
 	add(wc,"^/words(.*)",1);
+	add(tc,"^/translations(.*)",1);
+    //NOTE important to add the page controller at the end
+    //as its regexp is more global
+	add(pc,"(.*)",1);
 	//add(uc);
 
     cppcms::json::object langs = settings().at("shanghainesedict.languages").object();
@@ -44,6 +48,8 @@ void Shanghainesedict::main(std::string url) {
 	    context().locale(p->second);
         session()["lang"] = p->first;
         // if the other part of the url is random crap => 404
+         
+         
 	    if (!dispatcher().dispatch(matches[2])) {
 		    response().make_error_response(cppcms::http::response::not_found);
 	    }
@@ -52,15 +58,26 @@ void Shanghainesedict::main(std::string url) {
         // we set it to english
         // TODO should be the lang provided by the web browser
         session()["lang"] = "eng";
-        //if we know how to dispatch the url
-        //then it means that only the /lang/ was missing
-	    if (!dispatcher().dispatch(matches[1]+matches[2])) {
-            response().set_redirect_header("/eng/" + matches[1] + matches[2] );
-        } else {
-            // otherwise we generate a 404
-		    response().make_error_response(cppcms::http::response::not_found);
-        }
+        std::string toDispatch = "/" + matches[1] + matches[2];
 
+        if (url == "/") {
+            response().set_redirect_header("/eng" );
+            return;
+        }
+        //then it means that only the /lang/ was missing
+        //we try to add the language before the previous url
+        //TODO maybe we can avoid redirection if we know that
+        //the produced url will lead to nowhere
+        //bu doing this :
+	    //if (dispatcher().dispatch(toDispatch)) {
+        //   redirect
+        //} else { 
+        //  404
+        //}
+        //doesn't work  because dispatch actually fill the response
+        //so the header can't be written anymore
+        //so we need a function that check url without calling the handler
+        response().set_redirect_header("/eng" + toDispatch);
     }
 }
 

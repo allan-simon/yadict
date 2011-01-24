@@ -1,7 +1,7 @@
-<%c++ #include "contents/words.h" %>
+<%c++ #include "contents/translations.h" %>
 <% skin %>
-<% view words_show uses contents::Words extends master %>
-<% template title() %><% gt "Word show"  %><% end template %>
+<% view translations_add_to uses contents::TranslationsAdd extends master %>
+<% template title() %><% gt "Add translation"  %><% end template %>
 
 <% template main_content() %>
     <div class="module">
@@ -10,6 +10,14 @@
             <% c++ wh.word_group() ;%> 
         <% c++ } else { %>
             this word does not exist
+        <% c++ } %>
+
+    </div>
+    <div class="module">
+        <% c++ if(!content.whc.is_empty()) { %>
+            <form method="POST" action="<% url "/translations/add-to-treat" %>" >
+                <% form as_p addTranslation %>
+            </form>
         <% c++ } %>
     </div>
     <div class="module">
@@ -21,3 +29,4 @@
 
 <% end view %>
 <% end skin %>
+

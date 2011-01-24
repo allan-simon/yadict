@@ -19,6 +19,12 @@ TatoHyperDB::TatoHyperDB(std::string data_path) {
     tato_hyper_db_load(tatoHyperDb, data_path.c_str());
 }
 
+/**
+ *
+ */
+void TatoHyperDB::dump(std::string path) {
+    tato_hyper_db_dump(tatoHyperDb, path.c_str());
+}
  
 
 /**

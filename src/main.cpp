@@ -20,7 +20,6 @@ int main(int argc,char ** argv)
         // :TODO: maybe it's not the better place 
         // but for the moment it's the only way I've found to initialize tatodb 
         // in order to have the pointer shared by every thread
-        // :TODO: remember to free tatoDB
         string dictPath = app.settings().get<string>("shanghainesedict.dictxml");
         TatoHyperDB::getInstance(dictPath);
         cout << "[NOTICE] database loaded" << endl;
@@ -31,7 +30,11 @@ int main(int argc,char ** argv)
             shdictapp
         );
         app.run();
-        cout << "prout prout";
+        // :TODO: remember to free tatoDB
+        // We dump the data once the server is going to close
+        // TODO add the dump path in the config.js
+        TatoHyperDB::getInstance("")->dump("dump.xml");
+
     } catch(std::exception const &e) {
         cerr<<e.what()<<endl;
     }
