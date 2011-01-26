@@ -3,17 +3,7 @@
 <% skin %>
 <% view pagination_helper  %>
     <% template pagination(std::string base_url, int offset, int size, int max) %>
-        <div>
-            <% if (offset != 0) %>
-                <a href="<% c++ out() << base_url ;%>">
-                    first
-                </a>
-                <a href="<% c++ out() << base_url ;%>/<% c++ out() << (1 +offset) - size << "/" << size ;%>" >
-                    prev
-                </a>
-
-            <% end %>
-            
+        <div class="pagination">
             <% c++ int currentPage = offset/size + 1; %> 
             <% c++ int maxPage = max /size + 1; %> 
             <% c++ int paginationSize = std::min(6, maxPage); %>
@@ -32,26 +22,58 @@
             <% c++     dispNextPages = minNextPages; %>
             <% c++     dispPrevPages = paginationSize - minNextPages; %>
             <% c++ } %>
-            <ul> 
+            <ul class="numbers" > 
+
+                <% if (offset != 0) %>
+                    <li class="first" >
+                        <a href="<% c++ out() << base_url ;%>">
+                            first
+                        </a>
+                    </li>
+                    <li class="prev" >
+                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << (1 +offset) - size << "/" << size ;%>" >
+                            prev
+                        </a>
+                    </li>
+                <% end %>
+     
+
                 <% c++ for (int i = currentPage - dispPrevPages ; i < currentPage ; ++i) { %>
-                    <li><% c++ out() << i; %></li> 
+                    <li class="number" >
+                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << i* size + 1 << "/" << size ;%>" >
+                            <% c++ out() << i; %>
+                        </a>
+                    </li> 
                 <% c++ } %>
-                <li>*<%c++ out() << currentPage; %></li>
+
+                <li class="number currentPage" ><%c++ out() << currentPage; %></li>
+
                 <% c++ for (int i = currentPage + 1; i <= currentPage + dispNextPages ; ++i) { %>
-                    <li><% c++ out() << i; %></li> 
+                    <li class="number" >
+                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << i* size + 1 << "/" << size ;%>" >
+                            <% c++ out() << i; %>
+                        </a>
+                    </li> 
                 <% c++ } %>
-            </ul>
-            <% if ((offset+size) < max) %>
-                <a href="<% c++ out() << base_url ;%>/<% c++ out() << (1+ offset + size) << "/" << size ;%>" >
-                    next
-                </a>
-
-
-                <a href="<% c++ out() << base_url ;%>/<% c++ out() << (1+ ((max/size) *size))<< "/" << size;%>" >
-                    max
-                </a>
-            <% end %>
             
+                <% if ((offset+size) < max) %>
+                    <li class="next">
+
+                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << (1+ offset + size) << "/" << size ;%>" >
+                            next
+                        </a>
+                    </li>
+
+
+                    <li class="last">
+                        <a class="last" href="<% c++ out() << base_url ;%>/<% c++ out() << (1+ ((max/size) *size))<< "/" << size;%>" >
+                            last
+                        </a>
+                    </li>
+                <% end %>
+    
+            </ul>
+           
 
         </div>
     <% end template %>

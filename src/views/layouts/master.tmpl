@@ -17,12 +17,12 @@
 <% template header() %>
 <title><% include title() %></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!--
 <link
-    href="<% config.css_path %>/layouts/default.css"
+    href="http://sysko.fr/shdict_css/default.css"
     rel="stylesheet"
     type="text/css"
 />
+<!--
 <link 
     href="
         <% config.css_path %>/style-
@@ -52,6 +52,7 @@
 				<% include body() %>
 		</div>
 		<div id="footer">
+                <% include footer() %>
 		</div>
 	</div>
 </body>
@@ -72,6 +73,27 @@
     <div class="module">
         you're not supposed to view this
     </div>
+<% end template %>
+
+<%template footer() %>
+    <a 
+        rel="license"
+        href="http://creativecommons.org/licenses/by/3.0/"
+    >
+        <img 
+            alt="Creative Commons License"
+            style="border-width:0"
+            src="http://i.creativecommons.org/l/by/3.0/88x31.png" 
+        />
+    </a>
+    <br />
+    This work is licensed under a
+    <a 
+        rel="license"
+        href="http://creativecommons.org/licenses/by/3.0/"
+    >
+        Creative Commons Attribution 3.0 Unported License
+    </a>.
 <% end template %>
 
 
