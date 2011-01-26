@@ -12,17 +12,20 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
     // as cburgmer pointed out, some people do navigate by crafting url
     cppcms::url_dispatcher* disp = &dispatcher();
 
-  	disp->assign("/show/(.+)", &Words::show, this, 1);
-  	disp->assign("/show-all", &Words::show_all, this);
-  	disp->assign("/show-random", &Words::show_random, this);
+  	disp->assign("/show/(.+)$", &Words::show, this, 1);
+  	disp->assign("/show-random$", &Words::show_random, this);
+  	disp->assign("/show-all$", &Words::show_all, this);
+  	disp->assign("/show-all/(\\d+)/(\\d+)$", &Words::show_all, this, 1, 2);
+  	//disp->assign("/show-all/(\\w+)", &Words::show_all, this, 1);
+  	//disp->assign("/show-all/(\\w+)/(\\d+)/(\\d+)", &Words::show_all, this, 1, 2, 3);
 
-  	disp->assign("/add", &Words::add, this);
-  	disp->assign("/add-treat", &Words::add_treat, this);
+  	disp->assign("/add$", &Words::add, this);
+  	disp->assign("/add-treat$", &Words::add_treat, this);
 
-  	disp->assign("/edit/(\\d+)", &Words::edit, this, 1);
-  	disp->assign("/edit-treat", &Words::edit_treat, this);
+  	disp->assign("/edit/(\\d+)$", &Words::edit, this, 1);
+  	disp->assign("/edit-treat$", &Words::edit_treat, this);
 
-  	disp->assign("/delete-by-id/(\\d+)", &Words::delete_by_id, this, 1);
+  	disp->assign("/delete-by-id/(\\d+)$", &Words::delete_by_id, this, 1);
 }
 
 /**
@@ -37,7 +40,6 @@ void Words::show(std::string str) {
 	contents::Words c;
 	contents::WordsHelper whc;
     initContent(c);
-
     whc.fetcher = wordModel.getWordsWithStr(str);
     whc.packedTrans = wordModel.packTranslations(whc.fetcher); 
 
@@ -51,13 +53,21 @@ void Words::show(std::string str) {
  */
 
 void Words::show_all() {
+    show_all("1", "10");
+}
+
+void Words::show_all(std::string offsetStr, std::string sizeStr) {
+    unsigned int size = atoi(sizeStr.c_str());
+    unsigned int offset = atoi(offsetStr.c_str()) - 1;
 
 	contents::Words c;
 	contents::WordsHelper whc;
     initContent(c);
 
-    whc.fetcher = wordModel.getAllWords();
+    whc.fetcher = wordModel.getAllWords(offset, size);
 
+    std::cout << "size :" << whc.fetcher->size << std::endl;
+    std::cout << "capacity :" << whc.fetcher->capacity << std::endl;
     c.whc = whc;
     render ("words_show_all", c);
     tato_hyper_item_fetcher_free(whc.fetcher);
@@ -69,6 +79,7 @@ void Words::show_all() {
  */
 
 void Words::show_random() {
+
 
 	contents::Words c;
 	contents::WordsHelper whc;

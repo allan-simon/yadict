@@ -73,7 +73,7 @@ TatoHyperItemFetcher* Words::getAllWords() {
     return getAllWords(10, 0);
 }
 
-TatoHyperItemFetcher* Words::getAllWords(int size, int offset) {
+TatoHyperItemFetcher* Words::getAllWords(int offset, int size) {
     TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
 
     TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);

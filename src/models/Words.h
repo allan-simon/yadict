@@ -30,7 +30,7 @@ class Words {
         );
 
         TatoHyperItemFetcher* getAllWords();
-        TatoHyperItemFetcher* getAllWords(int size, int offset);
+        TatoHyperItemFetcher* getAllWords(int offset, int size);
 
 
         TatoHyperItemFetcher* getAllWordsInLang(std::string lang);
