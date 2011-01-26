@@ -20,10 +20,10 @@
                         <ul>
                         <% item %>
                             <li>
-                                <a href="/words/show/<% translation->str %>" >
+                                <a href="<% url "/words/show/" %><% translation->str %>" >
                                     <% translation->str %>
                                 </a>
-                                <a href="/translations/remove/<% translation->id %>/from/<% c++ out() << item->id ;%>">
+                                <a href="<% url "/translations/remove/" %><% translation->id %>/from/<% c++ out() << item->id ;%>">
                                 remove
                                 </a>
                             </li>
@@ -42,7 +42,12 @@
 
     <% template words_list() %>
         <% c++ pagination_helper ph(out()); %> 
-        <% c++ ph.pagination( "/words/show-all", content.fetcher->offset, content.fetcher->capacity, content.fetcher->max_size); %>
+        <% c++ ph.pagination( %>
+        <% c++     "/" + content.lang + "/words/show-all", %>
+        <% c++     content.fetcher->offset, %>
+        <% c++     content.fetcher->capacity, %>
+        <% c++     content.fetcher->max_size %>
+        <% c++ ); %>
         <% c++ for(int i = 0; i < content.fetcher->size ; i++) { %>
             <% c++ int id = content.fetcher->items[i]->id ; %>
             <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>
@@ -54,9 +59,9 @@
                     TODO once we will have a singleton class to store lang etc, need to
                     put again url tag
                 -->
-                <a href="/words/show/<% c++ out() << str; %>">show</a>
-                <a href="/words/edit/<% c++ out() << id; %>">edit</a>
-                <a href="/words/delete-by-id/<% c++ out() << id; %>">delete</a>
+                <a href="<% url "/words/show/" %><% c++ out() << str; %>">show</a>
+                <a href="<% url "/words/edit/" %><% c++ out() << id; %>">edit</a>
+                <a href="<% url "/words/delete-by-id/" %><% c++ out() << id; %>">delete</a>
             </div>
         <% c++ } %>
     <% end template %>
@@ -64,7 +69,7 @@
     <% template translate_word_link() %>
         <% if not is_empty() %>
             <% c++ int id = content.fetcher->items[0]->id ;%>
-            <a href="/translations/add-to/<% c++ out() << id ;%>" >
+            <a href="<% url "/translations/add-to/" %><% c++ out() << id ;%>" >
                 translate
             </a> 
         <% end %>

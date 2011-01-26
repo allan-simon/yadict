@@ -40,6 +40,7 @@ void Words::show(std::string str) {
 	contents::Words c;
 	contents::WordsHelper whc;
     initContent(c);
+    whc.lang = c.lang;
     whc.fetcher = wordModel.getWordsWithStr(str);
     whc.packedTrans = wordModel.packTranslations(whc.fetcher); 
 
@@ -64,6 +65,7 @@ void Words::show_all(std::string offsetStr, std::string sizeStr) {
 	contents::WordsHelper whc;
     initContent(c);
 
+    whc.lang = c.lang;
     whc.fetcher = wordModel.getAllWords(offset, size);
 
     std::cout << "size :" << whc.fetcher->size << std::endl;
@@ -84,7 +86,7 @@ void Words::show_random() {
 	contents::Words c;
 	contents::WordsHelper whc;
     initContent(c);
-
+    whc.lang = c.lang;
     whc.fetcher =  wordModel.getRandomWord();
     if (whc.fetcher->items[0] != NULL) {
         response().set_redirect_header(
@@ -142,8 +144,8 @@ void Words::edit(std::string wordId) {
 
 	contents::WordsEdit c;
 	contents::WordsHelper whc;
-
     initContent(c);
+    whc.lang = c.lang;
 
     whc.fetcher = wordModel.getWordWithId(id);
     // if no item with this id

@@ -3,18 +3,12 @@
 
 #include <cppcms/view.h>
 #include "forms/login_form.h"
-
+#include "contents/Config.h"
 
 namespace contents {
 
-struct ConfigContent {
-    std::string css_path;
-    std::string img_path;
-    std::string web_path;
-};
 
 struct BaseContent : public cppcms::base_content {
-    struct ConfigContent config;
     std::string lang;
     bool isAuthenticated;
     login_form login;

@@ -2,6 +2,7 @@
 #define SHDICT_ADD_TRANSLATE_FORM_H
 
 #include <cppcms/form.h>
+#include "generics/Languages.h"
 
 using namespace cppcms;
 
@@ -30,12 +31,12 @@ namespace forms {
 
             wordString.name("str");
 
-            // factorise this
-            wordLang.add("Shanghainese","wuu");
-            wordLang.add("French","fra");
-            wordLang.add("English","eng");
-            wordLang.add("Chinese","cmn");
-            wordLang.add("Cantonese","yue");
+
+            LangMap langMap = Languages::getInstance()->getMap();
+            LangMap::iterator itr;
+            for(itr = langMap.begin(); itr != langMap.end(); ++itr){
+                wordLang.add(itr->second, itr->first);
+            }
 
             submit.name("Add word");
             submit.value("add");

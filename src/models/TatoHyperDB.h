@@ -1,5 +1,5 @@
-#ifndef TATOEBACPP_MODELS_TATOHYPERDB_H
-#define TATOEBACPP_MODELS_TATOHYPERDB_H
+#ifndef SHDICT_MODELS_TATOHYPERDB_H
+#define SHDICT_MODELS_TATOHYPERDB_H
 
 #include <iostream>
 #include "generics/Singleton.h"

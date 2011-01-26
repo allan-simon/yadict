@@ -14,7 +14,6 @@ namespace controllers {
 
 class Controller : public cppcms::application {
 	protected:
-		contents::ConfigContent configContent;
         void initContent(contents::BaseContent& content);
 	public:
 		Controller(cppcms::service &serv);

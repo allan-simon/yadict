@@ -10,11 +10,13 @@ extern "C" {
 #include "models/Translations.h"
 #include "models/Words.h"
 
+#include "contents/Config.h"
 namespace contents {
 
 struct WordsHelper : public cppcms::base_content {
     TatoHyperItemFetcher *fetcher;
     models::TranslationsMap packedTrans;
+    std::string lang;
 
     public:
         bool is_empty() {

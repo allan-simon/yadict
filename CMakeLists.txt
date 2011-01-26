@@ -23,6 +23,13 @@ file (
     src/generics/*
 )
 
+file (
+    GLOB
+    contents_files
+    src/contents/*
+)
+
+
 add_executable(
     shanghainesedict
     src/main.cpp
@@ -30,6 +37,7 @@ add_executable(
     ${controllers_files}
     ${models_files}
     ${generics_files}
+    ${contents_files}
     templates.cpp
 )
 
@@ -43,7 +51,7 @@ target_link_libraries(
 )
 add_custom_command(
     OUTPUT templates.cpp
-    COMMAND cppcms_tmpl_cc 
+    COMMAND ../tools/cppcms_tmpl_cc 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/views/*/*.tmpl 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/views/*.tmpl
         -o templates.cpp

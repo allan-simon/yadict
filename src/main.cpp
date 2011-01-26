@@ -7,6 +7,8 @@
 #include <cppdb/frontend.h>
 
 #include "models/TatoHyperDB.h"
+#include "generics/Languages.h"
+#include "contents/Config.h"
 
 using namespace std;
 using namespace cppcms;
@@ -22,6 +24,12 @@ int main(int argc,char ** argv)
         // in order to have the pointer shared by every thread
         string dictPath = app.settings().get<string>("shanghainesedict.dictxml");
         TatoHyperDB::getInstance(dictPath);
+        Languages::getInstance();
+        Config *conf = Config::getInstance();
+
+	    conf->cssPath = app.settings().get<std::string>("shanghainesedict.css");
+	    conf->imgPath = app.settings().get<std::string>("shanghainesedict.img");
+        conf->webPath = app.settings().get<std::string>("shanghainesedict.web");
         cout << "[NOTICE] database loaded" << endl;
 
 
