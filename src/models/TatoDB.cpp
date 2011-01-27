@@ -4,7 +4,7 @@
 /**
  *
  */
-TatoDb *TatoDB::getDatabasePointer() {
+TatoDb *TatoDB::get_database_pointer() {
     return tatoDb;
 }
 

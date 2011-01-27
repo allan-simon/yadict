@@ -18,7 +18,7 @@ class TatoDB : public Singleton<TatoDB>{
         ~TatoDB();
 
     public:
-        TatoDb *getDatabasePointer();
+        TatoDb *get_database_pointer();
         
 
 };

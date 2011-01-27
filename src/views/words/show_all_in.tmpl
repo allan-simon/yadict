@@ -1,7 +1,7 @@
 <%c++ #include "contents/words.h" %>
 <% skin %>
-<% view words_show_all uses contents::Words extends master %>
-<% template title() %><% gt "Show all words"  %><% end template %>
+<% view words_show_all_in uses contents::WordsAllIn extends master %>
+<% template title() %><% gt "Show all in "%><% filterLang %><% end template %>
 
 <% template main_content() %>
     <div class="module">

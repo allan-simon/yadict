@@ -14,14 +14,14 @@ class Singleton
         /**
          * Return a singleton instance, create it if it doesn't exist yet
          */
-        static T *getInstance () {
+        static T *get_instance () {
             if (_singleton == NULL) {
                  _singleton = new T;
             }
             return (static_cast<T*> (_singleton));
         }
         
-        static T *getInstance (std::string data_path) {
+        static T *get_instance (std::string data_path) {
             if (_singleton == NULL) {
                  _singleton = new T(data_path);
             }

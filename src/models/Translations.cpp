@@ -14,12 +14,12 @@ bool Translations::add_to(
     int translationRelId,
     int toWordId
 ) { 
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
 
     // if the translation link already exists
     if (translationRelId > 0) {
 
-        TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+        TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
         tato_hyper_db_relation_add_end(
             tatoHyperDb,
             translationRelId,
@@ -64,7 +64,7 @@ bool Translations::add_to(
  *
  */
 bool Translations::remove(int transId, int origId) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     TatoHyperItem *origWord= tato_hyper_db_item_find(tatoHyperDb, origId);
     if (origWord == NULL) {
         return false;

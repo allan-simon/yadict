@@ -32,8 +32,8 @@ void Translations::add_to(std::string origWordId) {
     
     models::Words wordsModel;
     
-    whc.fetcher = wordsModel.getWordWithId(origId);
-    whc.packedTrans = wordsModel.packTranslations(whc.fetcher); 
+    whc.fetcher = wordsModel.get_word_with_id(origId);
+    whc.packedTrans = wordsModel.pack_translations(whc.fetcher); 
 
     TatoHyperItem* word = whc.fetcher->items[0];
      // if no item with this id
@@ -47,7 +47,7 @@ void Translations::add_to(std::string origWordId) {
     }
     // set the hidden value of the form
     std::ostringstream oss;
-    oss << wordsModel.getTranslationRelation(word);
+    oss << wordsModel.get_translation_relation(word);
 
     c.addTranslation.origWordId.value(origWordId);
     c.addTranslation.translationId.value(
@@ -79,7 +79,7 @@ void Translations::add_to_treat() {
         std::string strOrigWordId = c.addTranslation.origWordId.value();
         int origWordId = atoi(strOrigWordId.c_str());
         
-        TatoHyperItem *translation = wordsModel.addWord(
+        TatoHyperItem *translation = wordsModel.add_word(
             transLang,
             transStr
         );
@@ -90,7 +90,7 @@ void Translations::add_to_treat() {
         // by adding a field with the TatoHyperItem in the exception
         // raised by addWord
         if (translation == NULL) {
-           translation = wordsModel.getWordWithLangStr(transLang, transStr); 
+           translation = wordsModel.get_word_with_lang_str(transLang, transStr); 
         }
 
         if (translation != NULL) {

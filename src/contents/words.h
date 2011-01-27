@@ -12,6 +12,12 @@ struct Words : public BaseContent {
     WordsHelper whc;
 };
 
+struct WordsAllIn : public Words {
+    WordsHelper whc;
+    std::string filterLang;
+};
+
+
 
 struct WordsAdd : public BaseContent {
     forms::AddWord addWord; 

@@ -23,9 +23,9 @@ int main(int argc,char ** argv)
         // but for the moment it's the only way I've found to initialize tatodb 
         // in order to have the pointer shared by every thread
         string dictPath = app.settings().get<string>("shanghainesedict.dictxml");
-        TatoHyperDB::getInstance(dictPath);
-        Languages::getInstance();
-        Config *conf = Config::getInstance();
+        TatoHyperDB::get_instance(dictPath);
+        Languages::get_instance();
+        Config *conf = Config::get_instance();
 
 	    conf->cssPath = app.settings().get<std::string>("shanghainesedict.css");
 	    conf->imgPath = app.settings().get<std::string>("shanghainesedict.img");
@@ -43,7 +43,7 @@ int main(int argc,char ** argv)
         // TODO add the dump path in the config.js
         //
         cout << "[NOTICE] going to dump the database" << endl;
-        TatoHyperDB::getInstance("")->dump("dump.xml");
+        TatoHyperDB::get_instance("")->dump("dump.xml");
 
     } catch(std::exception const &e) {
         cerr<<e.what()<<endl;

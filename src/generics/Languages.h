@@ -14,7 +14,7 @@ class Languages : public Singleton<Languages> {
         Languages();
 
     public:
-        LangMap getMap();
+        LangMap get_map();
 
 };
 

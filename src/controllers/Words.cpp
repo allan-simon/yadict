@@ -14,10 +14,12 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
 
   	disp->assign("/show/(.+)$", &Words::show, this, 1);
   	disp->assign("/show-random$", &Words::show_random, this);
+
   	disp->assign("/show-all$", &Words::show_all, this);
   	disp->assign("/show-all/(\\d+)/(\\d+)$", &Words::show_all, this, 1, 2);
-  	//disp->assign("/show-all/(\\w+)", &Words::show_all, this, 1);
-  	//disp->assign("/show-all/(\\w+)/(\\d+)/(\\d+)", &Words::show_all, this, 1, 2, 3);
+
+  	disp->assign("/show-all-in/(\\w+)", &Words::show_all_in, this, 1);
+  	disp->assign("/show-all-in/(\\w+)/(\\d+)/(\\d+)", &Words::show_all_in, this, 1, 2, 3);
 
   	disp->assign("/add$", &Words::add, this);
   	disp->assign("/add-treat$", &Words::add_treat, this);
@@ -41,8 +43,8 @@ void Words::show(std::string str) {
 	contents::WordsHelper whc;
     initContent(c);
     whc.lang = c.lang;
-    whc.fetcher = wordModel.getWordsWithStr(str);
-    whc.packedTrans = wordModel.packTranslations(whc.fetcher); 
+    whc.fetcher = wordModel.get_words_with_str(str);
+    whc.packedTrans = wordModel.pack_translations(whc.fetcher); 
 
     c.whc = whc;
     render ("words_show", c);
@@ -65,13 +67,40 @@ void Words::show_all(std::string offsetStr, std::string sizeStr) {
 	contents::WordsHelper whc;
     initContent(c);
 
+    whc.baseUrl = "/words/show-all";
     whc.lang = c.lang;
-    whc.fetcher = wordModel.getAllWords(offset, size);
+    whc.fetcher = wordModel.get_all_words(offset, size);
 
     c.whc = whc;
     render ("words_show_all", c);
     tato_hyper_item_fetcher_free(whc.fetcher);
 }
+/**
+ *
+ */
+
+void Words::show_all_in(std::string lang) {
+    show_all_in(lang, "1", "10");
+}
+
+void Words::show_all_in(std::string filterLang, std::string offsetStr, std::string sizeStr) {
+    unsigned int size = atoi(sizeStr.c_str());
+    unsigned int offset = atoi(offsetStr.c_str()) - 1;
+
+	contents::WordsAllIn c;
+	contents::WordsHelper whc;
+    initContent(c);
+    c.filterLang = filterLang;
+
+    whc.baseUrl = "/words/show-all-in/" + filterLang;
+    whc.lang = c.lang;
+    whc.fetcher = wordModel.get_all_words_in_lang(filterLang, offset, size);
+
+    c.whc = whc;
+    render ("words_show_all_in", c);
+    tato_hyper_item_fetcher_free(whc.fetcher);
+}
+
 
 
 /**
@@ -85,7 +114,7 @@ void Words::show_random() {
 	contents::WordsHelper whc;
     initContent(c);
     whc.lang = c.lang;
-    whc.fetcher =  wordModel.getRandomWord();
+    whc.fetcher =  wordModel.get_random_word();
     if (whc.fetcher->items[0] != NULL) {
         response().set_redirect_header(
             "/" + c.lang +"/words/show/" + std::string(whc.fetcher->items[0]->str)
@@ -123,7 +152,7 @@ void Words::add_treat() {
     
     if (c.addWord.validate()) {
         // TODO : handle if something wrong happen while saving
-        wordModel.addWord(
+        wordModel.add_word(
             c.addWord.wordLang.selected_id(),
             c.addWord.wordString.value()
         );
@@ -145,7 +174,7 @@ void Words::edit(std::string wordId) {
     initContent(c);
     whc.lang = c.lang;
 
-    whc.fetcher = wordModel.getWordWithId(id);
+    whc.fetcher = wordModel.get_word_with_id(id);
     // if no item with this id
     if (whc.fetcher->items[0] == NULL) {
         response().set_redirect_header(
@@ -183,7 +212,7 @@ void Words::edit_treat() {
     
     if (c.editWord.validate()) {
         // TODO : handle if something wrong happen while saving
-        wordModel.editWord(
+        wordModel.edit_word(
             atoi(c.editWord.wordId.value().c_str()), 
             c.editWord.wordLang.selected_id(),
             c.editWord.wordString.value()
@@ -205,7 +234,7 @@ void Words::delete_by_id(std::string wordId) {
     
     //TODO test before if we really have an integer inside the string
     //TODO handle return value    
-    wordModel.deleteWord(atoi(wordId.c_str()));
+    wordModel.delete_word(atoi(wordId.c_str()));
 
     response().set_redirect_header(
         "/" + c.lang +"/words/show-all"

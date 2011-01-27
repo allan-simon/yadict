@@ -22,8 +22,9 @@ class Words : public Controller {
         void show_random();
         void show_all();
         void show_all(std::string offset, std::string size);
-        void show_all(std::string lang);
-        void show_all(std::string lang, std::string offset, std::string size);
+
+        void show_all_in(std::string lang);
+        void show_all_in(std::string lang, std::string offset, std::string size);
 
         void add();
         void add_treat();

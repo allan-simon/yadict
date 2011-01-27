@@ -1,74 +1,57 @@
+<%c++  #include "contents/helpers/paginations.h" %>
 <% c++ #include <cppcms/view.h> %>
 <% c++ #include <algorithm> %>
-<% c++ #include <cmath> %>
 <% skin %>
-<% view pagination_helper  %>
-    <% template pagination(std::string base_url, int offset, int size, int max) %>
-        <% c++ if (size >= max) return; %>
+<% view pagination_helper uses contents::PaginationsHelper %>
+    <% template pagination() %>
+        <% c++ if (content.size >= content.max) return; %>
         <div class="pagination">
-            <% c++ int currentPage = offset/size + 1; %> 
-            <% c++ int maxPage = ceil((double)max /(double)size); %> 
-            <% c++ int paginationSize = std::min(6, maxPage-1); %>
-            <% c++ int maxPrevPages = std::min(paginationSize, currentPage-1); %>
-            <% c++ int maxNextPages = std::min(paginationSize, maxPage-currentPage); %>
 
-            <% c++ int minPrevPages = std::min((int)ceil((double)paginationSize/2.0), maxPrevPages); %>
-            <% c++ int minNextPages = std::min((int)floor((double)paginationSize/2.0), maxNextPages); %>
-
-            <% c++ int dispPrevPages; %>
-            <% c++ int dispNextPages; %>
-            <% c++ if (minPrevPages  <= minNextPages) { %>
-            <% c++     dispPrevPages = minPrevPages; %>
-            <% c++     dispNextPages = paginationSize - minPrevPages; %>
-            <% c++ } else { %>
-            <% c++     dispNextPages = minNextPages; %>
-            <% c++     dispPrevPages = paginationSize - minNextPages; %>
-            <% c++ } %>
             <ul class="numbers" > 
 
-                <% if (offset != 0) %>
+                <% if not atBeginning %>
                     <li class="first" >
-                        <a href="<% c++ out() << base_url ;%>">
+                        <a href="<% url "{1}" using baseUrl %>">
                             first
                         </a>
                     </li>
                     <li class="prev" >
-                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << (1 +offset) - size << "/" << size ;%>" >
+                        <a href="<% url "{1}" using baseUrl %>/<% prevOffset %>/<% size %>" >
                             prev
                         </a>
                     </li>
                 <% end %>
      
 
-                <% c++ for (int i = currentPage - dispPrevPages ; i < currentPage ; ++i) { %>
+                <% c++ for (int i = content.firstDisplayedPage ; i < content.currentPage ; ++i) { %>
                     <li class="number" >
-                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << ((i - 1)* size + 1) << "/" << size ;%>" >
+                        <a href="<% url "{1}" using baseUrl %>/<% c++ out() << content.offsetPage(i); %>/<% size %>" >
                             <% c++ out() << i; %>
                         </a>
                     </li> 
                 <% c++ } %>
 
-                <li class="number currentPage" ><%c++ out() << currentPage; %></li>
+                <li class="number currentPage" ><% currentPage %></li>
 
-                <% c++ for (int i = currentPage + 1; i <= currentPage + dispNextPages ; ++i) { %>
+                <% c++ for (int i = content.currentPage + 1; i <= content.lastDisplayedPage ; ++i) { %>
                     <li class="number" >
-                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << (i-1)* size + 1 << "/" << size ;%>" >
+                        <a href="<% url "{1}" using baseUrl %>/<% c++ out() << content.offsetPage(i); %>/<% size %>" >
                             <% c++ out() << i; %>
                         </a>
                     </li> 
                 <% c++ } %>
             
-                <% if ((offset+size) < max) %>
+                <% if not atEnd %>
                     <li class="next">
 
-                        <a href="<% c++ out() << base_url ;%>/<% c++ out() << (1+ offset + size) << "/" << size ;%>" >
+                        <a href="<% url "{1}" using baseUrl %>/<% nextOffset %>/<% size %>" >
                             next
                         </a>
                     </li>
 
 
                     <li class="last">
-                        <a class="last" href="<% c++ out() << base_url ;%>/<% c++ out() << (1+ ((max/size) *size))<< "/" << size;%>" >
+                        <a class="last" href="<% url "{1}" using baseUrl %>/<% lastOffset %>/<% size %>" >
                             last
                         </a>
                     </li>
@@ -82,4 +65,3 @@
 
 <% end view %>
 <% end skin %>
-

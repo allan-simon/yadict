@@ -12,6 +12,6 @@ Languages::Languages() {
 
 }
 
-LangMap Languages::getMap() {
+LangMap Languages::get_map() {
     return languagesMap;
 }

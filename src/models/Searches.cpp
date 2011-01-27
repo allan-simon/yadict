@@ -21,7 +21,7 @@ TatoHyperItemFetcher* Searches::simple(
     int size,
     int offset
 ) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
 	TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);
 
 	TatoHyperItemLang *tatoLang = NULL;

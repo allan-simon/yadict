@@ -4,7 +4,7 @@
 /**
  *
  */
-TatoHyperDb *TatoHyperDB::getDatabasePointer() {
+TatoHyperDb *TatoHyperDB::get_database_pointer() {
     return tatoHyperDb;
 }
 

@@ -7,7 +7,7 @@
     <div class="module">
         <% c++ if(!content.whc.is_empty()) { %>
             <% c++ words_helper wh(out(), content.whc); %>
-            <% c++ wh.words_list("/searches/show-result/" + content.queryStr + "/" + content.queryLang) ;%> 
+            <% c++ wh.words_list() ;%> 
         <% c++ } else { %>
             No Result
         <% c++ } %>

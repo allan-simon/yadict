@@ -12,8 +12,8 @@ Words::Words() {}
 /**
  *
  */
-TatoHyperItemFetcher* Words::getWordWithId(int id) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+TatoHyperItemFetcher* Words::get_word_with_id(int id) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     TatoHyperItem *word= tato_hyper_db_item_find(tatoHyperDb, id);
 
     TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(1, 0);
@@ -25,12 +25,12 @@ TatoHyperItemFetcher* Words::getWordWithId(int id) {
 /**
  *
  */
-TatoHyperItem* Words::getWordWithLangStr(
+TatoHyperItem* Words::get_word_with_lang_str(
     std::string lang,
     std::string str    
 ) {
 
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     TatoHyperItem *word = NULL;
     TatoHyperItemLang *tatoLang= tato_hyper_db_lang_find(
         tatoHyperDb,
@@ -52,12 +52,12 @@ TatoHyperItem* Words::getWordWithLangStr(
 /**
  *
  */
-TatoHyperItemFetcher* Words::getWordsWithStr(std::string str) {
-    return getWordsWithStr(str, 10, 0);
+TatoHyperItemFetcher* Words::get_words_with_str(std::string str) {
+    return get_words_with_str(str, 10, 0);
 }
 
-TatoHyperItemFetcher* Words::getWordsWithStr(std::string str, int size, int offset) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+TatoHyperItemFetcher* Words::get_words_with_str(std::string str, int size, int offset) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
 
     TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);
     tato_hyper_db_items_search(tatoHyperDb, fetcher, str.c_str());
@@ -69,12 +69,12 @@ TatoHyperItemFetcher* Words::getWordsWithStr(std::string str, int size, int offs
 /**
  *
  */
-TatoHyperItemFetcher* Words::getAllWords() {
-    return getAllWords(10, 0);
+TatoHyperItemFetcher* Words::get_all_words() {
+    return get_all_words(10, 0);
 }
 
-TatoHyperItemFetcher* Words::getAllWords(int offset, int size) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+TatoHyperItemFetcher* Words::get_all_words(int offset, int size) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
 
     TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);
     tato_hyper_db_items_get_seq(tatoHyperDb, fetcher);
@@ -82,14 +82,43 @@ TatoHyperItemFetcher* Words::getAllWords(int offset, int size) {
     return fetcher;
 }
 
+/**
+ *
+ */
+TatoHyperItemFetcher* Words::get_all_words_in_lang(std::string queryLang) {
+    return get_all_words_in_lang(queryLang, 10, 0);
+}
+
+TatoHyperItemFetcher* Words::get_all_words_in_lang(
+    std::string queryLang,
+    int offset,
+    int size
+) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
+
+    TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);
+
+    TatoHyperItemLang *tatoLang= tato_hyper_db_lang_find(
+        tatoHyperDb,
+        queryLang.c_str()
+    );
+    if (tatoLang != NULL) {
+        tato_hyper_item_lang_items_get_seq(tatoLang, fetcher);
+    }
+
+    return fetcher;
+}
+
+
+
 
 
 
 /**
  *
  */
-int Words::getRandomWordId() {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+int Words::get_random_word_id() {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     TatoHyperItem *randWord = tato_hyper_db_item_rand(tatoHyperDb);
 
     if (randWord == NULL) {
@@ -102,8 +131,8 @@ int Words::getRandomWordId() {
 /**
  *
  */
-TatoHyperItemFetcher *Words::getRandomWord() {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+TatoHyperItemFetcher *Words::get_random_word() {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     TatoHyperItem *randWord = tato_hyper_db_item_rand(tatoHyperDb);
 
     TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(1, 0);
@@ -115,16 +144,16 @@ TatoHyperItemFetcher *Words::getRandomWord() {
 /**
  *
  */
-TatoHyperItem* Words::addWord(std::string lang, std::string str) {
-    return addWord(lang, str, 0);
+TatoHyperItem* Words::add_word(std::string lang, std::string str) {
+    return add_word(lang, str, 0);
 }
 
-TatoHyperItem* Words::addWord(
+TatoHyperItem* Words::add_word(
     std::string lang,
     std::string str,
     TatoHyperItemFlags flags
 ) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     // TODO use exceptions when the word can is not added 
     // to signal either it is due to an internal error or because
     // we're trying to add a duplicate
@@ -139,17 +168,17 @@ TatoHyperItem* Words::addWord(
 /**
  *
  */
-bool Words::editWord(int id, std::string lang, std::string str) {
-    return editWord(id, lang, str, 0);
+bool Words::edit_word(int id, std::string lang, std::string str) {
+    return edit_word(id, lang, str, 0);
 }
 
-bool Words::editWord(
+bool Words::edit_word(
     int id,
     std::string lang,
     std::string str,
     TatoHyperItemFlags flags
 ) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     TatoHyperItem *word= tato_hyper_db_item_find(tatoHyperDb, id);
     if (word != NULL) {
         // update the lang
@@ -176,15 +205,15 @@ bool Words::editWord(
  *
  */
 
-bool Words::deleteWord(int id) {
-    TatoHyperDb *tatoHyperDb = TatoHyperDB::getInstance("")->getDatabasePointer();
+bool Words::delete_word(int id) {
+    TatoHyperDb *tatoHyperDb = TatoHyperDB::get_instance("")->get_database_pointer();
     return tato_hyper_db_item_delete(tatoHyperDb, id);
 }
 
 /**
  *
  */
-int  Words::getTranslationRelation(TatoHyperItem *word) {
+int  Words::get_translation_relation(TatoHyperItem *word) {
     if (word == NULL) {
         return -1;
     }
@@ -202,7 +231,7 @@ int  Words::getTranslationRelation(TatoHyperItem *word) {
 /**
  *
  */
-TranslationsMap Words::packTranslations(
+TranslationsMap Words::pack_translations(
     TatoHyperItemFetcher* fetcher
 ) {
     TranslationsMap packedTrans;

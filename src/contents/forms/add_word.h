@@ -19,7 +19,7 @@ namespace forms {
 
             wordString.name("str");
 
-            LangMap langMap = Languages::getInstance()->getMap();
+            LangMap langMap = Languages::get_instance()->get_map();
             LangMap::iterator itr;
             for(itr = langMap.begin(); itr != langMap.end(); ++itr){
                 wordLang.add(itr->second,itr->first);
