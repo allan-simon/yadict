@@ -10,11 +10,9 @@
     <div id="annexe_content">
 	    <% include annexe_content() %>
     </div>
-<% end %>
+<% end template %>
 
-
-
-<% template header() %>
+<% template html_header() %>
 <title><% include title() %></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link
@@ -28,20 +26,23 @@
 <% end template %>
 
 
+
+
 <% template render() %>
 <!DOCTYPE HTML>
 <html>
 <head>
-<% include header() %>
+<% include html_header() %>
 </head>
 <body>
 		<div id="header">
+            <% include search_bar() %>
 		</div>
 		<div id="container">
-				<% include body() %>
+            <% include body() %>
 		</div>
 		<div id="footer">
-                <% include footer() %>
+            <% include footer() %>
 		</div>
 	</div>
 </body>
@@ -84,6 +85,15 @@
         Creative Commons Attribution 3.0 Unported License
     </a>.
 <% end template %>
+
+
+<% template search_bar() %>
+        <form method="POST" action="<% url "/searches/simple-treat" %>" >
+            <% form as_space searchesSimple %>
+        </form>
+<% end template %>
+
+
 
 
 <% end view %>

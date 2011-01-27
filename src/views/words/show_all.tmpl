@@ -7,7 +7,7 @@
     <div class="module">
         <% c++ if(!content.whc.is_empty()) { %>
             <% c++ words_helper wh(out(), content.whc); %>
-            <% c++ wh.words_list() ;%> 
+            <% c++ wh.words_list("/words/show-all") ;%> 
         <% c++ } else { %>
             No words in the database yet
         <% c++ } %>

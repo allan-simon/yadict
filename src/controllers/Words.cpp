@@ -68,8 +68,6 @@ void Words::show_all(std::string offsetStr, std::string sizeStr) {
     whc.lang = c.lang;
     whc.fetcher = wordModel.getAllWords(offset, size);
 
-    std::cout << "size :" << whc.fetcher->size << std::endl;
-    std::cout << "capacity :" << whc.fetcher->capacity << std::endl;
     c.whc = whc;
     render ("words_show_all", c);
     tato_hyper_item_fetcher_free(whc.fetcher);

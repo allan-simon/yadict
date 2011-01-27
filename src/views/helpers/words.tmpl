@@ -40,10 +40,10 @@
 
 
 
-    <% template words_list() %>
+    <% template words_list(std::string baseUrl) %>
         <% c++ pagination_helper ph(out()); %> 
         <% c++ ph.pagination( %>
-        <% c++     "/" + content.lang + "/words/show-all", %>
+        <% c++     "/" + content.lang + baseUrl, %>
         <% c++     content.fetcher->offset, %>
         <% c++     content.fetcher->capacity, %>
         <% c++     content.fetcher->max_size %>

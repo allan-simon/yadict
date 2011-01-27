@@ -20,8 +20,11 @@ struct WordsHelper : public cppcms::base_content {
 
     public:
         bool is_empty() {
-            if (fetcher->items == NULL) {
-                return NULL;
+            if (fetcher == NULL) {
+                return false;
+                if (fetcher->items == NULL) {
+                    return false;
+                }
             }
             return fetcher->items[0] == NULL;
         }
