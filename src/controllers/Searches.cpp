@@ -16,8 +16,7 @@ Searches::Searches(cppcms::service &serv) : Controller(serv) {
   	disp->assign("/simple-treat$", &Searches::simple_treat, this);
   	disp->assign("/show-result/(.+)/([a-zA-Z]+)$", &Searches::show_result, this,1 ,2);
   	disp->assign("/show-result/(.+)/(\\w+)/(\\d+)/(\\d+)$", &Searches::show_result, this,1 ,2, 3, 4);
-  	//disp->assign("/show-all/(\\w+)", &Searches::show_all, this, 1);
-  	//disp->assign("/show-all/(\\w+)/(\\d+)/(\\d+)", &Searches::show_all, this, 1, 2, 3);
+
 }
 
 void Searches::simple_treat() {

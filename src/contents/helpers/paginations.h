@@ -2,20 +2,11 @@
 #define CONTENTS_HELPER_PAGINATIONS_H
 
 #include <cmath>
-#include <cppcms/view.h>
-extern "C" {
-    #include "tato/hyperitem.h"
-    #include "tato/fetcher.h"
-}
+#include "helpers.h"
 
-#include "models/Translations.h"
-
-#include "contents/Config.h"
 namespace contents {
 
-struct PaginationsHelper : public cppcms::base_content {
-    std::string baseUrl;
-    std::string lang;
+struct PaginationsHelper : public Helpers {
 
     int offset;
     int size;

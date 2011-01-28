@@ -1,10 +1,11 @@
 <%c++ #include "contents/words.h" %>
 <% skin %>
-<% view words_show uses contents::Words extends master %>
+<% view words_show uses contents::WordsShow extends master %>
 <% template title() %><% gt "Word show"  %><% end template %>
 
 <% template main_content() %>
     <div class="module">
+        <h3>Information about <% wordStr %></h3>
         <% c++ words_helper wh(out(), content.whc); %>
         <% if not whc.is_empty() %>
             <% c++ wh.word_group() ;%> 
@@ -13,9 +14,9 @@
         <% end %>
     </div>
     <div class="module">
-        
+        <h3>Some links</h3>
         <% c++ wh.translate_word_link() ;%> 
-        <a href="<% url "/words/show-random"%>" >browse random</a>
+         <a href="<% url "/words/show-random"%>" >browse random</a>
         <a href="<% url "" %>" >back to homepage</a>
     </div>
 <% end %>

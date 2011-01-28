@@ -1,4 +1,5 @@
 <%c++ #include "contents/words.h" %>
+<%c++ #include "contents/helpers/lang_filters.h" %>
 <% skin %>
 <% view words_show_all uses contents::Words extends master %>
 <% template title() %><% gt "Show all words"  %><% end template %>
@@ -7,17 +8,26 @@
     <div class="module">
         <% c++ if(!content.whc.is_empty()) { %>
             <% c++ words_helper wh(out(), content.whc); %>
-            <% c++ wh.words_list() ;%> 
+            <% c++ wh.words_list("All words") ;%> 
         <% c++ } else { %>
             No words in the database yet
         <% c++ } %>
     </div>
     <div class="module">
+        <h3>Some links</h3>
         <a href="<% url "/words/add"%>" >add a new word</a>
         <a href="<% url "" %>" >back to homepage</a>
     </div>
 <% end %>
 
+<% template annexe_content() %>
+    <div class="module">
+        <% c++ contents::LangsFiltersHelper lfhc("/words/show-all-langs-filter-treat"); %>
+        <% c++ lfhc.lang = content.lang ;%>
+        <% c++ langs_filter_helper lfh(out(), lfhc); %>
+        <% c++ lfh.langs_filter() ;%> 
+    </div>
+<% end %>
 
 <% end view %>
 <% end skin %>

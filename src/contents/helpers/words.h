@@ -1,7 +1,6 @@
 #ifndef CONTENTS_HELPER_WORDS_H
 #define CONTENTS_HELPER_WORDS_H
 
-#include <cppcms/view.h>
 extern "C" {
     #include "tato/hyperitem.h"
     #include "tato/fetcher.h"
@@ -9,16 +8,15 @@ extern "C" {
 
 #include "models/Translations.h"
 #include "models/Words.h"
-#include "contents/helpers/paginations.h"
 
 #include "contents/Config.h"
+#include "helpers.h"
+
 namespace contents {
 
-struct WordsHelper : public cppcms::base_content {
+struct WordsHelper : public Helpers {
     TatoHyperItemFetcher *fetcher;
     models::TranslationsMap packedTrans;
-    std::string lang;
-    std::string baseUrl;
 
     public:
 

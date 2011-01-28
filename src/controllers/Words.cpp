@@ -18,6 +18,8 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
   	disp->assign("/show-all$", &Words::show_all, this);
   	disp->assign("/show-all/(\\d+)/(\\d+)$", &Words::show_all, this, 1, 2);
 
+  	disp->assign("/show-all-langs-filter-treat$", &Words::show_all_langs_filter_treat, this);
+
   	disp->assign("/show-all-in/(\\w+)", &Words::show_all_in, this, 1);
   	disp->assign("/show-all-in/(\\w+)/(\\d+)/(\\d+)", &Words::show_all_in, this, 1, 2, 3);
 
@@ -39,9 +41,10 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
 
 void Words::show(std::string str) {
 
-	contents::Words c;
+	contents::WordsShow c;
 	contents::WordsHelper whc;
     initContent(c);
+    c.wordStr = str;
     whc.lang = c.lang;
     whc.fetcher = wordModel.get_words_with_str(str);
     whc.packedTrans = wordModel.pack_translations(whc.fetcher); 
@@ -101,6 +104,25 @@ void Words::show_all_in(std::string filterLang, std::string offsetStr, std::stri
     tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
+void Words::show_all_langs_filter_treat() {
+	contents::Words c;
+	forms::LangsFilter langsFilter;
+    initContent(c);
+    
+    langsFilter.load(context());
+
+    if (langsFilter.validate()) {
+        response().set_redirect_header(
+            "/" + c.lang +"/words/show-all-in/" + langsFilter.langFilter.selected_id()
+        );
+
+    } else {
+        response().set_redirect_header(
+            request().http_referer()
+        );
+    }
+
+}
 
 
 /**
@@ -193,6 +215,7 @@ void Words::edit(std::string wordId) {
     c.editWord.wordString.value(
         std::string(whc.fetcher->items[0]->str)
     );
+
 
     c.whc = whc;
     render("words_edit",c);

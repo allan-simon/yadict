@@ -27,13 +27,15 @@ int main(int argc,char ** argv)
         Languages::get_instance();
         Config *conf = Config::get_instance();
 
-	    conf->cssPath = app.settings().get<std::string>("shanghainesedict.css");
-	    conf->imgPath = app.settings().get<std::string>("shanghainesedict.img");
-        conf->webPath = app.settings().get<std::string>("shanghainesedict.web");
+	    conf->cssPath = app.settings().get<string>("shanghainesedict.css");
+	    conf->imgPath = app.settings().get<string>("shanghainesedict.img");
+        conf->webPath = app.settings().get<string>("shanghainesedict.web");
         cout << "[NOTICE] database loaded" << endl;
 
 
-        booster::intrusive_ptr<apps::Shanghainesedict> shdictapp = new apps::Shanghainesedict(app);
+        booster::intrusive_ptr<apps::Shanghainesedict> shdictapp = 
+            new apps::Shanghainesedict(app);
+
         app.applications_pool().mount(
             shdictapp
         );

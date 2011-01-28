@@ -12,11 +12,11 @@
     <% template word_group() %>
         <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
         <% c++ out() << item->str ;%> 
-        <h2>Translations</h2>
+        <h4>Translations</h4>
         <% foreach languages in packedTrans %>
             <% item %>
                 <div>
-                    <h3><% languages.first %></h3>
+                    <h5><% languages.first %></h5>
                     <% foreach translation in languages.second %>
                         <ul>
                         <% item %>
@@ -41,7 +41,7 @@
 
 
 
-    <% template words_list() %>
+    <% template words_list(std::string title) %>
         <% c++ contents::PaginationsHelper phc( %>
         <% c++ content.fetcher->offset, %>
         <% c++ content.fetcher->capacity, %>
@@ -49,8 +49,15 @@
         <% c++ content.baseUrl, %>
         <% c++ content.lang %>
         <% c++ ); %>
+
+        <h3>
+            <% c++ out() << title ;%>
+             (Total: <% c++ out() <<content.fetcher->max_size ;%> Word(s))
+        </h3>
+        
         <% c++ pagination_helper ph(out(), phc); %> 
         <% c++ ph.pagination(); %>
+
         <% c++ for(int i = 0; i < content.fetcher->size ; i++) { %>
             <% c++ int id = content.fetcher->items[i]->id ; %>
             <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>

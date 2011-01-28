@@ -5,6 +5,7 @@
 #include "contents/forms/add_word.h"
 #include "contents/forms/edit_word.h"
 #include "contents/helpers/words.h"
+#include "contents/forms/lang_filter.h"
 
 namespace contents {
 
@@ -12,11 +13,15 @@ struct Words : public BaseContent {
     WordsHelper whc;
 };
 
-struct WordsAllIn : public Words {
-    WordsHelper whc;
-    std::string filterLang;
+struct WordsShow : public Words {
+    std::string wordStr;
 };
 
+
+
+struct WordsAllIn : public Words {
+    std::string filterLang;
+};
 
 
 struct WordsAdd : public BaseContent {
@@ -26,6 +31,7 @@ struct WordsAdd : public BaseContent {
 
 struct WordsEdit : public Words {
     forms::EditWord editWord; 
+    std::string wordStr;
 };
 
 

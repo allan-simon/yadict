@@ -1,0 +1,14 @@
+<%c++  #include "contents/helpers/lang_filters.h" %>
+<% c++ #include <cppcms/view.h> %>
+<% c++ #include <algorithm> %>
+<% skin %>
+<% view langs_filter_helper uses contents::LangsFiltersHelper %>
+    <% template langs_filter() %>
+        <h3>Filter on language</h3>
+        <form method="POST" action="<% url "{1}" using filterTreatUrl %>" >
+            <% form as_p langsFilter %>
+        </form>
+    <% end template %>
+
+<% end view %>
+<% end skin %>

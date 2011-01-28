@@ -20,11 +20,14 @@ class Words : public Controller {
 		Words(cppcms::service &serv);
 		void show(std::string word_str);
         void show_random();
+        
         void show_all();
         void show_all(std::string offset, std::string size);
 
         void show_all_in(std::string lang);
         void show_all_in(std::string lang, std::string offset, std::string size);
+
+        void show_all_langs_filter_treat();
 
         void add();
         void add_treat();
