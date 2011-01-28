@@ -95,9 +95,8 @@
             <% c++ int id = content.fetcher->items[i]->id ; %>
             <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>
             <div>
-                <span><% c++ out() << id ;%></span> 
+                <img src="http://sysko.fr/img/<% c++ out() << content.fetcher->items[i]->lang->code ;%>.png" /> 
                 <span><% c++ out() << str ;%></span>
-                <span><% c++ out() << content.fetcher->items[i]->lang->code ;%></span> 
                 <!--
                     TODO once we will have a singleton class to store lang etc, need to
                     put again url tag
