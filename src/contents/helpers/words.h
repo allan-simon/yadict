@@ -15,10 +15,13 @@ extern "C" {
 namespace contents {
 
 struct WordsHelper : public Helpers {
-    TatoHyperItemFetcher *fetcher;
+    TatoHyperItemFetcher *fetcher ;
     models::TranslationsMap packedTrans;
 
     public:
+        WordsHelper() {
+            fetcher = NULL;
+        }
 
         bool is_empty() {
             if (fetcher == NULL) {

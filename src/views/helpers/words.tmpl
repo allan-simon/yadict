@@ -1,6 +1,7 @@
 <%c++ extern "C" { %> 
 <%c++    #include "tato/fetcher.h" %>
 <%c++    #include "tato/hyperitem.h" %>
+<%c++    #include "tato/kvlist.h" %>
 <%c++ } %>
 <%c++ #include "contents/helpers/words.h" %>
 <%c++ #include "contents/helpers/paginations.h" %>
@@ -10,22 +11,56 @@
 
 
     <% template word_group() %>
+        <div>
+            <% include word_alone() %>
+        </div>
+        <div>
+            <% include word_metas() %>
+        </div>
+        <div>
+            <% include word_all_translations() %>
+        </div>
+    <% end template %>
+
+    <% template word_alone() %>
         <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
         <% c++ out() << item->str ;%> 
+    <% end template %>
+
+    <% template word_metas() %>
+        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
+
+	    <% c++ TatoKvListNode *it; %>
+        <ul>
+	    <% c++ TATO_KVLIST_FOREACH(item->metas, it) { %>
+            <li>
+                <% c++ out() << it->key << " " ;%>
+                :
+                <% c++ out() << " " << it->value; %>
+            </li>
+        <% c++ } %>
+        <% c++ if (item->metas == NULL) { %>
+            <li>No Metas yet</li>
+        <% c++ } %>
+        </ul>
+    <% end template %>
+
+    <% template word_all_translations() %>
+        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
         <h4>Translations</h4>
-        <% foreach languages in packedTrans %>
+        <% foreach language in packedTrans %>
             <% item %>
                 <div>
-                    <h5><% languages.first %></h5>
-                    <% foreach translation in languages.second %>
+                    <h5><% language.first %></h5>
+                    <% foreach translation in language.second %>
                         <ul>
                         <% item %>
                             <li>
-                                <a href="<% url "/words/show/" %><% translation->str %>" >
+                                <a href="<% url "/words/show/{1}" using translation->str %>" >
                                     <% translation->str %>
                                 </a>
-                                <a href="<% url "/translations/remove/" %><% translation->id %>/from/<% c++ out() << item->id ;%>">
-                                remove
+                                <a href="<% url "/translations/remove/{1}/from/" using translation->id %><% c++ out() << item->id ;%>">
+                                    remove
                                 </a>
                             </li>
                         <% end %>
@@ -36,10 +71,8 @@
         <% empty %>
             No translations yet
         <% end%>
+
     <% end template %>
-
-
-
 
     <% template words_list(std::string title) %>
         <% c++ contents::PaginationsHelper phc( %>
@@ -84,5 +117,15 @@
             </a> 
         <% end %>
     <% end template %>
+
+    <% template add_meta_link() %>
+        <% if not is_empty() %>
+            <% c++ int id = content.fetcher->items[0]->id ;%>
+            <a href="<% url "/metas/add/" %><% c++ out() << id ;%>" >
+                add meta
+            </a> 
+        <% end %>
+    <% end template %>
+
 <% end view %>
 <% end skin %>

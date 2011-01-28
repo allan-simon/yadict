@@ -5,7 +5,6 @@
 #include "models/Words.h"
 
 extern "C" {
-#include "tato/hyperdb.h"
 #include "tato/hyperitem.h"
 #include "tato/list.h"
 }

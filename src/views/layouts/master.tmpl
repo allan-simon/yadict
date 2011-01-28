@@ -25,7 +25,13 @@
 -->
 <% end template %>
 
-
+<% template top_menu() %>
+    <ul id="topmenulist" >
+        <li class="menuitem">
+            <a href="<%url "" %>">Home</a>
+        </li>
+    </ul>
+<% end template %>
 
 
 <% template render() %>
@@ -35,6 +41,10 @@
 <% include html_header() %>
 </head>
 <body>
+    <div id="topmenu">
+        <% include top_menu() %>
+    </div>
+    <div id="mainblock">
 		<div id="header">
             <% include search_bar() %>
 		</div>
@@ -89,6 +99,7 @@
 
 <% template search_bar() %>
         <form method="POST" action="<% url "/searches/simple-treat" %>" >
+            <span>Search words: </span>
             <% form as_space searchesSimple %>
         </form>
 <% end template %>

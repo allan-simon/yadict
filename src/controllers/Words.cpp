@@ -3,7 +3,6 @@
 #include "shanghainesedict.h"
 #include "contents/words.h"
 
-#include "models/TatoHyperDB.h"
 
 namespace controllers {
 
@@ -174,10 +173,19 @@ void Words::add_treat() {
     
     if (c.addWord.validate()) {
         // TODO : handle if something wrong happen while saving
-        wordModel.add_word(
+        TatoHyperItem* item = wordModel.add_word(
             c.addWord.wordLang.selected_id(),
             c.addWord.wordString.value()
         );
+        if (item == NULL) {
+            
+            std::ostringstream oss;
+            oss << item->id ;
+            response().set_redirect_header(
+                "/" + c.lang +"/words/add-to/" + oss.str()
+            );
+            return; 
+        }
     }
 
     response().set_redirect_header(
@@ -198,7 +206,7 @@ void Words::edit(std::string wordId) {
 
     whc.fetcher = wordModel.get_word_with_id(id);
     // if no item with this id
-    if (whc.fetcher->items[0] == NULL) {
+    if (whc.is_empty()) {
         response().set_redirect_header(
             "/" + c.lang +"/words/show-all"
         );

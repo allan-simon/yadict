@@ -11,6 +11,7 @@
 #include "controllers/Words.h"
 #include "controllers/Translations.h"
 #include "controllers/Searches.h"
+#include "controllers/Metas.h"
 //#include "controllers/Users.h"
 
 
@@ -29,6 +30,7 @@ private:
 	controllers::Words wc;
 	controllers::Translations tc;
 	controllers::Searches sc;
+	controllers::Metas mc;
 	//controllers::Users uc;
     std::map<std::string,std::string> lang_map;
 

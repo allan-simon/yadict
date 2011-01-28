@@ -18,13 +18,16 @@ Shanghainesedict::Shanghainesedict(cppcms::service &serv) :
 	pc(serv),
 	wc(serv),
     tc(serv),
-    sc(serv)
+    sc(serv),
+    mc(serv)
+    
 	//uc(*this)
 {
 
 	add(wc,"^/words(.*)",1);
 	add(tc,"^/translations(.*)",1);
     add(sc,"^/searches(.*)",1);
+    add(mc,"^/metas(.*)",1);
     //NOTE important to add the page controller at the end
     //as its regexp is more global
 	add(pc,"(.*)",1);
