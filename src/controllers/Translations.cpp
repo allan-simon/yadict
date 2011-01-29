@@ -31,6 +31,7 @@ void Translations::add_to(std::string origWordId) {
 	contents::WordsHelper whc;
     
     models::Words wordsModel;
+    whc.lang = c.lang;
     
     whc.fetcher = wordsModel.get_word_with_id(origId);
     whc.packedTrans = wordsModel.pack_translations(whc.fetcher); 

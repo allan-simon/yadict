@@ -59,6 +59,7 @@
                                 <a href="<% url "/words/show/{1}" using translation->str %>" >
                                     <% translation->str %>
                                 </a>
+                                <% c++ out() << " " ; %>
                                 <a href="<% url "/translations/remove/{1}/from/" using translation->id %><% c++ out() << item->id ;%>">
                                     remove
                                 </a>
