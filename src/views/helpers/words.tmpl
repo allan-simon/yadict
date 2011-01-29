@@ -44,7 +44,7 @@
                 </a>
                 <% c++ out() << " " ; %>
                 <a href="<% url "/metas/remove-from/" %><% c++ out() << item->id; %>/<% c++ out() << it->key;%>" >
-                    <img href="http://sysko.fr/img/icons/remove.png" alt="remove" />
+                    <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
                 </a>
             </li>
         <% c++ } %>
@@ -70,7 +70,7 @@
                                 </a>
                                 <% c++ out() << " " ; %>
                                 <a href="<% url "/translations/remove/{1}/from/" using translation->id %><% c++ out() << item->id ;%>">
-                                    <img href="http://sysko.fr/img/icons/remove.png" alt="remove" />
+                                    <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
                                 </a>
                             </li>
                         <% end %>
@@ -114,7 +114,7 @@
                 <a href="<% url "/words/show/" %><% c++ out() << str; %>">show</a>
                 <a href="<% url "/words/edit/" %><% c++ out() << id; %>">edit</a>
                 <a href="<% url "/words/delete-by-id/" %><% c++ out() << id; %>">
-                    <img href="http://sysko.fr/img/icons/remove.png" alt="delete" />
+                    <img src="http://sysko.fr/img/icons/remove.png" alt="delete" />
                 </a>
             </div>
         <% c++ } %>
