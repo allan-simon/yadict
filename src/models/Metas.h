@@ -20,6 +20,27 @@ class Metas {
             std::string key,
             std::string value
         );
+
+        bool edit_meta(
+            int wordId,
+            std::string key,
+            std::string newValue
+        );
+
+        bool remove_meta(
+            int wordId,
+            std::string key
+        );
+
+        bool has_meta(
+            int wordId,
+            std::string key
+        );
+
+        std::string get_meta_from_key(
+            int wordId,
+            std::string key
+        );
 };
 
 }

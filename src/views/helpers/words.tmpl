@@ -37,6 +37,15 @@
                 <% c++ out() << it->key << " " ;%>
                 :
                 <% c++ out() << " " << it->value; %>
+                
+                <% c++ out() << " " ; %>
+                <a href="<% url "/metas/edit/" %><% c++ out() << item->id; %>/<% c++ out() << it->key;%>" >
+                    edit
+                </a>
+                <% c++ out() << " " ; %>
+                <a href="<% url "/metas/remove-from/" %><% c++ out() << item->id; %>/<% c++ out() << it->key;%>" >
+                    remove
+                </a>
             </li>
         <% c++ } %>
         <% c++ if (item->metas == NULL) { %>

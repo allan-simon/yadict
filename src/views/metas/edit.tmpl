@@ -1,0 +1,40 @@
+<%c++ #include "contents/metas.h" %>
+<% skin %>
+<% view metas_edit uses contents::MetasEdit extends master %>
+<% template title() %><% gt "Edit Meta"  %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <h3>Edit Meta</h3> 
+        <% c++ if(!content.whc.is_empty()) { %>
+            <% c++ words_helper wh(out(), content.whc); %>
+            <div>
+            <% c++ wh.word_alone() ; %>
+            </div>
+            <div>
+            <% c++ wh.word_metas() ;%> 
+            </div>
+        <% c++ } else { %>
+            this word does not exist
+        <% c++ } %>
+
+    </div>
+    <div class="module">
+        <% c++ if(!content.whc.is_empty()) { %>
+            <form method="POST" action="<% url "/metas/edit-treat" %>" >
+                <span><% key %>: </span> <% form as_space editMeta %>
+            </form>
+        <% c++ } %>
+    </div>
+    <div class="module">
+        <h3>Some links</h3>
+        <a href="<% url "/words/show-random"%>" >browse random</a>
+        <a href="<% url "" %>" >back to homepage</a>
+    </div>
+<% end %>
+
+
+<% end view %>
+<% end skin %>
+
+

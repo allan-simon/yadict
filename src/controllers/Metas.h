@@ -27,10 +27,10 @@ class Metas : public Controller {
         void add(std::string wordId);
         void add_treat();
 
-        //void edit(std::string wordId);
-        //void edit_treat();
+        void edit(std::string wordId, std::string key);
+        void edit_treat();
 
-        //void delete_by_id_name(std::string wordId, std::string metaName);
+        void remove_from(std::string wordId, std::string key);
 };
 
 } // End namespace
