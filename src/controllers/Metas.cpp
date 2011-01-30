@@ -27,10 +27,15 @@ Metas::Metas(cppcms::service &serv) : Controller(serv) {
  * Display the page with a form to add new meta on a word
  */
 void Metas::add(std::string wordId) {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 	int id = atoi(wordId.c_str());
 
 	contents::MetasAdd c;
-    initContent(c);
+    init_content(c);
 	contents::WordsHelper whc;
     whc.lang = c.lang;
     whc.fetcher = wordModel.get_word_with_id(id);
@@ -56,9 +61,14 @@ void Metas::add(std::string wordId) {
  */
 
 void Metas::add_treat() {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 
 	contents::MetasAdd c;
-    initContent(c);
+    init_content(c);
     c.addMeta.load(context());
     
     if (c.addMeta.validate()) {
@@ -86,10 +96,15 @@ void Metas::add_treat() {
  */
 
 void Metas::edit(std::string wordId, std::string key) {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 	int id = atoi(wordId.c_str());
 
 	contents::MetasEdit c;
-    initContent(c);
+    init_content(c);
 	contents::WordsHelper whc;
     whc.lang = c.lang;
     whc.fetcher = wordModel.get_word_with_id(id);
@@ -118,10 +133,15 @@ void Metas::edit(std::string wordId, std::string key) {
  * 
  */
 void Metas::edit_treat() {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 
 
 	contents::MetasEdit c;
-    initContent(c);
+    init_content(c);
     c.editMeta.load(context());
     
     if (c.editMeta.validate()) {
@@ -151,9 +171,14 @@ void Metas::edit_treat() {
  *
  */
 void Metas::remove_from(std::string wordId, std::string key) {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 
 	contents::MetasAdd c;
-    initContent(c);
+    init_content(c);
     
     //TODO test before if we really have an integer inside the string
     //TODO handle return value    

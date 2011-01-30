@@ -1,0 +1,62 @@
+<% c++ #include "contents/users.h" %>
+<% skin %>
+<% view users_register_new uses contents::UsersRegisterNew extends master %>
+<% template title() %>
+    <% gt "Register" %>
+<% end template %>
+
+<% template html_header() %>
+    <% include master::html_header() %>
+<% end template %>
+
+<% template main_content() %>
+<form id="UserRegisterForm" method="post" action="<% url "/users/register-new-treat" %>">
+    <table id="userInformation">
+        <tr>
+            <td class="field">
+                <label for="registrationUsername"><% gt "Username:" %></label>
+            </td>
+            <td>
+                <% form as_space registerNewUser.username %>
+            </td>
+        </tr>
+        <tr>
+            <td class="field">
+                <label for="registrationPassword"><% gt "Password:" %></label>
+            </td>
+            <td>
+                <% form as_space registerNewUser.password %>
+            </td>
+        </tr>
+        <tr>
+            <td class="field">
+                <label for="registrationEmail"><% gt "Email:"%></label>
+            </td>
+            <td>
+                <% form as_space registerNewUser.email %>
+            </td>
+        </tr>
+    </table>
+
+    <div id="quiz">
+        <% gt "We need to make sure you are human." %>
+        <div class="input text">
+            <label for="UserQuiz"><%gt "What are the five first letters of your email?" %></label>
+            <% form as_space registerNewUser.quiz %>
+        </div>
+        <% gt "For instance, if your email is me12345@example.com, the answer is \"me123\"." %>
+    </div>
+
+    <div id="termsOfUse">
+        <% form as_space registerNewUser.termsOfUse %>
+        <% gt "I accept the <a href=\"%s\">terms of use</a>" %>
+    </div>
+
+    <div class="submit>">
+        <% form as_space registerNewUser.submit %>
+    </div>
+</form>
+<% end template %>
+
+<% end view %>
+<% end skin %>

@@ -30,6 +30,18 @@
         <li class="menuitem">
             <a href="<%url "" %>">Home</a>
         </li>
+        <% if userHelperContent.is_logged() %>
+            <li class="menuitem">
+                <a href="<%url "/users/logout" %>">logout (<% userHelperContent.username %>)</a>
+            </li>
+        <% else %>
+            <li class="menuitem">
+                <a href="<%url "/users/login" %>">login</a>
+            </li>
+            <li class="menuitem">
+                <a href="<%url "/users/register-new" %>">Register</a>
+            </li>
+        <% end %>
     </ul>
 <% end template %>
 

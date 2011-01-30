@@ -24,6 +24,7 @@
     },
 	"shanghainesedict" : {
         "dictxml" : "../doc/shdict.xml",
+        "dictxml2" : "../doc/cfdict.xml",
 		"css" : "/css",
 		"img" : "/img",
         "web" : "http://127.0.0.1:4224/",

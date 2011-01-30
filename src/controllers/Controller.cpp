@@ -9,33 +9,36 @@ Controller::Controller(cppcms::service &serv) : cppcms::application(serv) {
 
 }
 
-void Controller::initContent(contents::BaseContent& content) {
+void Controller::init_content(contents::BaseContent& content) {
     
     response().content_encoding("UTF-8");
     response().set_content_header("text/html; charset=utf-8");
 
-
-    std::locale current_locale = context().locale();
-    booster::locale::info const &inf = std::use_facet<booster::locale::info>(
-        current_locale
-    );
     // TODO seems context.locale return always a 2 letter code
     // TODO also need to check the locale send by the user navigator
     // without forgetting the navigator always send more than one locale
     // in order to have some fallbacks
-    std::cout << "inf.lang = " <<inf.language() << std::endl;
     if (session().is_set("lang")) {
-        std::cout << "session.lang = " <<session()["lang"] << std::endl;
+
         content.lang = session()["lang"];
     } else {
-        content.lang = inf.language();
-    }
 
-    if (session().is_set("name")) {
-        content.isAuthenticated = true;
-    } else {
-        content.isAuthenticated = false;
+        content.lang = "eng";
     }
+    std::cout << "user name: " << session()["name"] << std::endl;
+    if (session().is_set("name")) {
+        content.userHelperContent.username = session()["name"];
+    }
+}
+
+bool Controller::is_logged() {
+    return !session()["name"].empty();
+}
+
+void Controller::go_back_to_previous_page() {
+    response().set_redirect_header(
+        request().http_referer()
+    );
 }
 
 } // End namespace

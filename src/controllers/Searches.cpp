@@ -21,7 +21,7 @@ Searches::Searches(cppcms::service &serv) : Controller(serv) {
 
 void Searches::simple_treat() {
 	contents::SearchesSimple c;
-    initContent(c);
+    init_content(c);
     c.searchesSimple.load(context());
     
     if (c.searchesSimple.validate()) {
@@ -55,7 +55,7 @@ void Searches::show_result (
 
 	contents::SearchesSimple c;
 	contents::WordsHelper whc;
-    initContent(c);
+    init_content(c);
     // TODO filter this as otherwise it will produce strange result
     // if user search "../" etC.
     whc.baseUrl = "/searches/show-result/" + query + "/" + lang;

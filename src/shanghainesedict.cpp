@@ -19,19 +19,18 @@ Shanghainesedict::Shanghainesedict(cppcms::service &serv) :
 	wc(serv),
     tc(serv),
     sc(serv),
-    mc(serv)
-    
-	//uc(*this)
+    mc(serv),
+	uc(serv)
 {
 
 	add(wc,"^/words(.*)",1);
 	add(tc,"^/translations(.*)",1);
     add(sc,"^/searches(.*)",1);
     add(mc,"^/metas(.*)",1);
+    add(uc,"^/users(.*)",1);
     //NOTE important to add the page controller at the end
     //as its regexp is more global
 	add(pc,"(.*)",1);
-	//add(uc);
 
     cppcms::json::object langs = settings().at("shanghainesedict.languages").object();
     for(cppcms::json::object::const_iterator p=langs.begin();p!=langs.end();++p) {
@@ -47,7 +46,7 @@ void Shanghainesedict::main(std::string url) {
     std::map<std::string,std::string>::const_iterator p = lang_map.find(
         std::string(matches[1])
     );
-
+    session().load();
     // if we known the language
     if (p != lang_map.end()) {
 	    context().locale(p->second);

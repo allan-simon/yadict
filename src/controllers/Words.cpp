@@ -42,7 +42,7 @@ void Words::show(std::string str) {
 
 	contents::WordsShow c;
 	contents::WordsHelper whc;
-    initContent(c);
+    init_content(c);
     c.wordStr = str;
     whc.lang = c.lang;
     whc.fetcher = wordModel.get_words_with_str(str);
@@ -67,7 +67,7 @@ void Words::show_all(std::string offsetStr, std::string sizeStr) {
 
 	contents::Words c;
 	contents::WordsHelper whc;
-    initContent(c);
+    init_content(c);
 
     whc.baseUrl = "/words/show-all";
     whc.lang = c.lang;
@@ -91,7 +91,7 @@ void Words::show_all_in(std::string filterLang, std::string offsetStr, std::stri
 
 	contents::WordsAllIn c;
 	contents::WordsHelper whc;
-    initContent(c);
+    init_content(c);
     c.filterLang = filterLang;
 
     whc.baseUrl = "/words/show-all-in/" + filterLang;
@@ -106,7 +106,7 @@ void Words::show_all_in(std::string filterLang, std::string offsetStr, std::stri
 void Words::show_all_langs_filter_treat() {
 	contents::Words c;
 	forms::LangsFilter langsFilter;
-    initContent(c);
+    init_content(c);
     
     langsFilter.load(context());
 
@@ -133,7 +133,7 @@ void Words::show_random() {
 
 	contents::Words c;
 	contents::WordsHelper whc;
-    initContent(c);
+    init_content(c);
     whc.lang = c.lang;
     whc.fetcher =  wordModel.get_random_word();
     if (whc.fetcher->items[0] != NULL) {
@@ -153,9 +153,13 @@ void Words::show_random() {
  * Display the page with a form to add new words
  */
 void Words::add() {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
 
 	contents::WordsAdd c;
-    initContent(c);
+    init_content(c);
 
     render("words_add",c);
 }
@@ -166,9 +170,13 @@ void Words::add() {
  * and treat them
  */
 void Words::add_treat() {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
 
 	contents::WordsAdd c;
-    initContent(c);
+    init_content(c);
     c.addWord.load(context());
     
     if (c.addWord.validate()) {
@@ -197,11 +205,16 @@ void Words::add_treat() {
  * Display the page with a form to edit the information about a word
  */
 void Words::edit(std::string wordId) {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 	int id = atoi(wordId.c_str());
 
 	contents::WordsEdit c;
 	contents::WordsHelper whc;
-    initContent(c);
+    init_content(c);
     whc.lang = c.lang;
 
     whc.fetcher = wordModel.get_word_with_id(id);
@@ -236,9 +249,14 @@ void Words::edit(std::string wordId) {
  * and treat them
  */
 void Words::edit_treat() {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 
 	contents::WordsEdit c;
-    initContent(c);
+    init_content(c);
     c.editWord.load(context());
     
     if (c.editWord.validate()) {
@@ -259,9 +277,14 @@ void Words::edit_treat() {
  * virtual page, delete the item with the given id
  */
 void Words::delete_by_id(std::string wordId) {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
 
 	contents::WordsAdd c;
-    initContent(c);
+    init_content(c);
     
     //TODO test before if we really have an integer inside the string
     //TODO handle return value    

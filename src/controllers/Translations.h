@@ -26,6 +26,9 @@ class Translations : public Controller {
 
         void remove(std::string transIdStr, std::string origIdStr);
 
+        //
+        void link(std::string origWordId, std::string transWordId);
+
 };
 }
 

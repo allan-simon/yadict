@@ -36,7 +36,6 @@ struct WordsEdit : public Words {
 
 
 
-
 }
 
 #endif

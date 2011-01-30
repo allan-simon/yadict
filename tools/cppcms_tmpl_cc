@@ -193,7 +193,7 @@ def inline_content(s):
     global ignore_inline
     if not ignore_inline:
         toto = to_string(s);
-        if not re.match('^\s*$',s):
+        if not re.match('^(\s|\n)*$',s):
             output( 'out()<<"%s";' % to_string(s))
 
 def error_exit(x):

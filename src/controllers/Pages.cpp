@@ -11,8 +11,7 @@ Pages::Pages(cppcms::service &serv) : controllers::Controller(serv) {
 
 void Pages::homepage() {
 	contents::Homepage c;
-    c.text = "plop";
-    initContent(c);
+    init_content(c);
 	render("homepage", c);
 }
 

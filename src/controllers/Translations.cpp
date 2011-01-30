@@ -17,19 +17,49 @@ Translations::Translations(cppcms::service &serv): Controller(serv) {
     d->assign("/add-to/(\\d+)", &Translations::add_to, this, 1);
     d->assign("/add-to-treat", &Translations::add_to_treat, this);
     d->assign("/remove/(\\d+)/from/(\\d+)", &Translations::remove, this, 1, 2);
+
+    // only for ""API""
+    d->assign("/link/(\\d+)/and/(\\d+)", &Translations::link, this, 1, 2);
+}
+
+void Translations::link(std::string origWordId, std::string transWordId) {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
+	int origId = atoi(origWordId.c_str());
+	int transId = atoi(origWordId.c_str());
+
+
+    transModel.add_to(
+        transId,
+        0,
+        origId
+    );
+
+    transModel.add_to(
+        origId,
+        0,
+        transId
+    );
+
 }
 
 /**
  *
  */
 void Translations::add_to(std::string origWordId) {
-	int origId = atoi(origWordId.c_str());
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
 
+	int origId = atoi(origWordId.c_str());
     contents::TranslationsAdd c;
-    initContent(c);
+    init_content(c);
 
 	contents::WordsHelper whc;
-    
     models::Words wordsModel;
     whc.lang = c.lang;
     
@@ -66,8 +96,14 @@ void Translations::add_to(std::string origWordId) {
  */
 
 void Translations::add_to_treat() {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
     contents::TranslationsAdd c;
-    initContent(c);
+    init_content(c);
+
     c.addTranslation.load(context());
 
     models::Words wordsModel;
@@ -121,15 +157,18 @@ void Translations::add_to_treat() {
  *
  */
 void Translations::remove(std::string transIdStr, std::string origIdStr) {
+    if (!is_logged()) {
+        go_back_to_previous_page();
+        return;
+    }
+
     int transId = atoi(transIdStr.c_str());
     int origId = atoi(origIdStr.c_str());
 
     transModel.remove(transId, origId);
     transModel.remove(origId, transId);
 
-    response().set_redirect_header(
-        request().http_referer()
-    );
+    go_back_to_previous_page();
 }
 
 }

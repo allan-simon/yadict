@@ -14,7 +14,9 @@ namespace controllers {
 
 class Controller : public cppcms::application {
 	protected:
-        void initContent(contents::BaseContent& content);
+        void init_content(contents::BaseContent& content);
+        bool is_logged();
+        void go_back_to_previous_page();
 	public:
 		Controller(cppcms::service &serv);
 };
