@@ -58,7 +58,7 @@ void Words::show(std::string str) {
  */
 
 void Words::show_all() {
-    show_all("1", "10");
+    show_all("1", "50");
 }
 
 void Words::show_all(std::string offsetStr, std::string sizeStr) {
@@ -82,7 +82,7 @@ void Words::show_all(std::string offsetStr, std::string sizeStr) {
  */
 
 void Words::show_all_in(std::string lang) {
-    show_all_in(lang, "1", "10");
+    show_all_in(lang, "1", "50");
 }
 
 void Words::show_all_in(std::string filterLang, std::string offsetStr, std::string sizeStr) {
