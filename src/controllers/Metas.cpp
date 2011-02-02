@@ -27,10 +27,7 @@ Metas::Metas(cppcms::service &serv) : Controller(serv) {
  * Display the page with a form to add new meta on a word
  */
 void Metas::add(std::string wordId) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
 	int id = atoi(wordId.c_str());
 
@@ -61,45 +58,36 @@ void Metas::add(std::string wordId) {
  */
 
 void Metas::add_treat() {
-    if (!is_logged()) {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
+
+    forms::AddMeta addMeta;
+    addMeta.load(context());
+    
+    if (!addMeta.validate()) {
         go_back_to_previous_page();
         return;
     }
-
-
-	contents::MetasAdd c;
-    init_content(c);
-    c.addMeta.load(context());
-    
-    if (c.addMeta.validate()) {
-       
-        std::string wordId = c.addMeta.wordId.value();
-        // TODO : handle if something wrong happen while saving
-        metasModel.add_meta(
-            atoi(wordId.c_str()),
-            c.addMeta.key.value(),
-            c.addMeta.value.value()
-        );
-
-        response().set_redirect_header(
-            "/" + c.lang +"/metas/add/" + wordId 
-        );
-        return ;
-    }
-    // if something is wrong we redirect to the previous page
-    response().set_redirect_header(
-        request().http_referer()
+   
+    std::string wordId = c.addMeta.wordId.value();
+    // TODO : handle if something wrong happen while saving
+    metasModel.add_meta(
+        atoi(wordId.c_str()),
+        addMeta.key.value(),
+        addMeta.value.value()
     );
+
+    response().set_redirect_header(
+        "/" + get_interface_lang() +"/metas/add/" + wordId 
+    );
+    return ;
+
 }
 /**
  *
  */
 
 void Metas::edit(std::string wordId, std::string key) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
 	int id = atoi(wordId.c_str());
 
@@ -133,13 +121,9 @@ void Metas::edit(std::string wordId, std::string key) {
  * 
  */
 void Metas::edit_treat() {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
-
-
+    // TODO use only form
 	contents::MetasEdit c;
     init_content(c);
     c.editMeta.load(context());
@@ -160,23 +144,17 @@ void Metas::edit_treat() {
         return;
     }
     // if something is wrong we redirect to the previous page
-    response().set_redirect_header(
-        request().http_referer()
-    );
-
-
+    go_back_to_previous_page();
 
 }
 /**
  *
  */
 void Metas::remove_from(std::string wordId, std::string key) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
 
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
+    //TODO use only form
 	contents::MetasAdd c;
     init_content(c);
     

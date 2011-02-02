@@ -1,0 +1,32 @@
+<%c++ #include "contents/meanings.h" %>
+<% skin %>
+<% view meanings_add_to_word uses contents::MeaningsAdd extends master %>
+<% template title() %><% gt "Add meaning"  %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <h3>Information about</h3>
+        <% c++ if(!content.whc.is_empty()) { %>
+            <% c++ words_helper wh(out(), content.whc); %>
+            <% c++ wh.word_group() ;%> 
+        <% c++ } else { %>
+            this word does not exist
+        <% c++ } %>
+
+    </div>
+    <div class="module">
+        <h3>Add meaning</h3> 
+        <% c++ if(!content.whc.is_empty()) { %>
+            <form method="POST" action="<% url "/meanings/add-to-word-treat" %>" >
+                <% form as_p addMeaning %>
+            </form>
+        <% c++ } %>
+    </div>
+    <div class="module">
+    </div>
+<% end %>
+
+
+<% end view %>
+<% end skin %>
+

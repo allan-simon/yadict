@@ -17,7 +17,8 @@ class Words : public Controller {
         models::Words wordModel;
 	public:
 		Words(cppcms::service &serv);
-		void show(std::string word_str);
+		void show(std::string wordStr);
+		void show_in(std::string wordStr, std::string wordLang);
         void show_random();
         
         void show_all();

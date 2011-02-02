@@ -10,6 +10,7 @@
 #include "controllers/Pages.h"
 #include "controllers/Words.h"
 #include "controllers/Translations.h"
+#include "controllers/Meanings.h"
 #include "controllers/Searches.h"
 #include "controllers/Metas.h"
 #include "controllers/Users.h"
@@ -29,6 +30,7 @@ private:
 	controllers::Pages pc;
 	controllers::Words wc;
 	controllers::Translations tc;
+	controllers::Meanings meanings;
 	controllers::Searches sc;
 	controllers::Metas mc;
     controllers::Users uc;

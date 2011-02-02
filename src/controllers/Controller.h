@@ -7,6 +7,11 @@
 
 #include "contents/content.h"
 
+#define CHECK_PERMISSION_OR_GO_TO_LOGIN() \
+    if (!check_permission()) {\
+       return;\
+    }
+
 namespace apps {
 class Shanghainesedict;
 }
@@ -16,7 +21,9 @@ class Controller : public cppcms::application {
 	protected:
         void init_content(contents::BaseContent& content);
         bool is_logged();
+        bool check_permission();
         void go_back_to_previous_page();
+        std::string get_interface_lang();
 	public:
 		Controller(cppcms::service &serv);
 };

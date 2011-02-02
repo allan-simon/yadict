@@ -5,6 +5,7 @@
 <%c++ } %>
 <%c++ #include "contents/helpers/words.h" %>
 <%c++ #include "contents/helpers/paginations.h" %>
+<%c++ #include "models/Relations.h" %>
 <% skin %>
 <% view words_helper uses contents::WordsHelper %>
 
@@ -13,6 +14,9 @@
     <% template word_group() %>
         <div>
             <% include word_alone() %>
+        </div>
+        <div>
+            <% include word_meanings() %>
         </div>
         <div>
             <% include word_metas() %>
@@ -26,6 +30,30 @@
         <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
         <% c++ out() << item->str ;%> 
     <% end template %>
+
+    <% template word_meanings() %>
+        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
+
+	    <% c++ TatoHyperRelationsNode *it; %>
+        <ul>
+	    <% c++ TATO_HYPER_RELATIONS_FOREACH(item->startofs, it) { %>
+            <% c++ if (it->relation->type == SHDICT_MEANING_REL_FLAG) { %>
+                <li>
+                    definition:
+                    <% c++ out() << " " << tato_hyper_relation_meta_get(it->relation, "definition"); %>
+                    <a href="<% url "/meanings/edit/" %><% c++ out() << it->relation->id ;%>/<% c++ out() << item->id; %>" >
+                        edit
+                    </a>
+                    <% c++ out() << " " ; %>
+                    <a href="<% url "/meanings/delete-by-id/" %><% c++ out() << it->relation->id ;%>" >
+                        <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
+                    </a>
+                </li>
+            <% c++ } %>  
+        <% c++ } %>
+        </ul>
+    <% end template %>
+
 
     <% template word_metas() %>
         <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
@@ -53,6 +81,9 @@
         <% c++ } %>
         </ul>
     <% end template %>
+
+
+
 
     <% template word_all_translations() %>
         <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
@@ -104,6 +135,7 @@
         <% c++ for(int i = 0; i < content.fetcher->size ; i++) { %>
             <% c++ int id = content.fetcher->items[i]->id ; %>
             <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>
+            <% c++ std::string wordLang = std::string(content.fetcher->items[i]->lang->code) ; %>
             <div>
                 <img src="http://sysko.fr/img/<% c++ out() << content.fetcher->items[i]->lang->code ;%>.png" /> 
                 <span><% c++ out() << str ;%></span>
@@ -111,7 +143,7 @@
                     TODO once we will have a singleton class to store lang etc, need to
                     put again url tag
                 -->
-                <a href="<% url "/words/show/" %><% c++ out() << str; %>">show</a>
+                <a href="<% url "/words/show-in/" %><% c++ out() << str; %>/<% c++ out() << wordLang; %>">show</a>
                 <a href="<% url "/words/edit/" %><% c++ out() << id; %>">edit</a>
                 <a href="<% url "/words/delete-by-id/" %><% c++ out() << id; %>">
                     <img src="http://sysko.fr/img/icons/remove.png" alt="delete" />
@@ -137,6 +169,18 @@
             </a> 
         <% end %>
     <% end template %>
+
+
+    <% template add_meaning_link() %>
+        <% if not is_empty() %>
+            <% c++ int id = content.fetcher->items[0]->id ;%>
+            <a href="<% url "/meanings/add-to-word/" %><% c++ out() << id ;%>" >
+                add meaning
+            </a> 
+        <% end %>
+    <% end template %>
+
+
 
 <% end view %>
 <% end skin %>

@@ -12,6 +12,7 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
     cppcms::url_dispatcher* disp = &dispatcher();
 
   	disp->assign("/show/(.+)$", &Words::show, this, 1);
+  	disp->assign("/show-in/(.+)/(.+)$", &Words::show_in, this, 1, 2);
   	disp->assign("/show-random$", &Words::show_random, this);
 
   	disp->assign("/show-all$", &Words::show_all, this);
@@ -52,6 +53,33 @@ void Words::show(std::string str) {
     render ("words_show", c);
     tato_hyper_item_fetcher_free(whc.fetcher);
 }
+
+/**
+ *
+ */
+void Words::show_in(std::string wordStr, std::string wordLang) {
+
+	contents::WordsShow c;
+	contents::WordsHelper whc;
+    init_content(c);
+    c.wordStr = wordStr;
+    whc.lang = c.lang;
+
+    TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(1, 0);
+    tato_hyper_item_fetcher_add(
+        fetcher,
+        wordModel.get_word_with_lang_str(wordLang, wordStr)
+    );
+    whc.fetcher = fetcher;
+    whc.packedTrans = wordModel.pack_translations(whc.fetcher); 
+
+    c.whc = whc;
+    render ("words_show", c);
+    tato_hyper_item_fetcher_free(whc.fetcher);
+}
+
+
+
 
 /**
  * Display all the words in the database
@@ -104,15 +132,13 @@ void Words::show_all_in(std::string filterLang, std::string offsetStr, std::stri
 }
 
 void Words::show_all_langs_filter_treat() {
-	contents::Words c;
 	forms::LangsFilter langsFilter;
-    init_content(c);
-    
     langsFilter.load(context());
 
     if (langsFilter.validate()) {
         response().set_redirect_header(
-            "/" + c.lang +"/words/show-all-in/" + langsFilter.langFilter.selected_id()
+            "/" + get_interface_lang() +"/words/show-all-in" +
+            "/" + langsFilter.langFilter.selected_id()
         );
 
     } else {
@@ -130,33 +156,28 @@ void Words::show_all_langs_filter_treat() {
 
 void Words::show_random() {
 
-
-	contents::Words c;
-	contents::WordsHelper whc;
-    init_content(c);
-    whc.lang = c.lang;
-    whc.fetcher =  wordModel.get_random_word();
-    if (whc.fetcher->items[0] != NULL) {
+    TatoHyperItemFetcher *fetcher =  wordModel.get_random_word();
+    TatoHyperItem* item = fetcher->items[0];
+    if (item != NULL) {
         response().set_redirect_header(
-            "/" + c.lang +"/words/show/" + std::string(whc.fetcher->items[0]->str)
+            "/" + get_interface_lang() +"/words/show-in" +
+            "/" + std::string(item->str) + 
+            "/" + std::string(item->lang->code)
         );
 
      } else { // if there's no word in the database
         // TODO maybe redirect to /words/show
         // with an error message in session to explain no words exist
-        response().set_redirect_header("/" + c.lang );
+        go_back_to_previous_page();
     }
-    tato_hyper_item_fetcher_free(whc.fetcher);
+    tato_hyper_item_fetcher_free(fetcher);
 }
 
 /**
  * Display the page with a form to add new words
  */
 void Words::add() {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN(); 
 
 	contents::WordsAdd c;
     init_content(c);
@@ -170,10 +191,7 @@ void Words::add() {
  * and treat them
  */
 void Words::add_treat() {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
 	contents::WordsAdd c;
     init_content(c);
@@ -205,10 +223,7 @@ void Words::add_treat() {
  * Display the page with a form to edit the information about a word
  */
 void Words::edit(std::string wordId) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
 	int id = atoi(wordId.c_str());
 
@@ -249,27 +264,25 @@ void Words::edit(std::string wordId) {
  * and treat them
  */
 void Words::edit_treat() {
-    if (!is_logged()) {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
+
+	forms::EditWord editWord;
+    editWord.load(context());
+    
+    if (!editWord.validate()) {
         go_back_to_previous_page();
         return;
     }
-
-
-	contents::WordsEdit c;
-    init_content(c);
-    c.editWord.load(context());
-    
-    if (c.editWord.validate()) {
         // TODO : handle if something wrong happen while saving
         wordModel.edit_word(
             atoi(c.editWord.wordId.value().c_str()), 
-            c.editWord.wordLang.selected_id(),
-            c.editWord.wordString.value()
+            editWord.wordLang.selected_id(),
+            editWord.wordString.value()
         );
     }
 
     response().set_redirect_header(
-        "/" + c.lang +"/words/show-all"
+        "/" + get_interface_lang() +"/words/show-all"
     );
 }
 
@@ -277,25 +290,14 @@ void Words::edit_treat() {
  * virtual page, delete the item with the given id
  */
 void Words::delete_by_id(std::string wordId) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
-
-
-	contents::WordsAdd c;
-    init_content(c);
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
     
     //TODO test before if we really have an integer inside the string
     //TODO handle return value    
     wordModel.delete_word(atoi(wordId.c_str()));
 
-    response().set_redirect_header(
-        "/" + c.lang +"/words/show-all"
-    );
+    go_back_to_previous_page();
 }
-
-
 
 
 

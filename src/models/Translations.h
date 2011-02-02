@@ -2,6 +2,7 @@
 #define SHDICT_MODELS_TRANSLATIONS_H 
 
 #include "models/TatoHyperDB.h"
+#include "models/Relations.h"
 
 extern "C" {
 #include "tato/fetcher.h"
@@ -10,7 +11,6 @@ extern "C" {
 #include "tato/hyperrelations.h"
 }
 
-#define SHDICT_TRANSLATION_REL_FLAG 0b1
 
 namespace models {
 

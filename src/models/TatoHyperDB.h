@@ -8,6 +8,7 @@ extern "C" {
 #include "tato/hyperdb.h"
 }
 
+#define GET_DB_POINTER() TatoHyperDB::get_instance("")->get_database_pointer()
 
 class TatoHyperDB : public Singleton<TatoHyperDB>{
     friend class Singleton<TatoHyperDB>;

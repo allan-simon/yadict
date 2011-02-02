@@ -14,19 +14,23 @@ namespace controllers {
 Translations::Translations(cppcms::service &serv): Controller(serv) {
     cppcms::url_dispatcher* d = &dispatcher();
 
-    d->assign("/add-to/(\\d+)", &Translations::add_to, this, 1);
-    d->assign("/add-to-treat", &Translations::add_to_treat, this);
+    d->assign("/add-to-word/(\\d+)", &Translations::add_to_word, this, 1);
+    d->assign("/add-to-word-treat", &Translations::add_to_word_treat, this);
+
+    /*
+    d->assign("/add-to-meaning/(\\d+)", &Translations::add_to_meaing, this, 1);
+    d->assign("/add-to-meaning-treat", &Translations::add_to_meaning_treat, this);
+    */
+
     d->assign("/remove/(\\d+)/from/(\\d+)", &Translations::remove, this, 1, 2);
+    //d->assign("/remove/(\\d+)/from-meaning/(\\d+)", &Translations::remove, this, 1, 2);
 
     // only for ""API""
     d->assign("/link/(\\d+)/and/(\\d+)", &Translations::link, this, 1, 2);
 }
 
 void Translations::link(std::string origWordId, std::string transWordId) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
 	int origId = atoi(origWordId.c_str());
 	int transId = atoi(origWordId.c_str());
@@ -49,11 +53,8 @@ void Translations::link(std::string origWordId, std::string transWordId) {
 /**
  *
  */
-void Translations::add_to(std::string origWordId) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+void Translations::add_to_word(std::string origWordId) {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
 	int origId = atoi(origWordId.c_str());
     contents::TranslationsAdd c;
@@ -95,12 +96,10 @@ void Translations::add_to(std::string origWordId) {
  *
  */
 
-void Translations::add_to_treat() {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+void Translations::add_to_word_treat() {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
+    //TODO only use form
     contents::TranslationsAdd c;
     init_content(c);
 
@@ -157,10 +156,7 @@ void Translations::add_to_treat() {
  *
  */
 void Translations::remove(std::string transIdStr, std::string origIdStr) {
-    if (!is_logged()) {
-        go_back_to_previous_page();
-        return;
-    }
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
     int transId = atoi(transIdStr.c_str());
     int origId = atoi(origIdStr.c_str());

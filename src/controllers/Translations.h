@@ -21,8 +21,8 @@ class Translations : public Controller {
 	public:
 		Translations(cppcms::service &serv);
         
-        void add_to(std::string origWordId);
-        void add_to_treat();
+        void add_to_word(std::string origWordId);
+        void add_to_word_treat();
 
         void remove(std::string transIdStr, std::string origIdStr);
 
