@@ -68,7 +68,7 @@ void Metas::add_treat() {
         return;
     }
    
-    std::string wordId = c.addMeta.wordId.value();
+    std::string wordId = addMeta.wordId.value();
     // TODO : handle if something wrong happen while saving
     metasModel.add_meta(
         atoi(wordId.c_str()),

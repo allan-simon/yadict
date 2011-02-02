@@ -273,13 +273,13 @@ void Words::edit_treat() {
         go_back_to_previous_page();
         return;
     }
-        // TODO : handle if something wrong happen while saving
-        wordModel.edit_word(
-            atoi(c.editWord.wordId.value().c_str()), 
-            editWord.wordLang.selected_id(),
-            editWord.wordString.value()
-        );
-    }
+    // TODO : handle if something wrong happen while saving
+    wordModel.edit_word(
+        atoi(editWord.wordId.value().c_str()), 
+        editWord.wordLang.selected_id(),
+        editWord.wordString.value()
+    );
+
 
     response().set_redirect_header(
         "/" + get_interface_lang() +"/words/show-all"
