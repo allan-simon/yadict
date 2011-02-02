@@ -15,14 +15,23 @@
     </div>
     <div class="module">
         <h3>Some links</h3>
-        <% c++ wh.translate_word_link() ;%> 
-        <% c++ out() << " " ;%>
-        <% c++ wh.add_meta_link() ;%> 
-        <% c++ out() << " " ;%>
-        <% c++ wh.add_meaning_link() ;%> 
-        <% c++ out() << " " ;%>
-        <a href="<% url "/words/show-random"%>" >browse random</a>
-        <a href="<% url "" %>" >back to homepage</a>
+        <ul>
+            <li>
+                <% c++ wh.translate_word_link() ;%> 
+            </li>
+
+            <li>
+                <% c++ wh.add_meta_link() ;%> 
+            </li>
+
+            <li>
+                <% c++ wh.add_meaning_link() ;%> 
+            </li>
+
+            <li>
+                <a href="<% url "/words/show-random"%>" >browse random</a>
+            </li>
+        </ul>
     </div>
 <% end %>
 
