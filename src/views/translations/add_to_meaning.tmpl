@@ -1,0 +1,69 @@
+<%c++ #include "contents/translations.h" %>
+<% skin %>
+<% view translations_add_to_meaning uses contents::TranslationsAddToMeaning extends master %>
+<% template title() %><% gt "Add translation to meaning"  %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <h3>Add Translation</h3> 
+        <% c++ if(!content.whc.is_empty()) { %>
+            <% c++ words_helper wh(out(), content.whc); %>
+            <% c++ wh.word_alone() ;%> 
+
+            <% c++ TatoHyperItem *item = content.whc.fetcher->items[0] ;%>
+            <% c++ TatoHyperRelationsNode *it; %>
+            <ul>
+            <% c++ TATO_HYPER_RELATIONS_FOREACH(item->startofs, it) { %>
+                <% c++ if (it->relation->type == SHDICT_MEANING_REL_FLAG) { %>
+                    <% c++ int meaningId = it->relation->id; %>
+                    <% c++ int wordId = item->id; %>
+
+                    <li>
+                        definition:
+                        <% c++ out() << " " << tato_hyper_relation_meta_get(it->relation, "definition"); %>
+                        <% c++ out() << " " ; %>
+                        <% c++ add_trans_to_mean_link(meaningId, wordId); %>
+                        <% c++ out() << " " ; %>
+                        <% c++ edit_meaning_link(meaningId, wordId); %>
+                        <% c++ out() << " " ; %>
+                        <% c++ remove_meaning_link(meaningId); %>
+
+                        <% c++ if (it->relation->id == content.meaningId) { %>
+                            <h5>Add Translation</h5>
+                            <form method="POST" action="<% url "/translations/add-to-meaning-treat" %>" >
+                                <% form as_p addTransToMeaning %>
+                            </form>
+                        <% c++ } %>
+                    </li>
+                <% c++ } %>  
+            <% c++ } %>
+            </ul>
+
+        <% c++ } else { %>
+            this word does not exist
+        <% c++ } %>
+
+<% end template %>
+
+
+<% template add_trans_to_mean_link(int meaningId, int wordId) %>
+    <a href="<% url "/translations/add-to-meaning/" %><%  meaningId %>/<% wordId %>" >
+        add translation
+    </a>
+<% end template %>
+
+<% template remove_meaning_link(int meaningId) %>
+    <a href="<% url "/meanings/delete-by-id/{1}" using meaningId %>" >
+        <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
+    </a>
+<% end template %>
+
+<% template edit_meaning_link(int meaningId, int wordId) %>
+    <a href="<% url "/meanings/edit/" %><% meaningId %>/<% wordId %>" >
+        edit
+    </a>
+<% end template %>
+
+<% end view %>
+<% end skin %>
+

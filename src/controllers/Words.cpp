@@ -47,7 +47,12 @@ void Words::show(std::string str) {
     c.wordStr = str;
     whc.lang = c.lang;
     whc.fetcher = wordModel.get_words_with_str(str);
-    whc.packedTrans = wordModel.pack_translations(whc.fetcher); 
+    models::TranslationsMap packedTransWithoutMeaning;
+    whc.packedMeaningsTrans = wordModel.pack_translations(
+        whc.fetcher,
+        packedTransWithoutMeaning
+    ); 
+    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
 
     c.whc = whc;
     render ("words_show", c);
@@ -71,7 +76,12 @@ void Words::show_in(std::string wordStr, std::string wordLang) {
         wordModel.get_word_with_lang_str(wordLang, wordStr)
     );
     whc.fetcher = fetcher;
-    whc.packedTrans = wordModel.pack_translations(whc.fetcher); 
+    models::TranslationsMap packedTransWithoutMeaning;
+    whc.packedMeaningsTrans = wordModel.pack_translations(
+        whc.fetcher,
+        packedTransWithoutMeaning
+    ); 
+    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
 
     c.whc = whc;
     render ("words_show", c);

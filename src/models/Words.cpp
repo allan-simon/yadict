@@ -231,14 +231,17 @@ int  Words::get_translation_relation(TatoHyperItem *word) {
 /**
  *
  */
-TranslationsMap Words::pack_translations(
-    TatoHyperItemFetcher* fetcher
+MeaningsTranslationsMap Words::pack_translations(
+    TatoHyperItemFetcher* fetcher,
+    TranslationsMap & packedTransWithoutMeaning
 ) {
+    
+    MeaningsTranslationsMap meanTransMap;
     TranslationsMap packedTrans;
+
     if (fetcher->items[0] == NULL) {
-        return packedTrans; 
+        return meanTransMap; 
     }
-	
 
 	TatoHyperRelationsNode *it;
 	TATO_HYPER_RELATIONS_FOREACH(fetcher->items[0]->startofs, it) {
@@ -247,13 +250,36 @@ TranslationsMap Words::pack_translations(
             TATO_HYPER_ITEMS_FOREACH(it->relation->ends, it2) {
                 std::string lang(it2->item->lang->code); 
                 std::cout << "add " << it2->item->str << " in " << lang << std::endl;
-                packedTrans[lang].push_front(it2->item);
+                packedTrans[lang].insert(it2->item);
             }
             break;
         }
 
 	}
-    return packedTrans;
+    
+    packedTransWithoutMeaning = packedTrans;
+    
+    // now we fill the Meanings => TranslationsMap
+    
+	TATO_HYPER_RELATIONS_FOREACH(fetcher->items[0]->startofs, it) {
+        if (it->relation->type == SHDICT_MEANING_REL_FLAG ) {
+		    TatoHyperItemsNode *it2;
+            TranslationsMap tempTransMap; 
+            TATO_HYPER_ITEMS_FOREACH(it->relation->ends, it2) {
+
+                std::string lang(it2->item->lang->code); 
+                // if the item is linked to the word with a "translation" relation
+                if (packedTrans[lang].find(it2->item) != packedTrans[lang].end()) {
+                    tempTransMap[lang].insert(it2->item);
+                    packedTransWithoutMeaning[lang].erase(it2->item);
+                }
+            }
+            meanTransMap[it->relation] = tempTransMap;
+        }
+
+	}
+
+    return meanTransMap;
 
 }
 

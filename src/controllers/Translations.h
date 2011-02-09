@@ -24,6 +24,9 @@ class Translations : public Controller {
         void add_to_word(std::string origWordId);
         void add_to_word_treat();
 
+        void add_to_meaning(std::string meaningIdStr, std::string wordIdStr);
+        void add_to_meaning_treat();
+
         void remove(std::string transIdStr, std::string origIdStr);
 
         //

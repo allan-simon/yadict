@@ -2,7 +2,7 @@
 #define MODELS_WORDS_H
 
 #include "models/TatoHyperDB.h"
-#include <list>
+#include <set>
 #include <map>
 extern "C" {
 #include "tato/fetcher.h"
@@ -11,8 +11,9 @@ extern "C" {
 
 namespace models {
 
-typedef std::list<TatoHyperItem*> TatoHyperItemPList;
+typedef std::set<TatoHyperItem*> TatoHyperItemPList;
 typedef std::map<std::string, TatoHyperItemPList> TranslationsMap;
+typedef std::map<TatoHyperRelation* , TranslationsMap> MeaningsTranslationsMap;
 
 class Words {
     public:
@@ -75,8 +76,9 @@ class Words {
         int get_translation_relation(TatoHyperItem* word);
 
 
-        TranslationsMap pack_translations(
-            TatoHyperItemFetcher* fetcher
+        MeaningsTranslationsMap pack_translations(
+            TatoHyperItemFetcher* fetcher,
+            TranslationsMap & packedTransWithoutMeaning
         );
 
 };

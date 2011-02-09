@@ -17,10 +17,8 @@ Translations::Translations(cppcms::service &serv): Controller(serv) {
     d->assign("/add-to-word/(\\d+)", &Translations::add_to_word, this, 1);
     d->assign("/add-to-word-treat", &Translations::add_to_word_treat, this);
 
-    /*
-    d->assign("/add-to-meaning/(\\d+)", &Translations::add_to_meaing, this, 1);
+    d->assign("/add-to-meaning/(\\d+)/(\\d+)", &Translations::add_to_meaning, this, 1, 2);
     d->assign("/add-to-meaning-treat", &Translations::add_to_meaning_treat, this);
-    */
 
     d->assign("/remove/(\\d+)/from/(\\d+)", &Translations::remove, this, 1, 2);
     //d->assign("/remove/(\\d+)/from-meaning/(\\d+)", &Translations::remove, this, 1, 2);
@@ -36,13 +34,13 @@ void Translations::link(std::string origWordId, std::string transWordId) {
 	int transId = atoi(origWordId.c_str());
 
 
-    transModel.add_to(
+    transModel.add_one_way_link(
         transId,
         0,
         origId
     );
 
-    transModel.add_to(
+    transModel.add_one_way_link(
         origId,
         0,
         transId
@@ -65,7 +63,12 @@ void Translations::add_to_word(std::string origWordId) {
     whc.lang = c.lang;
     
     whc.fetcher = wordsModel.get_word_with_id(origId);
-    whc.packedTrans = wordsModel.pack_translations(whc.fetcher); 
+    models::TranslationsMap packedTransWithoutMeaning;
+    whc.packedMeaningsTrans = wordsModel.pack_translations(
+        whc.fetcher,
+        packedTransWithoutMeaning
+    ); 
+    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
 
     TatoHyperItem* word = whc.fetcher->items[0];
      // if no item with this id
@@ -100,56 +103,32 @@ void Translations::add_to_word_treat() {
     CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
     //TODO only use form
-    contents::TranslationsAdd c;
-    init_content(c);
+    forms::AddTranslation addTrans;
+    addTrans.load(context());
 
-    c.addTranslation.load(context());
-
-    models::Words wordsModel;
-    std::string redirectUrl = "/" + c.lang +"/words/show-all" ;
-
-    if (c.addTranslation.validate()) {
-        // TODO : handle if something wrong happen while saving
-        std::string transLang = c.addTranslation.wordLang.selected_id();
-        std::string transStr = c.addTranslation.wordString.value();
-        std::string strOrigWordId = c.addTranslation.origWordId.value();
-        int origWordId = atoi(strOrigWordId.c_str());
-        
-        TatoHyperItem *translation = wordsModel.add_word(
-            transLang,
-            transStr
-        );
-
-        // if we were not able to add the word
-        // we test if the word didn't exist before
-        // TODO with exception we should be able to avoid this
-        // by adding a field with the TatoHyperItem in the exception
-        // raised by addWord
-        if (translation == NULL) {
-           translation = wordsModel.get_word_with_lang_str(transLang, transStr); 
-        }
-
-        if (translation != NULL) {
-            transModel.add_to(
-                origWordId,
-                atoi(c.addTranslation.translationId.value().c_str()),
-                translation->id
-            );
-
-            transModel.add_to(
-                translation->id,
-                0,
-                origWordId
-            );
-        };
-
-        redirectUrl = "/" + c.lang +"/translations/add-to/" + strOrigWordId;
-
+    if (!addTrans.validate()) {
+        go_back_to_previous_page();
+        return;
     }
 
-    //TODO handle if the ID of original word send in headers 
-    //are not an id
-    response().set_redirect_header(redirectUrl);
+
+    // TODO : handle if something wrong happen while saving
+    std::string transLang = addTrans.wordLang.selected_id();
+    std::string transText = addTrans.wordString.value();
+    std::string strOrigWordId = addTrans.origWordId.value();
+    int origWordId = atoi(strOrigWordId.c_str());
+    int transRelId = atoi(addTrans.translationId.value().c_str());
+    
+    transModel.add_translation_to_word(
+            origWordId,
+            transRelId,
+            transText,
+            transLang
+    );
+
+    response().set_redirect_header(
+        "/" + get_interface_lang() +"/translations/add-to-word/" + strOrigWordId
+    );
 }
 
 /**
@@ -166,6 +145,121 @@ void Translations::remove(std::string transIdStr, std::string origIdStr) {
 
     go_back_to_previous_page();
 }
+
+
+/**
+ *
+ */
+void Translations::add_to_meaning(
+    std::string meaningIdStr,
+    std::string wordIdStr
+) {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
+
+	int wordId = atoi(wordIdStr.c_str());
+	int meaningId = atoi(meaningIdStr.c_str());
+
+    contents::TranslationsAddToMeaning c;
+    init_content(c);
+    c.meaningId = meaningId;
+    
+	contents::WordsHelper whc;
+    models::Words wordsModel;
+
+    whc.lang = c.lang;
+    whc.fetcher = wordsModel.get_word_with_id(wordId);
+    models::TranslationsMap packedTransWithoutMeaning;
+    whc.packedMeaningsTrans = wordsModel.pack_translations(
+        whc.fetcher,
+        packedTransWithoutMeaning
+    ); 
+    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
+
+    c.whc = whc;
+
+    TatoHyperItem* word = whc.fetcher->items[0];
+     // if no item with this id
+
+    if (word == NULL) {
+        response().set_redirect_header(
+            "/" + c.lang +"/words/show-all"
+        );
+        tato_hyper_item_fetcher_free(whc.fetcher);
+        return;
+    }
+
+    // fill the form
+    std::ostringstream oss;
+    oss << wordsModel.get_translation_relation(word);
+
+    c.addTransToMeaning.wordId.value(wordIdStr);
+    c.addTransToMeaning.meaningId.value(meaningIdStr);
+    
+    render("translations_add_to_meaning", c);   
+
+    tato_hyper_item_fetcher_free(whc.fetcher);
+}
+
+/**
+ *
+ */
+
+void Translations::add_to_meaning_treat() {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
+
+    //TODO only use form
+    forms::AddTransToMeaning addTransToMeaning;
+    addTransToMeaning.load(context());
+
+    if (!addTransToMeaning.validate()) {
+        go_back_to_previous_page();
+        return;
+    }
+
+
+    // TODO : handle if something wrong happen while saving
+    std::string transLang = addTransToMeaning.transLang.selected_id();
+    std::string transText = addTransToMeaning.transText.value();
+    std::string wordIdStr = addTransToMeaning.wordId.value();
+    std::string meaningIdStr = addTransToMeaning.meaningId.value();
+    int wordId = atoi(wordIdStr.c_str());
+    int meaningId = atoi(meaningIdStr.c_str());
+    
+    transModel.add_translation_to_meaning(
+        meaningId,
+        wordId,
+        transText,
+        transLang
+    );
+
+
+    response().set_redirect_header(
+        "/" + get_interface_lang() +
+        "/translations/add-to-meaning" +
+        "/" + meaningIdStr + "/" + wordIdStr
+    );
+}
+
+/**
+ *
+ */
+/*
+void Translations::remove_from_meaning(
+    std::string transIdStr,
+    std::string meaningIdStr
+) {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
+
+    int transId = atoi(transIdStr.c_str());
+    int origId = atoi(origIdStr.c_str());
+
+    transModel.remove(transId, origId);
+    transModel.remove(origId, transId);
+
+    go_back_to_previous_page();
+}
+*/
+
 
 }
 

@@ -17,9 +17,24 @@ namespace models {
 class Translations {
     public:
         Translations();
-        bool add_to(
+
+        bool add_translation_to_meaning(
+            int meaningId,
             int fromWordId,
-            int translationRelId,
+            std::string transText,
+            std::string transLang
+        );
+
+        TatoHyperItem* add_translation_to_word(
+            int fromWordId,
+            int transRelId,
+            std::string transText,
+            std::string transLang
+        );
+
+        bool add_one_way_link(
+            int fromWordId,
+            int transRelId,
             int toWordId
         );
 

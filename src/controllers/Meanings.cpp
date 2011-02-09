@@ -37,7 +37,13 @@ void Meanings::add_to_word(std::string origWordId) {
     whc.lang = c.lang;
     
     whc.fetcher = wordsModel.get_word_with_id(origId);
-    whc.packedTrans = wordsModel.pack_translations(whc.fetcher); 
+    models::TranslationsMap packedTransWithoutMeaning;
+    whc.packedMeaningsTrans = wordsModel.pack_translations(
+        whc.fetcher,
+        packedTransWithoutMeaning
+    ); 
+    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
+
 
     TatoHyperItem* word = whc.fetcher->items[0];
      // if no item with this id

@@ -16,7 +16,8 @@ namespace contents {
 
 struct WordsHelper : public Helpers {
     TatoHyperItemFetcher *fetcher ;
-    models::TranslationsMap packedTrans;
+    models::MeaningsTranslationsMap packedMeaningsTrans;
+    models::TranslationsMap packedTransWithoutMeaning;
 
     public:
         WordsHelper() {

@@ -15,8 +15,9 @@
 
     </div>
     <div class="module">
+        <h5>Add Translation</h5>
         <% c++ if(!content.whc.is_empty()) { %>
-            <form method="POST" action="<% url "/translations/add-to-treat" %>" >
+            <form method="POST" action="<% url "/translations/add-to-word-treat" %>" >
                 <% form as_p addTranslation %>
             </form>
         <% c++ } %>

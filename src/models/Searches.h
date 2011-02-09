@@ -2,7 +2,7 @@
 #define MODELS_SEARCHES_H
 
 #include <string>
-#include <list>
+#include <set>
 #include <map>
 
 extern "C" {
@@ -12,7 +12,7 @@ extern "C" {
 }
 namespace models {
 
-typedef std::list<TatoHyperItem*> TatoHyperItemPList;
+typedef std::set<TatoHyperItem* > TatoHyperItemPList;
 typedef std::map<std::string, TatoHyperItemPList> TranslationsMap;
 
 class Searches {

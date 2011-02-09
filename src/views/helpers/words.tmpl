@@ -6,6 +6,8 @@
 <%c++ #include "contents/helpers/words.h" %>
 <%c++ #include "contents/helpers/paginations.h" %>
 <%c++ #include "models/Relations.h" %>
+<%c++ #include "models/Words.h" %>
+<%c++ typedef char* char_p; %>
 <% skin %>
 <% view words_helper uses contents::WordsHelper %>
 
@@ -14,9 +16,6 @@
     <% template word_group() %>
         <div>
             <% include word_alone() %>
-        </div>
-        <div>
-            <% include word_meanings() %>
         </div>
         <div>
             <% include word_metas() %>
@@ -41,17 +40,36 @@
                 <li>
                     definition:
                     <% c++ out() << " " << tato_hyper_relation_meta_get(it->relation, "definition"); %>
-                    <a href="<% url "/meanings/edit/" %><% c++ out() << it->relation->id ;%>/<% c++ out() << item->id; %>" >
-                        edit
-                    </a>
+                    <% c++ int meaningId = it->relation->id; %>
+                    <% c++ int wordId = item->id; %>
+
+                    <% c++ add_trans_to_meaning_link(meaningId, wordId); %>
                     <% c++ out() << " " ; %>
-                    <a href="<% url "/meanings/delete-by-id/" %><% c++ out() << it->relation->id ;%>" >
-                        <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
-                    </a>
+                    <% c++ edit_meaning_link(meaningId, wordId); %>
+                    <% c++ out() << " " ; %>
+                    <% c++ delete_meaning_link(meaningId); %>
                 </li>
             <% c++ } %>  
         <% c++ } %>
         </ul>
+    <% end template %>
+
+    <% template add_trans_to_meaning_link(int meaningId, int wordId) %>
+        <a href="<% url "/translations/add-to-meaning/{1}/{2}" using meaningId, wordId %>" >
+            add translation
+        </a>
+    <% end template %>
+
+    <% template edit_meaning_link(int meaningId, int wordId) %>
+        <a href="<% url "/meanings/edit/{1}/{2}" using meaningId, wordId %>" >
+            edit
+        </a>
+    <% end template %>
+
+    <% template delete_meaning_link(int meaningId) %>
+        <a href="<% url "/meanings/delete-by-id/{1}" using meaningId %>" >
+            <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
+        </a>
     <% end template %>
 
 
@@ -62,18 +80,18 @@
         <ul>
 	    <% c++ TATO_KVLIST_FOREACH(item->metas, it) { %>
             <li>
-                <% c++ out() << it->key << " " ;%>
+                <% c++ std::string key(it->key); %>
+                <% c++ std::string value(it->value); %>
+                <% c++ int wordId = item->id; %>
+                
+                <% c++ out() << key << " " ;%>
                 :
-                <% c++ out() << " " << it->value; %>
+                <% c++ out() << " " << value; %>
                 
                 <% c++ out() << " " ; %>
-                <a href="<% url "/metas/edit/" %><% c++ out() << item->id; %>/<% c++ out() << it->key;%>" >
-                    edit
-                </a>
                 <% c++ out() << " " ; %>
-                <a href="<% url "/metas/remove-from/" %><% c++ out() << item->id; %>/<% c++ out() << it->key;%>" >
-                    <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
-                </a>
+                <% c++ edit_meta_link(wordId, key); %>
+                <% c++ remove_meta_link(wordId, key); %>
             </li>
         <% c++ } %>
         <% c++ if (item->metas == NULL) { %>
@@ -82,36 +100,92 @@
         </ul>
     <% end template %>
 
+    <% template edit_meta_link(int wordId, std::string key) %>
+        <a href="<% url "/metas/edit/{1}/{2}" using wordId, key %>" >
+            edit
+        </a>
+    <% end template %>
+
+    <% template remove_meta_link(int wordId, std::string key) %>
+        <a href="<% url "/metas/remove-from/{1}/{2}" using wordId, key %>" >
+            <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
+        </a>
+    <% end template %>
 
 
 
     <% template word_all_translations() %>
-        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
-        <h4>Translations</h4>
-        <% foreach language in packedTrans %>
+        <% c++ TatoHyperItem *item = content.fetcher->items[0]; %>
+        <h4>Definitions</h4>
+        <% foreach meaning in packedMeaningsTrans %> 
+            <ol>
+            <% item %>
+                <li>
+                    <% c++ out() << " " << %>
+                    <% c++     tato_hyper_relation_meta_get( %>
+                    <% c++         meaning.first, %>
+                    <% c++         "definition" %>
+                    <% c++     ); %>
+                    <% c++ int meaningId = meaning.first->id; %>
+                    <% c++ remove_meaning_link(meaningId); %>
+                    <br /> 
+                    <h5>Translations</h5>
+                    <% c++ translations_pack(meaning.second, item->id, mean); %>
+                    <% c++ add_trans_to_meaning_link(meaningId, item->id); %>
+                </li>
+            <% end %>
+            </ol>
+            <% empty %>
+            No Definition yet
+        <% end %><!-- end foreach meaning -->
+
+        <h4>Other Translations</h4>
+        <% c++ translations_pack(content.packedTransWithoutMeaning, item->id, 0); %>
+    <% end template %>
+
+    <% template add_trans_to_mean_link(int meaningId, int wordId) %>
+        <a href="<% url "/translations/add-to-meaning/" %><%  meaningId %>/<% wordId %>" >
+            add translation
+        </a>
+    <% end template %>
+
+    <% template remove_meaning_link(int meaningId) %>
+        <a href="<% url "/meanings/delete-by-id/{1}" using meaningId %>" >
+            <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
+        </a>
+    <% end template %>
+
+
+    <% template translations_pack(models::TranslationsMap transMap, int wordId, int meaningId) %>
+        <% foreach language in transMap %>
             <% item %>
                 <div>
-                    <h5><% language.first %></h5>
+                    <h6><% language.first %></h6>
                     <% foreach translation in language.second %>
                         <ul>
                         <% item %>
                             <li>
-                                <a href="<% url "/words/show/{1}" using translation->str %>" >
-                                    <% translation->str %>
-                                </a>
+                                <% c++ show_trans_link( %>
+                                <% c++     translation->str, %>
+                                <% c++     translation->lang->code %>
+                                <% c++ ); %>
+                                
                                 <% c++ out() << " " ; %>
-                                <a href="<% url "/translations/remove/{1}/from/" using translation->id %><% c++ out() << item->id ;%>">
-                                    <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
-                                </a>
+
+                                <% c++ remove_translation_from_word_link( %>
+                                <% c++     translation->id, %>
+                                <% c++     wordId %>
+                                <% c++ ) ;%>
                             </li>
                         <% end %>
                         </ul>
-                    <% end %>  
+                    <% end %><!-- end foreach translation --> 
                 </div>
             <% end %>
-        <% empty %>
-            No translations yet
-        <% end%>
+            <% empty %>
+            No translation yet
+        <% end %> <!-- end foreach language -->
+
 
     <% end template %>
 
@@ -137,29 +211,61 @@
             <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>
             <% c++ std::string wordLang = std::string(content.fetcher->items[i]->lang->code) ; %>
             <div>
-                <img src="http://sysko.fr/img/<% c++ out() << content.fetcher->items[i]->lang->code ;%>.png" /> 
+                <% c++ flag_img(wordLang); %>
                 <span><% c++ out() << str ;%></span>
-                <!--
-                    TODO once we will have a singleton class to store lang etc, need to
-                    put again url tag
-                -->
-                <a href="<% url "/words/show-in/" %><% c++ out() << str; %>/<% c++ out() << wordLang; %>">show</a>
-                <a href="<% url "/words/edit/" %><% c++ out() << id; %>">edit</a>
-                <a href="<% url "/words/delete-by-id/" %><% c++ out() << id; %>">
-                    <img src="http://sysko.fr/img/icons/remove.png" alt="delete" />
-                </a>
+                <% c++ show_word_link(str, wordLang); %>
+                <% c++ edit_word_link(id); %>
+                <% c++ delete_word_link(id); %>
             </div>
         <% c++ } %>
     <% end template %>
 
+
+    <% template flag_img(std::string wordLang) %>
+        <img src="http://sysko.fr/img/<% wordLang %>.png" /> 
+    <% end template %>
+
+    <% template show_trans_link(char_p str, char_p lang) %>
+        <a href="<% url "/words/show-in/{1}/{2}" using str, lang %>" >
+            <% str %>
+        </a>
+    <% end template %>
+
+    <% template remove_translation_from_word_link(int transId, int wordId) %>
+        <a href="<% url "/translations/remove/{1}/from/{2}" using transId, wordId %>" >
+            <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
+        </a>
+    <% end template %>
+
+
+
+    <% template show_word_link(std::string wordText, std::string wordLang ) %>
+        <a href="<% url "/words/show-in/{1}/{2}" using wordText, wordLang %>">
+            show
+        </a>
+    <% end template %>
+
+    <% template edit_word_link(int wordId) %>
+        <a href="<% url "/words/edit/{1}" using wordId %>">edit</a>
+    <% end template %>
+
+    <% template delete_word_link(int wordId) %>
+        <a href="<% url "/words/delete-by-id/{1}" using wordId %>">
+            <img src="http://sysko.fr/img/icons/remove.png" alt="delete" />
+        </a>
+    <% end template %>
+
+
+
     <% template translate_word_link() %>
         <% if not is_empty() %>
             <% c++ int id = content.fetcher->items[0]->id ;%>
-            <a href="<% url "/translations/add-to/" %><% c++ out() << id ;%>" >
+            <a href="<% url "/translations/add-to-word/" %><% c++ out() << id ;%>" >
                 translate
             </a> 
         <% end %>
     <% end template %>
+
 
     <% template add_meta_link() %>
         <% if not is_empty() %>
