@@ -130,7 +130,7 @@
                     <% c++ remove_meaning_link(meaningId); %>
                     <br /> 
                     <h5>Translations</h5>
-                    <% c++ translations_pack(meaning.second, item->id, mean); %>
+                    <% c++ translations_pack(meaning.second, item->id, meaningId); %>
                     <% c++ add_trans_to_meaning_link(meaningId, item->id); %>
                 </li>
             <% end %>
