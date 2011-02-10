@@ -26,6 +26,7 @@
 <% end template %>
 
 <% template top_menu() %>
+    <img src="http://sysko.fr/img/logo.png" alt="logo" />
     <ul id="topmenulist" >
         <li class="menuitem">
             <a href="<%url "" %>">Home</a>
@@ -57,15 +58,19 @@
         <% include top_menu() %>
     </div>
     <div id="mainblock">
-		<div id="header">
-            <% include search_bar() %>
-		</div>
-		<div id="container">
-            <% include body() %>
-		</div>
-		<div id="footer">
-            <% include footer() %>
-		</div>
+        <img src="http://sysko.fr/img/top.png" alt="top" />
+        <div id="middle">
+            <div id="header">
+                <% include search_bar() %>
+            </div>
+            <div id="container">
+                <% include body() %>
+            </div>
+            <div id="footer">
+                <% include footer() %>
+            </div>
+        </div>
+        <img src="http://sysko.fr/img/bottom.png" alt="top" />
 	</div>
 </body>
 </html>
