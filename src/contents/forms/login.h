@@ -2,16 +2,21 @@
 #define YADICT_USERS_LOGIN_FORM_H
 
 #include <cppcms/form.h>
+using namespace cppcms;
 
 namespace forms {
 
 	struct LoginUser : public cppcms::form {
-		cppcms::widgets::text username;
-		cppcms::widgets::password password;
-		cppcms::widgets::checkbox rememberMe;
-		cppcms::widgets::submit submit;
+        widgets::hidden previousUrl;
+		widgets::text username;
+		widgets::password password;
+		widgets::checkbox rememberMe;
+		widgets::submit submit;
 		
 		LoginUser() {
+            previousUrl.name("previousurl");
+            previousUrl.value("");
+
 			username.name("username");
 			username.message("Username : ");
 			username.attributes_string("class=\"input text\"");
@@ -22,10 +27,12 @@ namespace forms {
 			rememberMe.name("rememberMe");
 			rememberMe.message("Remember Me");
 
+            
+
 			submit.name("submit");
 			submit.value("Log in");
 
-			*this + username + password + rememberMe + submit;
+			*this + previousUrl + username + password + rememberMe + submit;
 
 			username.non_empty();
 			password.non_empty();

@@ -53,33 +53,38 @@ void Users::register_new_treat() {
         }
     }
     
-    response().set_redirect_header(
-        request().http_referer()
-    );
+    go_back_to_previous_page();
 }
 
 
 void Users::login() {
     contents::UsersLogin c;
     init_content(c);
+    c.loginUser.previousUrl.value(
+        request().http_referer()
+    );
 
     render("users_login", c);
 }
 
 void Users::login_treat() {
 
-    contents::UsersLogin c;
-    c.loginUser.load(context());
+    forms::LoginUser loginUser;
+    loginUser.load(context());
 
     if (
+        // TODO move that in the validate function of the form
         userModel.is_login_correct(
-            c.loginUser.username.value(),
-            c.loginUser.password.value()
+            loginUser.username.value(),
+            loginUser.password.value()
         )
     ) {
-        session()["name"] = c.loginUser.username.value();
+        session()["name"] = loginUser.username.value();
         session().save();
-        response().set_redirect_header("/" + c.lang);
+
+        response().set_redirect_header(
+            loginUser.previousUrl.value()
+        );
 
     } else {
         response().set_redirect_header(
