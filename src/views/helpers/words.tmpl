@@ -133,6 +133,7 @@
                     <% c++ translations_pack(meaning.second, item->id, meaningId); %>
                     <% c++ add_trans_to_meaning_link(meaningId, item->id); %>
                 </li>
+                <br />
             <% end %>
             </ol>
             <% empty %>
@@ -160,6 +161,9 @@
         <% foreach language in transMap %>
             <% item %>
                 <div>
+                    <% if (language.second.empty()) %>
+                        <% c++ continue; %>
+                    <% end %>
                     <h6><% language.first %></h6>
                     <% foreach translation in language.second %>
                         <ul>
@@ -172,10 +176,21 @@
                                 
                                 <% c++ out() << " " ; %>
 
-                                <% c++ remove_translation_from_word_link( %>
-                                <% c++     translation->id, %>
-                                <% c++     wordId %>
-                                <% c++ ) ;%>
+                                <% if (meaningId == 0) %>
+
+                                    <% c++ remove_translation_from_word_link( %>
+                                    <% c++     translation->id, %>
+                                    <% c++     wordId %>
+                                    <% c++ ) ;%>
+
+                                <% else %>
+
+                                    <% c++ remove_translation_from_meaning_link( %>
+                                    <% c++     translation->id, %>
+                                    <% c++     meaningId %>
+                                    <% c++ ) ;%>
+
+                                <% end %>
                             </li>
                         <% end %>
                         </ul>
@@ -237,6 +252,11 @@
         </a>
     <% end template %>
 
+    <% template remove_translation_from_meaning_link(int transId, int meaningId) %>
+        <a href="<% url "/translations/remove/{1}/from-meaning/{2}" using transId, meaningId %>" >
+            <img src="http://sysko.fr/img/icons/remove.png" alt="remove" />
+        </a>
+    <% end template %>
 
 
     <% template show_word_link(std::string wordText, std::string wordLang ) %>
@@ -254,6 +274,22 @@
             <img src="http://sysko.fr/img/icons/remove.png" alt="delete" />
         </a>
     <% end template %>
+
+
+    <% template back_to_word_link() %>
+        <% if not is_empty() %>
+            <% c++ std::string wordText(content.fetcher->items[0]->str); %>
+            <% c++ std::string wordLang(content.fetcher->items[0]->lang->code); %>
+            <% c++ back_to_word_link(wordText, wordLang); %>
+        <% end %>
+    <% end template %>
+
+    <% template back_to_word_link(std::string wordText, std::string wordLang) %>
+        <a href="<% url "/words/show-in/{1}/{2}" using wordText, wordLang %>" >
+            back to word
+        </a> 
+    <% end template %>
+
 
 
 
@@ -275,6 +311,8 @@
             </a> 
         <% end %>
     <% end template %>
+
+
 
 
     <% template add_meaning_link() %>

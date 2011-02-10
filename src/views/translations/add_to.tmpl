@@ -6,8 +6,8 @@
 <% template main_content() %>
     <div class="module">
         <h3>Add Translation</h3> 
+        <% c++ words_helper wh(out(), content.whc); %>
         <% c++ if(!content.whc.is_empty()) { %>
-            <% c++ words_helper wh(out(), content.whc); %>
             <% c++ wh.word_group() ;%> 
         <% c++ } else { %>
             this word does not exist
@@ -15,7 +15,7 @@
 
     </div>
     <div class="module">
-        <h5>Add Translation</h5>
+        <h3>Add Translation</h3>
         <% c++ if(!content.whc.is_empty()) { %>
             <form method="POST" action="<% url "/translations/add-to-word-treat" %>" >
                 <% form as_p addTranslation %>
@@ -24,6 +24,7 @@
     </div>
     <div class="module">
         <h3>Some links</h3>
+        <% c++ wh.back_to_word_link(); %>
         <a href="<% url "/words/show-random"%>" >browse random</a>
         <a href="<% url "" %>" >back to homepage</a>
     </div>

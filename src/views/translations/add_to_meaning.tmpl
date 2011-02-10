@@ -8,41 +8,38 @@
         <h3>Add Translation</h3> 
         <% c++ if(!content.whc.is_empty()) { %>
             <% c++ words_helper wh(out(), content.whc); %>
-            <% c++ wh.word_alone() ;%> 
-
-            <% c++ TatoHyperItem *item = content.whc.fetcher->items[0] ;%>
-            <% c++ TatoHyperRelationsNode *it; %>
-            <ul>
-            <% c++ TATO_HYPER_RELATIONS_FOREACH(item->startofs, it) { %>
-                <% c++ if (it->relation->type == SHDICT_MEANING_REL_FLAG) { %>
-                    <% c++ int meaningId = it->relation->id; %>
-                    <% c++ int wordId = item->id; %>
-
-                    <li>
-                        definition:
-                        <% c++ out() << " " << tato_hyper_relation_meta_get(it->relation, "definition"); %>
-                        <% c++ out() << " " ; %>
-                        <% c++ add_trans_to_mean_link(meaningId, wordId); %>
-                        <% c++ out() << " " ; %>
-                        <% c++ edit_meaning_link(meaningId, wordId); %>
-                        <% c++ out() << " " ; %>
-                        <% c++ remove_meaning_link(meaningId); %>
-
-                        <% c++ if (it->relation->id == content.meaningId) { %>
-                            <h5>Add Translation</h5>
-                            <form method="POST" action="<% url "/translations/add-to-meaning-treat" %>" >
-                                <% form as_p addTransToMeaning %>
-                            </form>
-                        <% c++ } %>
-                    </li>
-                <% c++ } %>  
-            <% c++ } %>
-            </ul>
-
+            <% c++ wh.word_group() ;%> 
         <% c++ } else { %>
             this word does not exist
         <% c++ } %>
+        <% c++ TatoHyperItem *item = content.whc.fetcher->items[0] ;%>
+        <% c++ TatoHyperRelationsNode *it; %>
+        <% c++ int meaningPosition = 0; %>
+        <% c++ TATO_HYPER_RELATIONS_FOREACH(item->startofs, it) { %>
+            <% c++ if (it->relation->type == SHDICT_MEANING_REL_FLAG) { %>
+                <% c++ meaningPosition++; %>
+                    <% c++ if (it->relation->id == content.meaningId) { %>
+                        <% c++ break; %>
+                    <% c++ } %>
+            <% c++ } %>  
+        <% c++ } %>
+    </div>
+    <div class="module">
+        <h3>Add Translation to meaning number <% c++ out() << meaningPosition; %></h3>
+        <form method="POST" action="<% url "/translations/add-to-meaning-treat" %>" >
+            <% form as_p addTransToMeaning %>
+        </form>
+    </div>
+<% end template %>
 
+<% template annexe_content() %>
+    <div class="module" >
+        <% c++ if(!content.whc.is_empty()) { %>
+            <% c++ words_helper wh(out(), content.whc); %>
+            <h3>Some links</h3>
+            <% c++ wh.back_to_word_link(); %>
+        <% c++ } %>
+    </div>
 <% end template %>
 
 

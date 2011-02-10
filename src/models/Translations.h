@@ -42,6 +42,11 @@ class Translations {
             int transId,
             int origId
         );
+
+        bool remove_from_meaning(
+            int transId,
+            int meaningId
+        );
 };
 
 }

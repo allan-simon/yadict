@@ -162,4 +162,28 @@ bool Translations::remove(int transId, int origId) {
 	}
     return false;
 }
+
+/**
+ *
+ */
+bool Translations::remove_from_meaning(int transId, int meaningId) {
+    TatoHyperDb *tatoHyperDb = GET_DB_POINTER(); 
+    TatoHyperRelation* relation = tato_hyper_db_relation_find(
+        tatoHyperDb,
+        meaningId
+    );
+
+    if (relation->type == SHDICT_MEANING_REL_FLAG) {
+        tato_hyper_db_relation_remove_end(
+            tatoHyperDb,
+            meaningId,
+            transId
+        );
+    } else {
+        return false;
+    }
+    
+    return true;
+}
+
 }

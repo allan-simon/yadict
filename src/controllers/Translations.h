@@ -28,6 +28,10 @@ class Translations : public Controller {
         void add_to_meaning_treat();
 
         void remove(std::string transIdStr, std::string origIdStr);
+        void remove_from_meaning(
+            std::string transIdStr,
+            std::string meaningIdStr
+        );
 
         //
         void link(std::string origWordId, std::string transWordId);

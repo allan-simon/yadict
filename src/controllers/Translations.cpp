@@ -21,7 +21,7 @@ Translations::Translations(cppcms::service &serv): Controller(serv) {
     d->assign("/add-to-meaning-treat", &Translations::add_to_meaning_treat, this);
 
     d->assign("/remove/(\\d+)/from/(\\d+)", &Translations::remove, this, 1, 2);
-    //d->assign("/remove/(\\d+)/from-meaning/(\\d+)", &Translations::remove, this, 1, 2);
+    d->assign("/remove/(\\d+)/from-meaning/(\\d+)", &Translations::remove_from_meaning, this, 1, 2);
 
     // only for ""API""
     d->assign("/link/(\\d+)/and/(\\d+)", &Translations::link, this, 1, 2);
@@ -243,7 +243,7 @@ void Translations::add_to_meaning_treat() {
 /**
  *
  */
-/*
+
 void Translations::remove_from_meaning(
     std::string transIdStr,
     std::string meaningIdStr
@@ -251,14 +251,13 @@ void Translations::remove_from_meaning(
     CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
     int transId = atoi(transIdStr.c_str());
-    int origId = atoi(origIdStr.c_str());
+    int meaningId = atoi(meaningIdStr.c_str());
 
-    transModel.remove(transId, origId);
-    transModel.remove(origId, transId);
+    transModel.remove_from_meaning(transId, meaningId);
 
     go_back_to_previous_page();
 }
-*/
+
 
 
 }
