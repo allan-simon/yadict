@@ -16,7 +16,7 @@ Users::Users(cppdb::session sqliteDb) : SqliteModel(sqliteDb) {
     // TODO ADD check for the username 
     check_passwd_state = sqliteDb.create_prepared_statement(
         "SELECT 1 FROM users "
-        "WHERE username = ? AND password = ?"
+        "WHERE username = ? AND password = ? LIMIT 1"
     );
     add_user_state = sqliteDb.create_prepared_statement(
         "INSERT INTO users(username, password, email)"
@@ -25,7 +25,12 @@ Users::Users(cppdb::session sqliteDb) : SqliteModel(sqliteDb) {
     get_all_users_state = sqliteDb.create_prepared_statement(
         "SELECT * FROM users"
     );
+
+    getIdFromName = sqliteDb.create_prepared_statement(
+        "SELECT id FROM users WHERE username = ? LIMIT 1"
+    );
 }
+
 
 /**
  *

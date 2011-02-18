@@ -1,0 +1,34 @@
+<% skin %>
+<% view logs_show_last_metas uses contents::LogsShowLastMetas extends master %>
+<% template title() %><% gt "Show last actions on metas" %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <h3>Last actions on metas</h3> 
+        <% foreach metaLog in metasLogs %>
+        <table> 
+            <% item %>
+                <tr>
+                    <td><img src="http://sysko.fr/img/<% metaLog.wordLang %>.png" alt="language flag" /></td>
+                    <td><% metaLog.wordId %></td>
+                    <td><% metaLog.userId %></td>
+                    <td><% metaLog.key %></td>
+                    <td><% metaLog.value %></td>
+                </tr>
+            <% end %>
+        </table>
+        <% end %>
+
+    </div>
+<% end %>
+
+
+<% template annexe_content() %>
+
+<% end %>
+
+<% end view %>
+<% end skin %>
+
+
+

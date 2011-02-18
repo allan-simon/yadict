@@ -21,7 +21,8 @@ Shanghainesedict::Shanghainesedict(cppcms::service &serv) :
     sc(serv),
     mc(serv),
 	uc(serv),
-    meanings(serv)
+    meanings(serv),
+    logs(serv)
 {
 
 	add(wc,"^/words(.*)",1);
@@ -30,6 +31,7 @@ Shanghainesedict::Shanghainesedict(cppcms::service &serv) :
     add(mc,"^/metas(.*)",1);
     add(uc,"^/users(.*)",1);
     add(meanings,"^/meanings(.*)",1);
+    add(logs,"^/logs(.*)",1);
     //NOTE important to add the page controller at the end
     //as its regexp is more global
 	add(pc,"(.*)",1);

@@ -33,9 +33,11 @@ class Users : public SqliteModel {
         cppdb::statement check_passwd_state; 
         cppdb::statement add_user_state;
         cppdb::statement get_all_users_state;
+        cppdb::statement getIdFromName;
 
     public:
         Users(cppdb::session sqliteDb);
+        template <class T> T get_id_from_name(std::string username);
 
         bool is_login_correct(
             std::string login,
@@ -49,6 +51,24 @@ class Users : public SqliteModel {
         );
         std::vector<UserResult> get_all_users();
 };
+
+/**
+ *
+ */
+template <class T> T Users::get_id_from_name(std::string username) {
+    getIdFromName.bind(username);
+    cppdb::result res = getIdFromName.row();
+
+    T userId;
+    res.fetch(0, userId);
+    
+    getIdFromName.reset();
+    std::cout << "[NOTICE] id :" << userId << std::endl;
+    return userId;
+
+}
+
+
 
 }
 

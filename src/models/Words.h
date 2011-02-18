@@ -8,6 +8,7 @@ extern "C" {
 #include "tato/fetcher.h"
 #include "tato/hyperitem.h"
 }
+#include "models/Logs.h"
 
 namespace models {
 
@@ -16,6 +17,9 @@ typedef std::map<std::string, TatoHyperItemPList> TranslationsMap;
 typedef std::map<TatoHyperRelation* , TranslationsMap> MeaningsTranslationsMap;
 
 class Words {
+    private:
+        Logs logs;
+
     public:
         Words();
         TatoHyperItemFetcher* get_word_with_id(int id);
@@ -48,12 +52,14 @@ class Words {
         //display the newly added word
         TatoHyperItem* add_word(
             std::string lang,
-            std::string str
+            std::string str,
+            int userId
         );
         TatoHyperItem* add_word(
             std::string lang,
             std::string str,
-            TatoHyperItemFlags flags
+            TatoHyperItemFlags flags,
+            int userId
         );
 
         //TODO maybe replace bool by an fetcher if we want to
@@ -61,17 +67,19 @@ class Words {
         bool edit_word(
             int id,
             std::string lang,
-            std::string str
+            std::string str,
+            int userId
         );
         bool edit_word(
             int id,
             std::string lang,
             std::string str,
-            TatoHyperItemFlags flags
+            TatoHyperItemFlags flags,
+            int userId
         );
 
         //
-        bool delete_word(int id);
+        bool delete_word(int id, int userId);
 
         int get_translation_relation(TatoHyperItem* word);
 

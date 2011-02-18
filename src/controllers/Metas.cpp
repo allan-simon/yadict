@@ -73,7 +73,8 @@ void Metas::add_treat() {
     metasModel.add_meta(
         atoi(wordId.c_str()),
         addMeta.key.value(),
-        addMeta.value.value()
+        addMeta.value.value(),
+        get_current_user_id()
     );
 
     response().set_redirect_header(
@@ -135,7 +136,8 @@ void Metas::edit_treat() {
         metasModel.edit_meta(
             atoi(wordId.c_str()),
             c.editMeta.key.value(),
-            c.editMeta.value.value()
+            c.editMeta.value.value(),
+            get_current_user_id()
         );
 
         response().set_redirect_header(
@@ -162,7 +164,8 @@ void Metas::remove_from(std::string wordId, std::string key) {
     //TODO handle return value    
     metasModel.remove_meta(
         atoi(wordId.c_str()),
-        key     
+        key,
+        get_current_user_id()
     );
 
     response().set_redirect_header(

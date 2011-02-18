@@ -72,14 +72,18 @@ void Users::login_treat() {
     forms::LoginUser loginUser;
     loginUser.load(context());
 
+    std::string username = loginUser.username.value();
+
     if (
         // TODO move that in the validate function of the form
+
         userModel.is_login_correct(
-            loginUser.username.value(),
+            username,
             loginUser.password.value()
         )
     ) {
-        session()["name"] = loginUser.username.value();
+        session()["name"] = username;
+        session()["userId"] = userModel.get_id_from_name<std::string>(username);
         session().save();
 
         response().set_redirect_header(

@@ -14,6 +14,7 @@
 #include "controllers/Searches.h"
 #include "controllers/Metas.h"
 #include "controllers/Users.h"
+#include "controllers/Logs.h"
 
 
 
@@ -34,6 +35,7 @@ private:
 	controllers::Searches sc;
 	controllers::Metas mc;
     controllers::Users uc;
+    controllers::Logs logs;
     std::map<std::string,std::string> lang_map;
 
 public:

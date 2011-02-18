@@ -24,6 +24,7 @@ class Controller : public cppcms::application {
         bool check_permission();
         void go_back_to_previous_page();
         std::string get_interface_lang();
+        int get_current_user_id();
 	public:
 		Controller(cppcms::service &serv);
 };

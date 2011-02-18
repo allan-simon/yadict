@@ -13,9 +13,10 @@ namespace forms {
 		LangsFilter() {
             *this +  langFilter + submit;
 
-            LangMap langMap = Languages::get_instance()->get_map();
-            LangMap::iterator itr;
-            for(itr = langMap.begin(); itr != langMap.end(); ++itr){
+            //TODO factorize it is also share with several other forms (such as search)
+            ISOToNameMap isoToName = Languages::get_instance()->get_iso_to_name_map();
+            ISOToNameMap::iterator itr;
+            for(itr = isoToName.begin(); itr != isoToName.end(); ++itr){
                 langFilter.add(itr->second,itr->first);
             }
 

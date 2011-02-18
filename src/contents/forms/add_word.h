@@ -19,9 +19,9 @@ namespace forms {
 
             wordString.name("str");
 
-            LangMap langMap = Languages::get_instance()->get_map();
-            LangMap::iterator itr;
-            for(itr = langMap.begin(); itr != langMap.end(); ++itr){
+            ISOToNameMap isoToName = Languages::get_instance()->get_iso_to_name_map();
+            ISOToNameMap::iterator itr;
+            for(itr = isoToName.begin(); itr != isoToName.end(); ++itr){
                 wordLang.add(itr->second,itr->first);
             }
 

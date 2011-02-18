@@ -211,7 +211,8 @@ void Words::add_treat() {
         // TODO : handle if something wrong happen while saving
         TatoHyperItem* item = wordModel.add_word(
             c.addWord.wordLang.selected_id(),
-            c.addWord.wordString.value()
+            c.addWord.wordString.value(),
+            get_current_user_id()
         );
         if (item == NULL) {
             
@@ -287,7 +288,8 @@ void Words::edit_treat() {
     wordModel.edit_word(
         atoi(editWord.wordId.value().c_str()), 
         editWord.wordLang.selected_id(),
-        editWord.wordString.value()
+        editWord.wordString.value(),
+        get_current_user_id()
     );
 
 
@@ -304,7 +306,10 @@ void Words::delete_by_id(std::string wordId) {
     
     //TODO test before if we really have an integer inside the string
     //TODO handle return value    
-    wordModel.delete_word(atoi(wordId.c_str()));
+    wordModel.delete_word(
+        atoi(wordId.c_str()),
+        get_current_user_id()
+    );
 
     go_back_to_previous_page();
 }

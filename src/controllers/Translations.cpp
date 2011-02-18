@@ -123,7 +123,8 @@ void Translations::add_to_word_treat() {
             origWordId,
             transRelId,
             transText,
-            transLang
+            transLang,
+            get_current_user_id()
     );
 
     response().set_redirect_header(
@@ -140,8 +141,11 @@ void Translations::remove(std::string transIdStr, std::string origIdStr) {
     int transId = atoi(transIdStr.c_str());
     int origId = atoi(origIdStr.c_str());
 
-    transModel.remove(transId, origId);
-    transModel.remove(origId, transId);
+    transModel.remove_from_words(
+        transId,
+        origId,
+        get_current_user_id()
+    );
 
     go_back_to_previous_page();
 }
@@ -229,7 +233,8 @@ void Translations::add_to_meaning_treat() {
         meaningId,
         wordId,
         transText,
-        transLang
+        transLang,
+        get_current_user_id()
     );
 
 

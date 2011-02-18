@@ -10,11 +10,16 @@ extern "C" {
 #include "tato/hyperrelation.h"
 #include "tato/hyperrelations.h"
 }
+#include "models/Logs.h"
 
+#include <vector>
+typedef std::vector<int> TransVector;
 
 namespace models {
 
 class Translations {
+    private:
+        Logs logs;
     public:
         Translations();
 
@@ -22,14 +27,16 @@ class Translations {
             int meaningId,
             int fromWordId,
             std::string transText,
-            std::string transLang
+            std::string transLang,
+            int userId
         );
 
         TatoHyperItem* add_translation_to_word(
             int fromWordId,
             int transRelId,
             std::string transText,
-            std::string transLang
+            std::string transLang,
+            int userId
         );
 
         bool add_one_way_link(
@@ -38,7 +45,13 @@ class Translations {
             int toWordId
         );
 
-        bool remove(
+        bool remove_from_words(
+            int wordId1,
+            int wordId2,
+            int userId
+        );
+
+        bool remove_one_way(
             int transId,
             int origId
         );
@@ -47,6 +60,8 @@ class Translations {
             int transId,
             int meaningId
         );
+
+        TransVector get_all_trans_id(int wordId);
 };
 
 }

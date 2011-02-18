@@ -12,7 +12,7 @@ Controller::Controller(cppcms::service &serv) : cppcms::application(serv) {
 void Controller::init_content(contents::BaseContent& content) {
     
     response().content_encoding("UTF-8");
-    response().set_content_header("text/html; charset=utf-8");
+    response().set_content_header("text/html; charset=UTF-8");
 
     content.lang = get_interface_lang();
     std::cout << "user name: " << session()["name"] << std::endl;
@@ -33,7 +33,6 @@ std::string Controller::get_interface_lang() {
 
         return "eng";
     }
-
 }
 
 inline bool Controller::is_logged() {
@@ -57,6 +56,10 @@ bool Controller::check_permission() {
     return true;
 }
 
+int Controller::get_current_user_id() {
+    std::cout << "[NOTICE] current id:" << session()["userId"] << std::endl;
+    return atoi(session()["userId"].c_str());
+}
 
 
 } // End namespace

@@ -8,6 +8,7 @@
 
 #include "models/TatoHyperDB.h"
 #include "generics/Languages.h"
+#include "generics/ActionId.h"
 #include "contents/Config.h"
 
 using namespace std;
@@ -25,6 +26,7 @@ int main(int argc,char ** argv)
         string dictPath = app.settings().get<string>("shanghainesedict.dictxml");
         TatoHyperDB::get_instance(dictPath);
         Languages::get_instance();
+        singletons::ActionId::get_instance();
         Config *conf = Config::get_instance();
 
 	    conf->cssPath = app.settings().get<string>("shanghainesedict.css");
@@ -46,6 +48,11 @@ int main(int argc,char ** argv)
         //
         cout << "[NOTICE] going to dump the database" << endl;
         TatoHyperDB::get_instance("")->dump("dump.xml");
+        cout << "[NOTICE] save into sql" << endl;
+        singletons::ActionId::kill();
+        TatoHyperDB::kill();
+        Config::kill();
+        Languages::kill();
 
     } catch(std::exception const &e) {
         cerr<<e.what()<<endl;
