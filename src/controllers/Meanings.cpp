@@ -16,7 +16,7 @@ Meanings::Meanings(cppcms::service &serv): Controller(serv) {
 
     d->assign("/add-to-word/(\\d+)", &Meanings::add_to_word, this, 1);
     d->assign("/add-to-word-treat", &Meanings::add_to_word_treat, this);
-    d->assign("/edit/(\\d+)/(\\d+)", &Meanings::edit, this, 1, 2);
+    d->assign("/edit/(\\d+)/(\\w+)/(\\d+)", &Meanings::edit, this, 1, 2, 3);
     d->assign("/edit-treat", &Meanings::edit_treat, this);
     d->assign("/delete-by-id/(\\d+)", &Meanings::delete_by_id, this, 1);
 
@@ -32,36 +32,27 @@ void Meanings::add_to_word(std::string origWordId) {
     contents::MeaningsAdd c;
     init_content(c);
 
-	contents::WordsHelper whc;
     models::Words wordsModel;
-    whc.lang = c.lang;
     
-    whc.fetcher = wordsModel.get_word_with_id(origId);
-    models::TranslationsMap packedTransWithoutMeaning;
-    whc.packedMeaningsTrans = wordsModel.pack_translations(
-        whc.fetcher,
-        packedTransWithoutMeaning
-    ); 
-    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
+	contents::WordsHelper whc(
+        wordsModel.get_word_with_id(origId)
+    );
+    std::cout << "after model" << std::endl; 
+    whc.lang = c.lang;
 
 
-    TatoHyperItem* word = whc.fetcher->items[0];
-     // if no item with this id
-
-    if (word == NULL) {
+    if (whc.empty()) {
         response().set_redirect_header(
             "/" + c.lang +"/words/show-all"
         );
-        tato_hyper_item_fetcher_free(whc.fetcher);
         return;
     }
 
     c.addMeaning.origWordId.value(origWordId);
     
     c.whc = whc;
+    std::cout << "before render" << std::endl; 
     render("meanings_add_to_word", c);   
-
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 /**
@@ -105,7 +96,11 @@ void Meanings::add_to_word_treat() {
  *
  */
 
-void Meanings::edit(std::string meaningIdStr, std::string origWordIdStr) {
+void Meanings::edit(
+    std::string meaningIdStr,
+    std::string meaningLang,
+    std::string origWordIdStr
+) {
     CHECK_PERMISSION_OR_GO_TO_LOGIN();
 
     int origWordId = atoi(origWordIdStr.c_str());
@@ -114,12 +109,12 @@ void Meanings::edit(std::string meaningIdStr, std::string origWordIdStr) {
     contents::MeaningsEdit c;
     init_content(c);
  
-	contents::WordsHelper whc;
-    whc.lang = c.lang;
     
     models::Words wordsModel;
-    whc.fetcher = wordsModel.get_word_with_id(origWordId);
-    TatoHyperItem *word = whc.fetcher->items[0];
+	contents::WordsHelper whc(
+        wordsModel.get_word_with_id(origWordId)
+    );
+    whc.lang = c.lang;
 
     results::Meaning meaning = meaningsModel.get_meaning_by_id(
         meaningId
@@ -127,23 +122,23 @@ void Meanings::edit(std::string meaningIdStr, std::string origWordIdStr) {
 
      // if no item with this id
 
-    if (word == NULL || meaning.id == 0) {
+    if (whc.empty() || meaning.id == 0) {
         response().set_redirect_header(
             "/" + c.lang +"/words/show-all"
         );
-        tato_hyper_item_fetcher_free(whc.fetcher);
         return;
     }
    
 
-    c.editMeaning.definitionText.value(meaning.definition);
+    c.editMeaning.definitionText.value(meaning.defsMap[meaningLang]);
+    c.editMeaning.definitionLang.value(meaningLang);
+
     c.editMeaning.meaningId.value(meaningIdStr);
     c.editMeaning.origWordId.value(origWordIdStr);
     
     c.whc = whc;
     render("meanings_edit", c);   
 
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 void Meanings::edit_treat() {
@@ -157,7 +152,7 @@ void Meanings::edit_treat() {
         return;
     }
 
-    std::string defLang = formEdit.definitionLang.selected_id();
+    std::string defLang = formEdit.definitionLang.value();
     std::string defText = formEdit.definitionText.value();
     std::string meaningIdStr = formEdit.meaningId.value();
     std::string origWordIdStr = formEdit.origWordId.value();
@@ -173,21 +168,18 @@ void Meanings::edit_treat() {
    
 
     models::Words wordsModel;
-    TatoHyperItemFetcher *fetcher = wordsModel.get_word_with_id(origWordId);
-    TatoHyperItem *word = fetcher->items[0];
+    results::Word word = wordsModel.get_word_with_id(origWordId);
 
-    if (word != NULL) {
+    if (word.exists()) {
         response().set_redirect_header(
         "/" + get_interface_lang() +"/words/show-in" +
-        "/" + std::string (word->str) +
-        "/" + std::string (word->lang->code)
+        "/" + word.text +
+        "/" + word.lang 
         );
     } else {
         go_back_to_previous_page();
     }
    
-    tato_hyper_item_fetcher_free(fetcher);
-
 }
 
 

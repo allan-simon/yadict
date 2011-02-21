@@ -5,12 +5,12 @@
 
 <% template main_content() %>
     <div class="module">
-        <% c++ if(!content.whc.is_empty()) { %>
+        <% if not whc.empty() %>
             <% c++ words_helper wh(out(), content.whc); %>
             <% c++ wh.words_list("Search results") ;%> 
-        <% c++ } else { %>
+        <% else %>
             No Result
-        <% c++ } %>
+        <% end %>
     </div>
 <% end %>
 

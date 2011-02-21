@@ -1,57 +1,54 @@
-<%c++ extern "C" { %> 
-<%c++    #include "tato/fetcher.h" %>
-<%c++    #include "tato/hyperitem.h" %>
-<%c++    #include "tato/kvlist.h" %>
-<%c++ } %>
 <%c++ #include "contents/helpers/words.h" %>
 <%c++ #include "contents/helpers/paginations.h" %>
 <%c++ #include "models/Relations.h" %>
 <%c++ #include "models/Words.h" %>
-<%c++ typedef char* char_p; %>
 <% skin %>
 <% view words_helper uses contents::WordsHelper %>
 
 
-
     <% template word_group() %>
+       <% c++ word_group(content.words[0]); %> 
+    <% end template %>
+
+    <% template word_group(results::Word word) %>
         <div>
-            <% include word_alone() %>
+            <% include word_alone(word) %>
         </div>
         <div>
-            <% include word_metas() %>
+            <% include word_metas(word) %>
         </div>
         <div>
-            <% include word_all_translations() %>
+            <% include word_all_translations(word) %>
         </div>
     <% end template %>
 
-    <% template word_alone() %>
-        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
-        <% c++ out() << item->str ;%> 
+    <% template word_alone(results::Word word) %>
+        <% word.text %> 
     <% end template %>
 
-    <% template word_meanings() %>
-        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
+    <% template word_meanings(results::Word word) %>
 
-	    <% c++ TatoHyperRelationsNode *it; %>
-        <ul>
-	    <% c++ TATO_HYPER_RELATIONS_FOREACH(item->startofs, it) { %>
-            <% c++ if (it->relation->type == SHDICT_MEANING_REL_FLAG) { %>
+        <% foreach mapItem in word.meanTransMap %>
+            <ul>
+            <% item %>
                 <li>
-                    definition:
-                    <% c++ out() << " " << tato_hyper_relation_meta_get(it->relation, "definition"); %>
-                    <% c++ int meaningId = it->relation->id; %>
-                    <% c++ int wordId = item->id; %>
-
-                    <% c++ add_trans_to_meaning_link(meaningId, wordId); %>
-                    <% c++ out() << " " ; %>
-                    <% c++ edit_meaning_link(meaningId, wordId); %>
-                    <% c++ out() << " " ; %>
-                    <% c++ delete_meaning_link(meaningId); %>
+                definition:
+                <% foreach definition in mapItem.first.defsMap %>
+                    <ul>
+                    <% item %>
+                        <% include flag_img(definition.first) %>                            
+                        <% definition.second %>
+                    <% end %>
+                    <ul>
+                <% end foreach %>
                 </li>
-            <% c++ } %>  
-        <% c++ } %>
-        </ul>
+                <% include add_trans_to_meaning_link(mapItem.first.id, word.id) %>
+                <% include edit_meaning_link(mapItem.first.id, word.id) %>
+                <% include delete_meaning_link(mapItem.first.id) %>
+
+            <% end %>
+            </ul>        
+        <% end foreach %>
     <% end template %>
 
     <% template add_trans_to_meaning_link(int meaningId, int wordId) %>
@@ -73,31 +70,21 @@
     <% end template %>
 
 
-    <% template word_metas() %>
-        <% c++ TatoHyperItem *item = content.fetcher->items[0] ;%>
+    <% template word_metas(results::Word word) %>
+        <% foreach meta in word.metas %> 
+            <ul>
+            <% item %>
+                <li>
+                    <% meta.first %>
+                    :
+                    <% meta.second %>
+                </li>
+            <% end %>
+            </ul>
+            <% empty %>
+            No Metas Yet
+        <% end %>
 
-	    <% c++ TatoKvListNode *it; %>
-        <ul>
-	    <% c++ TATO_KVLIST_FOREACH(item->metas, it) { %>
-            <li>
-                <% c++ std::string key(it->key); %>
-                <% c++ std::string value(it->value); %>
-                <% c++ int wordId = item->id; %>
-                
-                <% c++ out() << key << " " ;%>
-                :
-                <% c++ out() << " " << value; %>
-                
-                <% c++ out() << " " ; %>
-                <% c++ out() << " " ; %>
-                <% c++ edit_meta_link(wordId, key); %>
-                <% c++ remove_meta_link(wordId, key); %>
-            </li>
-        <% c++ } %>
-        <% c++ if (item->metas == NULL) { %>
-            <li>No Metas yet</li>
-        <% c++ } %>
-        </ul>
     <% end template %>
 
     <% template edit_meta_link(int wordId, std::string key) %>
@@ -114,24 +101,18 @@
 
 
 
-    <% template word_all_translations() %>
-        <% c++ TatoHyperItem *item = content.fetcher->items[0]; %>
+    <% template word_all_translations(results::Word word) %>
         <h4>Definitions</h4>
-        <% foreach meaning in packedMeaningsTrans %> 
+        <% foreach meaningMapItem in word.meanTransMap %>
             <ol>
             <% item %>
                 <li>
-                    <% c++ out() << " " << %>
-                    <% c++     tato_hyper_relation_meta_get( %>
-                    <% c++         meaning.first, %>
-                    <% c++         "definition" %>
-                    <% c++     ); %>
-                    <% c++ int meaningId = meaning.first->id; %>
+                    <% c++ int meaningId = meaningMapItem.first.id; %>
                     <% c++ remove_meaning_link(meaningId); %>
                     <br /> 
                     <h5>Translations</h5>
-                    <% c++ translations_pack(meaning.second, item->id, meaningId); %>
-                    <% c++ add_trans_to_meaning_link(meaningId, item->id); %>
+                    <% c++ meanings_pack(meaningMapItem.second, word.id, meaningMapItem.first); %>
+                    <% c++ add_trans_to_meaning_link(meaningId, word.id); %>
                 </li>
                 <br />
             <% end %>
@@ -141,11 +122,11 @@
         <% end %><!-- end foreach meaning -->
 
         <h4>Other Translations</h4>
-        <% c++ translations_pack(content.packedTransWithoutMeaning, item->id, 0); %>
+        <% c++ translations_pack(word.transMap, word.id); %>
     <% end template %>
 
     <% template add_trans_to_mean_link(int meaningId, int wordId) %>
-        <a href="<% url "/translations/add-to-meaning/" %><%  meaningId %>/<% wordId %>" >
+        <a href="<% url "/translations/add-to-meaning/{1}/{2}" using meaningId, wordId %>" >
             add translation
         </a>
     <% end template %>
@@ -156,41 +137,65 @@
         </a>
     <% end template %>
 
+    <% template meanings_pack(TransMap transMap, int wordId, results::Meaning meaning) %>
+        <% foreach definition in meaning.defsMap %>
+            <% item %>
+                <div>
+                <% include flag_img(definition.first) %>
+                <% definition.second %>
+                <% c++ meaning_trans_lang(transMap[definition.first], meaning.id); %>
+            <% end %>
+        <% end %>
+        
 
-    <% template translations_pack(models::TranslationsMap transMap, int wordId, int meaningId) %>
+    <% end template %>
+
+    <% template meaning_trans_lang(WordsSet translations, int meaningId) %>
+        <% foreach translation in translations %>
+            <ul>
+            <% item %>
+                <li>
+                <% c++ show_trans_link( %>
+                    <% c++ translation.text, %>
+                    <% c++ translation.lang %>
+                <% c++ ); %>
+
+                <% c++ remove_translation_from_meaning_link( %>
+                    <% c++ translation.id, %>
+                    <% c++ meaningId %>
+                <% c++ ) ;%>
+                </li>
+            <% end %>
+            </ul>
+        <% end foreach %>
+
+    <% end template %>
+
+
+    <% template translations_pack(TransMap transMap, int wordId) %>
         <% foreach language in transMap %>
             <% item %>
                 <div>
+                    <h6><% include flag_img(language.first) %></h6>
                     <% if (language.second.empty()) %>
                         <% c++ continue; %>
                     <% end %>
-                    <h6><% language.first %></h6>
                     <% foreach translation in language.second %>
                         <ul>
                         <% item %>
                             <li>
                                 <% c++ show_trans_link( %>
-                                <% c++     translation->str, %>
-                                <% c++     translation->lang->code %>
+                                <% c++     translation.text, %>
+                                <% c++     translation.lang %>
                                 <% c++ ); %>
                                 
                                 <% c++ out() << " " ; %>
 
-                                <% if (meaningId == 0) %>
+                                <% c++ remove_translation_from_word_link( %>
+                                <% c++     translation.id, %>
+                                <% c++     wordId %>
+                                <% c++ ) ;%>
 
-                                    <% c++ remove_translation_from_word_link( %>
-                                    <% c++     translation->id, %>
-                                    <% c++     wordId %>
-                                    <% c++ ) ;%>
-
-                                <% else %>
-
-                                    <% c++ remove_translation_from_meaning_link( %>
-                                    <% c++     translation->id, %>
-                                    <% c++     meaningId %>
-                                    <% c++ ) ;%>
-
-                                <% end %>
                             </li>
                         <% end %>
                         </ul>
@@ -206,33 +211,32 @@
 
     <% template words_list(std::string title) %>
         <% c++ contents::PaginationsHelper phc( %>
-        <% c++ content.fetcher->offset, %>
-        <% c++ content.fetcher->capacity, %>
-        <% c++ content.fetcher->max_size, %>
+        <% c++ content.words.offset, %>
+        <% c++ content.words.size(), %>
+        <% c++ content.words.maxsize, %>
         <% c++ content.baseUrl, %>
         <% c++ content.lang %>
         <% c++ ); %>
 
         <h3>
-            <% c++ out() << title ;%>
-             (Total: <% c++ out() <<content.fetcher->max_size ;%> Word(s))
+            <% title %>
+             (Total: <% words.maxsize %> Word(s))
         </h3>
         
         <% c++ pagination_helper ph(out(), phc); %> 
         <% c++ ph.pagination(); %>
 
-        <% c++ for(int i = 0; i < content.fetcher->size ; i++) { %>
-            <% c++ int id = content.fetcher->items[i]->id ; %>
-            <% c++ std::string str = std::string(content.fetcher->items[i]->str) ; %>
-            <% c++ std::string wordLang = std::string(content.fetcher->items[i]->lang->code) ; %>
+        <% foreach word in words %>
+            <% item %>
             <div>
-                <% c++ flag_img(wordLang); %>
-                <span><% c++ out() << str ;%></span>
-                <% c++ show_word_link(str, wordLang); %>
-                <% c++ edit_word_link(id); %>
-                <% c++ delete_word_link(id); %>
+                <% include flag_img(word.lang) %>
+                <span><%  word.text %></span>
+                <% include show_word_link(word.text, word.lang) %>
+                <% include edit_word_link(word.id) %>
+                <% include delete_word_link(word.id) %>
             </div>
-        <% c++ } %>
+            <% end %>
+        <% end foreach %>
     <% end template %>
 
 
@@ -240,7 +244,7 @@
         <img src="http://sysko.fr/img/<% wordLang %>.png" /> 
     <% end template %>
 
-    <% template show_trans_link(char_p str, char_p lang) %>
+    <% template show_trans_link(std::string str, std::string lang) %>
         <a href="<% url "/words/show-in/{1}/{2}" using str, lang %>" >
             <% str %>
         </a>
@@ -275,13 +279,8 @@
         </a>
     <% end template %>
 
-
     <% template back_to_word_link() %>
-        <% if not is_empty() %>
-            <% c++ std::string wordText(content.fetcher->items[0]->str); %>
-            <% c++ std::string wordLang(content.fetcher->items[0]->lang->code); %>
-            <% c++ back_to_word_link(wordText, wordLang); %>
-        <% end %>
+        <% c++ back_to_word_link(content.words[0].text, content.words[0].lang); %>
     <% end template %>
 
     <% template back_to_word_link(std::string wordText, std::string wordLang) %>
@@ -292,21 +291,26 @@
 
 
 
-
     <% template translate_word_link() %>
-        <% if not is_empty() %>
-            <% c++ int id = content.fetcher->items[0]->id ;%>
-            <a href="<% url "/translations/add-to-word/" %><% c++ out() << id ;%>" >
+        <% c++ translate_word_link(content.words[0].id); %>
+    <% end template %>
+
+    <% template translate_word_link(int id) %>
+        <% if not empty() %>
+            <a href="<% url "/translations/add-to-word/{1}" using id %>" >
                 translate
             </a> 
         <% end %>
     <% end template %>
 
-
+    
     <% template add_meta_link() %>
-        <% if not is_empty() %>
-            <% c++ int id = content.fetcher->items[0]->id ;%>
-            <a href="<% url "/metas/add/" %><% c++ out() << id ;%>" >
+        <% c++ add_meta_link(content.words[0].id); %>
+    <% end template %>
+
+    <% template add_meta_link(int id) %>
+        <% if not empty() %>
+            <a href="<% url "/metas/add/{1}" using id %>" >
                 add meta
             </a> 
         <% end %>
@@ -314,11 +318,13 @@
 
 
 
-
     <% template add_meaning_link() %>
-        <% if not is_empty() %>
-            <% c++ int id = content.fetcher->items[0]->id ;%>
-            <a href="<% url "/meanings/add-to-word/" %><% c++ out() << id ;%>" >
+        <% c++ add_meaning_link(content.words[0].id); %>
+    <% end template %>
+
+    <% template add_meaning_link(int id) %>
+        <% if not empty() %>
+            <a href="<% url "/meanings/add-to-word/{1}" using id %>" >
                 add meaning
             </a> 
         <% end %>

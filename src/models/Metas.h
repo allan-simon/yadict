@@ -51,8 +51,13 @@ class Metas {
             std::string key
         );
 
+
         MetasMap get_all_metas_of_word(
             int wordId
+        );
+
+        MetasMap get_all_metas_of_word(
+            TatoHyperItem* item
         );
 };
 

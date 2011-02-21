@@ -46,17 +46,10 @@ void Words::show(std::string str) {
     init_content(c);
     c.wordStr = str;
     whc.lang = c.lang;
-    whc.fetcher = wordModel.get_words_with_str(str);
-    models::TranslationsMap packedTransWithoutMeaning;
-    whc.packedMeaningsTrans = wordModel.pack_translations(
-        whc.fetcher,
-        packedTransWithoutMeaning
-    ); 
-    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
 
+    whc.words = wordModel.get_words_with_str(str);
     c.whc = whc;
     render ("words_show", c);
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 /**
@@ -65,27 +58,16 @@ void Words::show(std::string str) {
 void Words::show_in(std::string wordStr, std::string wordLang) {
 
 	contents::WordsShow c;
-	contents::WordsHelper whc;
     init_content(c);
     c.wordStr = wordStr;
-    whc.lang = c.lang;
 
-    TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(1, 0);
-    tato_hyper_item_fetcher_add(
-        fetcher,
+	contents::WordsHelper whc(
         wordModel.get_word_with_lang_str(wordLang, wordStr)
     );
-    whc.fetcher = fetcher;
-    models::TranslationsMap packedTransWithoutMeaning;
-    whc.packedMeaningsTrans = wordModel.pack_translations(
-        whc.fetcher,
-        packedTransWithoutMeaning
-    ); 
-    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
+    whc.lang = c.lang;
 
     c.whc = whc;
     render ("words_show", c);
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 
@@ -109,11 +91,10 @@ void Words::show_all(std::string offsetStr, std::string sizeStr) {
 
     whc.baseUrl = "/words/show-all";
     whc.lang = c.lang;
-    whc.fetcher = wordModel.get_all_words(offset, size);
+    whc.words = wordModel.get_all_words(offset, size);
 
     c.whc = whc;
     render ("words_show_all", c);
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 /**
  *
@@ -134,11 +115,10 @@ void Words::show_all_in(std::string filterLang, std::string offsetStr, std::stri
 
     whc.baseUrl = "/words/show-all-in/" + filterLang;
     whc.lang = c.lang;
-    whc.fetcher = wordModel.get_all_words_in_lang(filterLang, offset, size);
+    whc.words = wordModel.get_all_words_in_lang(filterLang, offset, size);
 
     c.whc = whc;
     render ("words_show_all_in", c);
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 void Words::show_all_langs_filter_treat() {
@@ -166,13 +146,12 @@ void Words::show_all_langs_filter_treat() {
 
 void Words::show_random() {
 
-    TatoHyperItemFetcher *fetcher =  wordModel.get_random_word();
-    TatoHyperItem* item = fetcher->items[0];
-    if (item != NULL) {
+    results::Word word = wordModel.get_random_word();
+    if (word.exists()) {
         response().set_redirect_header(
             "/" + get_interface_lang() +"/words/show-in" +
-            "/" + std::string(item->str) + 
-            "/" + std::string(item->lang->code)
+            "/" + word.text + 
+            "/" + word.lang 
         );
 
      } else { // if there's no word in the database
@@ -180,7 +159,6 @@ void Words::show_random() {
         // with an error message in session to explain no words exist
         go_back_to_previous_page();
     }
-    tato_hyper_item_fetcher_free(fetcher);
 }
 
 /**
@@ -209,15 +187,15 @@ void Words::add_treat() {
     
     if (c.addWord.validate()) {
         // TODO : handle if something wrong happen while saving
-        TatoHyperItem* item = wordModel.add_word(
+        results::Word word = wordModel.add_word(
             c.addWord.wordLang.selected_id(),
             c.addWord.wordString.value(),
             get_current_user_id()
         );
-        if (item == NULL) {
+        if (word.exists()) {
             
             std::ostringstream oss;
-            oss << item->id ;
+            oss << word.id ;
             response().set_redirect_header(
                 "/" + c.lang +"/words/add-to/" + oss.str()
             );
@@ -239,34 +217,29 @@ void Words::edit(std::string wordId) {
 	int id = atoi(wordId.c_str());
 
 	contents::WordsEdit c;
-	contents::WordsHelper whc;
     init_content(c);
-    whc.lang = c.lang;
 
-    whc.fetcher = wordModel.get_word_with_id(id);
+	contents::WordsHelper whc(
+        wordModel.get_word_with_id(id)
+    );
+    whc.lang = c.lang;
     // if no item with this id
-    if (whc.is_empty()) {
+    if (whc.empty()) {
         response().set_redirect_header(
             "/" + c.lang +"/words/show-all"
         );
-        tato_hyper_item_fetcher_free(whc.fetcher);
         return;
     }
 
     // Set the value of the form to the current value
     // So one will know what he is editing
     c.editWord.wordId.value(wordId);
-    c.editWord.wordLang.selected_id(
-        std::string(whc.fetcher->items[0]->lang->code)
-    );
-    c.editWord.wordString.value(
-        std::string(whc.fetcher->items[0]->str)
-    );
+    c.editWord.wordLang.selected_id(whc.words[0].lang);
+    c.editWord.wordString.value(whc.words[0].text);
 
 
     c.whc = whc;
     render("words_edit",c);
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 

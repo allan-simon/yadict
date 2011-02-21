@@ -17,6 +17,7 @@ struct TranslationsAdd : public BaseContent {
 struct TranslationsAddToMeaning : public BaseContent {
     WordsHelper whc;
     forms::AddTransToMeaning addTransToMeaning; 
+    int meaningPosition;
     int meaningId;
 };
 

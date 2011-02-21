@@ -12,8 +12,8 @@ struct LangsFiltersHelper : public Helpers {
     std::string filterTreatUrl;
     
     public:
-        LangsFiltersHelper(std::string _filterTreatUrl) {
-            filterTreatUrl = _filterTreatUrl;
+        LangsFiltersHelper(std::string filterTreatUrl) :
+            filterTreatUrl(filterTreatUrl) {
         }
 
 };

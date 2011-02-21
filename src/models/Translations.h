@@ -11,6 +11,7 @@ extern "C" {
 #include "tato/hyperrelations.h"
 }
 #include "models/Logs.h"
+#include "models/Words.h"
 
 #include <vector>
 typedef std::vector<int> TransVector;
@@ -31,7 +32,7 @@ class Translations {
             int userId
         );
 
-        TatoHyperItem* add_translation_to_word(
+        results::Word add_translation_to_word(
             int fromWordId,
             int transRelId,
             std::string transText,

@@ -24,7 +24,9 @@ void Searches::simple_treat() {
     init_content(c);
     c.searchesSimple.load(context());
     
-    if (c.searchesSimple.validate()) {
+    if (!c.searchesSimple.validate()) {
+        go_back_to_previous_page();
+        return;
     }
 
 
@@ -62,11 +64,10 @@ void Searches::show_result (
     whc.lang = c.lang;
     c.queryStr = query;
     c.queryLang = lang;
-    whc.fetcher = searchesModel.simple(query, lang, size, offset);
+    whc.words = searchesModel.simple(query, lang, size, offset);
     c.whc = whc;
 
     render ("searches_show_result", c);
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 };

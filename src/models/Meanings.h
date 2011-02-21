@@ -10,14 +10,36 @@ extern "C" {
 #include "tato/hyperrelation.h"
 #include "tato/hyperrelations.h"
 }
+
+#include <map>
+
+typedef std::map<std::string, std::string> DefsMap;
+typedef std::map<std::string, std::string> MetasMap;
 namespace results {
     struct Meaning {
         int id;
-        // TODO replace this by a map  lang => definition
-        std::string definition;
+        // a map of lang => definition
+        DefsMap defsMap;
+        
+        public:
+            Meaning(): id(0) {};
+
+            bool exists() {
+                return id > 0;   
+            };
     };
 
 };
+
+// otherwise we would not be able to use results::Meaning has std::map's key
+namespace std {
+    template<> struct less<results::Meaning> {
+        bool operator() (const results::Meaning& lhs, const results::Meaning& rhs) {
+            return lhs.id < rhs.id;
+        }
+    };
+};
+
 
 namespace models {
 

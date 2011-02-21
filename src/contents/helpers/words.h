@@ -1,11 +1,6 @@
 #ifndef CONTENTS_HELPER_WORDS_H
 #define CONTENTS_HELPER_WORDS_H
 
-extern "C" {
-    #include "tato/hyperitem.h"
-    #include "tato/fetcher.h"
-}
-
 #include "models/Translations.h"
 #include "models/Words.h"
 
@@ -15,24 +10,19 @@ extern "C" {
 namespace contents {
 
 struct WordsHelper : public Helpers {
-    TatoHyperItemFetcher *fetcher ;
-    models::MeaningsTranslationsMap packedMeaningsTrans;
-    models::TranslationsMap packedTransWithoutMeaning;
+    results::WordsVector words;
 
     public:
-        WordsHelper() {
-            fetcher = NULL;
+        WordsHelper() {};
+        WordsHelper(results::Word word) {
+            if (word.exists()) {
+                words.push_back(word);
+            }
         }
 
-        bool is_empty() {
-            if (fetcher == NULL) {
-                return false;
-                if (fetcher->items == NULL) {
-                    return false;
-                }
-            }
-            return fetcher->items[0] == NULL;
-        }
+        bool empty() {
+            words.empty();
+        };
 };
 
 }

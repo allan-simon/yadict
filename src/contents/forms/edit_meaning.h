@@ -15,7 +15,7 @@ namespace forms {
         // store a description of the meaning
         widgets::text definitionText;
         // store in which language the description above is written in
-        widgets::select definitionLang;
+        widgets::hidden definitionLang;
         widgets::submit submit;        
     
         // init of the form
@@ -29,12 +29,8 @@ namespace forms {
             meaningId.value("0");
 
             definitionText.name("text");
+            definitionLang.name("lang");
 
-            ISOToNameMap isoToName = Languages::get_instance()->get_iso_to_name_map();
-            ISOToNameMap::iterator itr;
-            for(itr = isoToName.begin(); itr != isoToName.end(); ++itr){
-                definitionLang.add(itr->second, itr->first);
-            }
 
             submit.name("Edit Meaning");
             submit.value("Edit meaning");

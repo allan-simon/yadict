@@ -21,7 +21,7 @@ bool Translations::add_translation_to_meaning(
     std::string transLang,
     int userId
 ) {
-    TatoHyperItem *transWord = add_translation_to_word(
+    results::Word transWord = add_translation_to_word(
         fromWordId,
         0,
         transText,
@@ -39,7 +39,7 @@ bool Translations::add_translation_to_meaning(
         tato_hyper_db_relation_add_end(
             tatoHyperDb,
             meaningId,
-            transWord->id
+            transWord.id
         );
     } else {
         return false;
@@ -52,7 +52,7 @@ bool Translations::add_translation_to_meaning(
 /**
  *
  */
-TatoHyperItem* Translations::add_translation_to_word(
+results::Word Translations::add_translation_to_word(
     int fromWordId,
     int transRelId,
     std::string transText,
@@ -61,7 +61,7 @@ TatoHyperItem* Translations::add_translation_to_word(
 ) {
     
     models::Words wordsModel;
-    TatoHyperItem *translation = wordsModel.add_word(
+    results::Word transWord = wordsModel.add_word(
         transLang,
         transText,
         userId
@@ -72,31 +72,31 @@ TatoHyperItem* Translations::add_translation_to_word(
     // TODO with exception we should be able to avoid this
     // by adding a field with the TatoHyperItem in the exception
     // raised by addWord
-    if (translation == NULL) {
-       translation = wordsModel.get_word_with_lang_str(transLang, transText); 
+    if (transWord.exists()) {
+       transWord = wordsModel.get_word_with_lang_str(transLang, transText); 
     }
 
-    if (translation != NULL) {
+    if (transWord.exists()) {
         add_one_way_link(
             fromWordId,
             transRelId,
-            translation->id
+            transWord.id
         );
 
         add_one_way_link(
-            translation->id,
+            transWord.id,
             0,
             fromWordId
         );
 
         logs.insert_add_trans(
             fromWordId,
-            translation->id,
+            transWord.id,
             userId
         );
     };
 
-    return translation;
+    return transWord;
 }
 
 /**

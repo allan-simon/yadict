@@ -5,6 +5,7 @@
 
 #include "models/TatoHyperDB.h"
 #include "models/Translations.h"
+#include "models/Words.h"
 
 namespace controllers {
 
@@ -58,31 +59,24 @@ void Translations::add_to_word(std::string origWordId) {
     contents::TranslationsAdd c;
     init_content(c);
 
-	contents::WordsHelper whc;
     models::Words wordsModel;
+
+	contents::WordsHelper whc(
+        wordsModel.get_word_with_id(origId)
+    );
     whc.lang = c.lang;
     
-    whc.fetcher = wordsModel.get_word_with_id(origId);
-    models::TranslationsMap packedTransWithoutMeaning;
-    whc.packedMeaningsTrans = wordsModel.pack_translations(
-        whc.fetcher,
-        packedTransWithoutMeaning
-    ); 
-    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
-
-    TatoHyperItem* word = whc.fetcher->items[0];
      // if no item with this id
 
-    if (word == NULL) {
+    if (whc.empty()) {
         response().set_redirect_header(
             "/" + c.lang +"/words/show-all"
         );
-        tato_hyper_item_fetcher_free(whc.fetcher);
         return;
     }
     // set the hidden value of the form
     std::ostringstream oss;
-    oss << wordsModel.get_translation_relation(word);
+    oss << wordsModel.get_translation_relation(origId);
 
     c.addTranslation.origWordId.value(origWordId);
     c.addTranslation.translationId.value(
@@ -92,7 +86,6 @@ void Translations::add_to_word(std::string origWordId) {
     c.whc = whc;
     render("translations_add_to", c);   
 
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 /**
@@ -167,41 +160,44 @@ void Translations::add_to_meaning(
     init_content(c);
     c.meaningId = meaningId;
     
-	contents::WordsHelper whc;
     models::Words wordsModel;
-
+	contents::WordsHelper whc(
+        wordsModel.get_word_with_id(wordId)
+    );
     whc.lang = c.lang;
-    whc.fetcher = wordsModel.get_word_with_id(wordId);
-    models::TranslationsMap packedTransWithoutMeaning;
-    whc.packedMeaningsTrans = wordsModel.pack_translations(
-        whc.fetcher,
-        packedTransWithoutMeaning
-    ); 
-    whc.packedTransWithoutMeaning = packedTransWithoutMeaning;    
 
-    c.whc = whc;
-
-    TatoHyperItem* word = whc.fetcher->items[0];
      // if no item with this id
 
-    if (word == NULL) {
-        response().set_redirect_header(
-            "/" + c.lang +"/words/show-all"
-        );
-        tato_hyper_item_fetcher_free(whc.fetcher);
+    if (whc.empty()) {
+        go_back_to_previous_page();
         return;
     }
+    
+    MeaningsTransMap meanTransMap =  whc.words[0].meanTransMap;
+    MeaningsTransMap::const_iterator end = meanTransMap.end();
+    
+    int meaningPosition = 0;
+    for (
+        MeaningsTransMap::const_iterator itr = meanTransMap.begin();
+        itr != end;
+        ++itr
+    ) {
+        meaningPosition++;
+        if (itr->first.id == meaningId) {
+            break;    
+        }
+    }
+    c.meaningPosition = meaningPosition;
 
     // fill the form
     std::ostringstream oss;
-    oss << wordsModel.get_translation_relation(word);
+    oss << wordsModel.get_translation_relation(wordId);
 
+    c.whc = whc;
     c.addTransToMeaning.wordId.value(wordIdStr);
     c.addTransToMeaning.meaningId.value(meaningIdStr);
     
     render("translations_add_to_meaning", c);   
-
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 /**

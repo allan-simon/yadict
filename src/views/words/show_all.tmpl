@@ -6,12 +6,12 @@
 
 <% template main_content() %>
     <div class="module">
-        <% c++ if(!content.whc.is_empty()) { %>
+        <% if not whc.empty() %>
             <% c++ words_helper wh(out(), content.whc); %>
             <% c++ wh.words_list("All words") ;%> 
-        <% c++ } else { %>
+        <% else %>
             No words in the database yet
-        <% c++ } %>
+        <% end %>
     </div>
     <div class="module">
         <h3>Some links</h3>

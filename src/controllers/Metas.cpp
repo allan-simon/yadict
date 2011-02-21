@@ -33,14 +33,15 @@ void Metas::add(std::string wordId) {
 
 	contents::MetasAdd c;
     init_content(c);
-	contents::WordsHelper whc;
+	contents::WordsHelper whc(
+        wordModel.get_word_with_id(id)
+    );
     whc.lang = c.lang;
-    whc.fetcher = wordModel.get_word_with_id(id);
     c.addMeta.wordId.value(wordId);
     c.whc = whc;
 
 
-    if (whc.is_empty()) {
+    if (whc.empty()) {
         response().set_redirect_header(
             request().http_referer()
         );
@@ -48,7 +49,6 @@ void Metas::add(std::string wordId) {
 
         render("metas_add",c);
     }
-    tato_hyper_item_fetcher_free(whc.fetcher);
 }
 
 
@@ -94,15 +94,14 @@ void Metas::edit(std::string wordId, std::string key) {
 
 	contents::MetasEdit c;
     init_content(c);
-	contents::WordsHelper whc;
+
+	contents::WordsHelper whc(
+        wordModel.get_word_with_id(id)
+    );
     whc.lang = c.lang;
-    whc.fetcher = wordModel.get_word_with_id(id);
 
-
-    if (whc.is_empty() || !metasModel.has_meta(id, key)) {
-        response().set_redirect_header(
-            request().http_referer()
-        );
+    if (whc.empty() || !metasModel.has_meta(id, key)) {
+        go_back_to_previous_page();
     } else {
         c.key = key;
         c.editMeta.wordId.value(wordId);
@@ -114,7 +113,6 @@ void Metas::edit(std::string wordId, std::string key) {
 
         render("metas_edit",c);
     }
-    tato_hyper_item_fetcher_free(whc.fetcher);
 
 }
 

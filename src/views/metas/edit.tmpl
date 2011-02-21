@@ -6,25 +6,25 @@
 <% template main_content() %>
     <div class="module">
         <h3>Edit Meta</h3> 
-        <% c++ if(!content.whc.is_empty()) { %>
+        <% if not whc.empty() %>
             <% c++ words_helper wh(out(), content.whc); %>
             <div>
-            <% c++ wh.word_alone() ; %>
+            <% c++ wh.word_alone(content.whc.words[0]) ; %>
             </div>
             <div>
-            <% c++ wh.word_metas() ;%> 
+            <% c++ wh.word_metas(content.whc.words[0]) ;%> 
             </div>
-        <% c++ } else { %>
+        <% else %>
             this word does not exist
-        <% c++ } %>
+        <% end %>
 
     </div>
     <div class="module">
-        <% c++ if(!content.whc.is_empty()) { %>
+        <% if not whc.empty() %>
             <form method="POST" action="<% url "/metas/edit-treat" %>" >
                 <span><% key %>: </span> <% form as_space editMeta %>
             </form>
-        <% c++ } %>
+        <% end %>
     </div>
     <div class="module">
         <h3>Some links</h3>

@@ -164,15 +164,25 @@ std::string Metas::get_meta_from_key(int wordId, std::string key) {
 MetasMap Metas::get_all_metas_of_word(int wordId) {
     TatoHyperDb *tatoHyperDb = GET_DB_POINTER(); 
     TatoHyperItem *word= tato_hyper_db_item_find(tatoHyperDb, wordId);
-    
+    if (word == NULL) {
+        return MetasMap();
+
+    }
+    return get_all_metas_of_word(word);
+}
+
+
+MetasMap Metas::get_all_metas_of_word(TatoHyperItem* item) {
     MetasMap metasMap;
 
 	TatoKvListNode *it;
-	TATO_KVLIST_FOREACH(word->metas, it) {
+	TATO_KVLIST_FOREACH(item->metas, it) {
         metasMap[std::string(it->key)] = std::string(it->value);
     }
     return metasMap;
 }
+
+
 
 }// end of models::Metas
 

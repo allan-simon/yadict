@@ -9,12 +9,87 @@ extern "C" {
 #include "tato/hyperitem.h"
 }
 #include "models/Logs.h"
+#include "models/Metas.h"
+#include "models/Meanings.h"
+
+namespace results {
+    struct Word;
+}
+
+typedef std::set<results::Word> WordsSet;
+typedef std::map<std::string, WordsSet> TransMap;
+typedef std::map<results::Meaning, TransMap> MeaningsTransMap;
+
+namespace results {
+
+    struct Word {
+        int id;
+        std::string text;
+        std::string lang;
+        int flags; //TODO replace this by tatohyperdb type
+        MetasMap metas;
+        MeaningsTransMap meanTransMap;
+        TransMap transMap;
+
+        public:
+            Word(): id(0),text(""),lang(""),flags(0){};
+
+            Word(int id, std::string text, std::string lang, int flags):
+                id(id),
+                text(text),
+                lang(lang),
+                flags(flags) {
+            };
+
+            Word(int id, char* text, char* lang, int flags):
+                id(id),
+                text(std::string(text)),
+                lang(std::string(lang)),
+                flags(flags) {
+            };
+
+            Word(TatoHyperItem* wordItem) {
+                if (wordItem == NULL) {
+                    id = 0;
+                    return;
+                }
+                id = wordItem->id;
+                text = std::string(wordItem->str);
+                lang = std::string(wordItem->lang->code);
+                flags = wordItem->flags;
+
+            };
+
+            bool exists() {
+                return id > 0;
+            }
+
+    };
+
+    struct WordsVector : public std::vector<Word> {
+        int offset;
+        int maxsize;
+        public:
+            WordsVector() {};
+            WordsVector(int size) : std::vector<Word>(size) {};
+    };
+}
+
+namespace std {
+    template<> struct less<results::Word> {
+        bool operator() (const results::Word& lhs, const results::Word& rhs) {
+            return lhs.id < rhs.id;
+        }
+    };
+
+};
+
+
+;
+
+
 
 namespace models {
-
-typedef std::set<TatoHyperItem*> TatoHyperItemPList;
-typedef std::map<std::string, TatoHyperItemPList> TranslationsMap;
-typedef std::map<TatoHyperRelation* , TranslationsMap> MeaningsTranslationsMap;
 
 class Words {
     private:
@@ -22,40 +97,41 @@ class Words {
 
     public:
         Words();
-        TatoHyperItemFetcher* get_word_with_id(int id);
-        TatoHyperItem* get_word_with_lang_str(
+        results::Word get_word_with_id(int id);
+        results::Word get_word_with_lang_str(
             std::string lang,
             std::string str
         );
-        TatoHyperItemFetcher* get_words_with_str(std::string str);
-        TatoHyperItemFetcher* get_words_with_str(
+
+        results::WordsVector get_words_with_str(std::string str);
+        results::WordsVector get_words_with_str(
             std::string str,
             int size,
             int offset
         );
 
-        TatoHyperItemFetcher* get_all_words();
-        TatoHyperItemFetcher* get_all_words(int offset, int size);
+        results::WordsVector get_all_words();
+        results::WordsVector get_all_words(int offset, int size);
 
 
-        TatoHyperItemFetcher* get_all_words_in_lang(std::string lang);
-        TatoHyperItemFetcher* get_all_words_in_lang(
+        results::WordsVector get_all_words_in_lang(std::string lang);
+        results::WordsVector get_all_words_in_lang(
             std::string lang,
             int size,
             int offset
         );
 
         int get_random_word_id();
-        TatoHyperItemFetcher* get_random_word();
+        results::Word get_random_word();
 
         //TODO maybe replace bool by an fetcher if we want to
         //display the newly added word
-        TatoHyperItem* add_word(
+        results::Word add_word(
             std::string lang,
             std::string str,
             int userId
         );
-        TatoHyperItem* add_word(
+        results::Word add_word(
             std::string lang,
             std::string str,
             TatoHyperItemFlags flags,
@@ -81,13 +157,15 @@ class Words {
         //
         bool delete_word(int id, int userId);
 
-        int get_translation_relation(TatoHyperItem* word);
+        int get_translation_relation(int wordId);
 
 
-        MeaningsTranslationsMap pack_translations(
-            TatoHyperItemFetcher* fetcher,
-            TranslationsMap & packedTransWithoutMeaning
+        MeaningsTransMap pack_translations(
+            TatoHyperItem* item,
+            TransMap & packedTransWithoutMeaning
         );
+
+        results::Word word_from_item(TatoHyperItem* item);
 
 };
 

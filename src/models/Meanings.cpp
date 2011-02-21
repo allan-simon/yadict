@@ -1,4 +1,5 @@
 #include "models/Meanings.h"
+#include "generics/Languages.h"
 
 namespace models {
 /**
@@ -34,10 +35,15 @@ bool Meanings::add_to(
         if (meaning == NULL) {
             return false;
         }
-        if (!tato_hyper_relation_meta_set(meaning, "definition", definitionText.c_str())) {
+
+        if (!tato_hyper_relation_meta_set(
+            meaning,
+            definitionLang.c_str(),
+            definitionText.c_str()
+        )) {
             return tato_hyper_relation_meta_add(
                 meaning,
-                tato_hyper_db_common_str(tatoHyperDb, "definition"),
+                tato_hyper_db_common_str(tatoHyperDb, definitionLang.c_str()),
                 definitionText.c_str()
             );
         }
@@ -62,10 +68,20 @@ results::Meaning Meanings::get_meaning_by_id(int meaningId) {
  
     if (relation->type == SHDICT_MEANING_REL_FLAG) {
         meaning.id = relation->id;
-        meaning.definition = std::string(tato_hyper_relation_meta_get(
-            relation,
-            "definition"
-        )); 
+    
+        ISOToNameMap isoToName = Languages::get_instance()->get_iso_to_name_map();
+        ISOToNameMap::const_iterator end = isoToName.end();
+        for(ISOToNameMap::const_iterator itr = isoToName.begin(); itr != end; ++itr){
+
+            const char* meta = tato_hyper_relation_meta_get(
+                relation,
+                itr->first.c_str()
+            );
+            if (meta != NULL) {
+                meaning.defsMap[itr->first] = std::string(meta); 
+            }
+        }
+
     }
     return meaning;
 }
@@ -91,7 +107,7 @@ bool Meanings::edit(
     if (relation->type == SHDICT_MEANING_REL_FLAG) {
         tato_hyper_relation_meta_set(
             relation,
-            "definition",
+            definitionLang.c_str(),
             definitionText.c_str()
         ); 
         return true;

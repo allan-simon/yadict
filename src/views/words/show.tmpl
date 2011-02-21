@@ -7,7 +7,7 @@
     <div class="module">
         <h3>Information about <% wordStr %></h3>
         <% c++ words_helper wh(out(), content.whc); %>
-        <% if not whc.is_empty() %>
+        <% if not whc.empty() %>
             <% c++ wh.word_group() ;%> 
         <% else %>
             this word does not exist

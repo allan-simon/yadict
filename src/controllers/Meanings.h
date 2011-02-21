@@ -26,6 +26,7 @@ class Meanings : public Controller {
 
         void edit(
             std::string meaningIdStr, 
+            std::string meaningLang, 
             std::string origWordIdStr
         );
         void edit_treat();
