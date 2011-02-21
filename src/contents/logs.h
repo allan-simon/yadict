@@ -1,5 +1,5 @@
 #ifndef CONTENTS_LOGS_H
-#define CONTENTS_lOGS_H
+#define CONTENTS_LOGS_H
 
 #include "contents/content.h"
 #include "models/Logs.h"
