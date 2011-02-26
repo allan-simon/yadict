@@ -1,0 +1,57 @@
+<%c++ #include "contents/meanings.h" %>
+<% skin %>
+<% view meanings_edit_def_in uses contents::MeaningsEditDefIn extends master %>
+<% template title() %><% gt "Edit definition in"  %><% end template %>
+
+<% template main_content() %>
+    <div class="module">
+        <h3>Information about</h3>
+        <% if not whc.empty() %>
+            <% c++ words_helper wh(out(), content.whc); %>
+            <% c++ wh.word_alone() ;%> 
+            <% foreach definition in meaning.defsMap %>
+                <ul>
+                <% item %>
+                    <li>
+                    <% c++ wh.flag_img(definition.first); %>
+                    <% definition.second %>
+                    <% include edit_def_in_link(definition.first) %>
+                    <% include delete_def_in_link(definition.first) %>
+                    </li>
+                <% end %>
+                <ul>
+            <% end foreach %>
+
+        <%  else %>
+            this word does not exist
+        <% end %>
+
+    </div>
+    <% if not whc.empty() %>
+    <div class="module">
+        <!-- TODO REPLACE BY A FLAG -->
+        <h3>Edit definition of meaning in <% defLang %></h3> 
+            <form method="POST" action="<% url "/meanings/edit-def-in-treat" %>" >
+                <% form as_p editDefInMeaning %>
+            </form>
+    </div>
+    <% end %>
+<% end %>
+
+<% template edit_def_in_link(std::string defLang) %>
+    <a href="<% url "/meanings/edit-def-in/{1}/{2}/{3}" using meaning.id, defLang, wordId %>" >
+        edit
+    </a>
+
+<% end template %>
+
+<% template delete_def_in_link(std::string defLang) %>
+    <a href="<% url "/meanings/delete-def-in/{1}/{2}" using meaning.id, defLang %>" >
+        delete this definition
+    </a>
+<% end template %>
+
+<% end view %>
+<% end skin %>
+
+

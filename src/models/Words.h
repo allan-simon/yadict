@@ -70,8 +70,8 @@ namespace results {
         int offset;
         int maxsize;
         public:
-            WordsVector() {};
-            WordsVector(int size) : std::vector<Word>(size) {};
+            WordsVector(): offset(0), maxsize(0) {};
+            WordsVector(int size) : std::vector<Word>(size), offset(0), maxsize(0) {};
     };
 }
 
@@ -96,6 +96,8 @@ class Words {
         Logs logs;
 
     public:
+        // TODO add a fonction to only retrieve a word, without meanings
+        // nor translations metas etC.
         Words();
         results::Word get_word_with_id(int id);
         results::Word get_word_with_lang_str(

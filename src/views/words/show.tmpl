@@ -5,27 +5,42 @@
 
 <% template main_content() %>
     <div class="module">
-        <h3>Information about <% wordStr %></h3>
         <% c++ words_helper wh(out(), content.whc); %>
         <% if not whc.empty() %>
+            <h2>
+                <% c++ wh.flag_img(content.wordLang); %>
+                <% wordStr %>
+                <% c++ wh.delete_word_link(); %>
+            </h2>
             <% c++ wh.word_group() ;%> 
         <% else %>
             this word does not exist
         <% end %>
     </div>
+<% end template %>
+
+<% template annexe_content() %>
+    <% c++ words_helper wh(out(), content.whc); %>
+    <% if whc.empty() %>
+        <% c++ return; %>
+    <% end %>
     <div class="module">
         <h3>Some links</h3>
         <ul>
             <li>
-                <% c++ wh.translate_word_link() ;%> 
+                <% c++ wh.edit_word_link(); %>
             </li>
 
             <li>
-                <% c++ wh.add_meta_link() ;%> 
+                <% c++ wh.translate_word_link(); %> 
             </li>
 
             <li>
-                <% c++ wh.add_meaning_link() ;%> 
+                <% c++ wh.add_meta_link(); %> 
+            </li>
+
+            <li>
+                <% c++ wh.add_meaning_link(); %> 
             </li>
 
             <li>

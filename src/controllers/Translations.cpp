@@ -187,6 +187,11 @@ void Translations::add_to_meaning(
             break;    
         }
     }
+    // can happen when reloading a page
+    if (meaningPosition == 0) {
+        go_back_to_previous_page();
+        return;
+    }
     c.meaningPosition = meaningPosition;
 
     // fill the form

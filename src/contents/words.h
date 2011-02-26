@@ -15,6 +15,7 @@ struct Words : public BaseContent {
 
 struct WordsShow : public Words {
     std::string wordStr;
+    std::string wordLang;
 };
 
 

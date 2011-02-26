@@ -60,6 +60,7 @@ void Words::show_in(std::string wordStr, std::string wordLang) {
 	contents::WordsShow c;
     init_content(c);
     c.wordStr = wordStr;
+    c.wordLang = wordLang;
 
 	contents::WordsHelper whc(
         wordModel.get_word_with_lang_str(wordLang, wordStr)
@@ -194,10 +195,9 @@ void Words::add_treat() {
         );
         if (word.exists()) {
             
-            std::ostringstream oss;
-            oss << word.id ;
             response().set_redirect_header(
-                "/" + c.lang +"/words/add-to/" + oss.str()
+                "/" + c.lang +"/words/show-in"
+                "/" + word.text + "/" + word.lang
             );
             return; 
         }

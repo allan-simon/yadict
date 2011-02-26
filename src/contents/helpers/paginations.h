@@ -22,22 +22,34 @@ struct PaginationsHelper : public Helpers {
 
     public:
         PaginationsHelper(
-            int _offset, 
-            int _size,
-            int _max,
+            int offset, 
+            int size,
+            int max,
             std::string _baseUrl,
             std::string _lang
-        ) {
+        ) :
+            offset(offset),
+            size(size),
+            max(max),
+            currentPage(1),
+            lastOffset(0),
+            nextOffset(0),
+            firstDisplayedPage(0),
+            atBeginning(0),
+            atEnd(0)
+        {
             baseUrl = _baseUrl;
-            max = _max;
-            offset = _offset;
-            size = _size;
             lang = _lang;
+            if (size == 0) {
+                return;
+            }
+            
             prevOffset = 1 + offset - size;
             nextOffset = 1 + offset + size;
             lastOffset = 1 + max - (max%size);
 
             currentPage = offset/size + 1;
+            
             int maxPage = ceil((double)max /(double)size);
             int paginationSize = std::min(6, maxPage-1);
             int maxPrevPages = std::min(paginationSize, currentPage-1);

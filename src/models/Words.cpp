@@ -364,19 +364,27 @@ MeaningsTransMap Words::pack_translations(
         if (it->relation->type == SHDICT_MEANING_REL_FLAG ) {
 		    TatoHyperItemsNode *it2;
             TransMap tempTransMap; 
+
+            results::Meaning tempMeaning = meaningsModel.get_meaning_by_id(
+                it->relation->id
+            );
+            
             TATO_HYPER_ITEMS_FOREACH(it->relation->ends, it2) {
 
                 std::string lang(it2->item->lang->code); 
                 // if the item is linked to the word with a "translation" relation
                 if (packedTrans[lang].find(it2->item) != packedTrans[lang].end()) {
+                    // we do that to inform the meaning that it does have
+                    // translations in that language though the definition
+                    // is missing
+                    if (tempMeaning.defsMap.find(lang) == tempMeaning.defsMap.end()) {
+                         tempMeaning.defsMap[lang] = "";
+                    }
                     tempTransMap[lang].insert(it2->item);
                     packedTransWithoutMeaning[lang].erase(it2->item);
                 }
             }
-            results::Meaning tempMeaning = meaningsModel.get_meaning_by_id(
-                it->relation->id
-            );
-            
+
             meanTransMap[tempMeaning] = tempTransMap;
         }
 

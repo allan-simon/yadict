@@ -56,12 +56,20 @@ class Meanings {
             int meaningId
         );
 
-        bool edit(
+        bool add_def_in(
             int meaningId,
             std::string definitionText,
             std::string definitionLang
         );
 
+
+        bool edit_def_in(
+            int meaningId,
+            std::string definitionText,
+            std::string definitionLang
+        );
+
+        bool delete_def_in(int meaningId, std::string defLang);
         bool delete_by_id(int meaningId); 
 };
 

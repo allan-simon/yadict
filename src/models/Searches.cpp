@@ -22,13 +22,13 @@ results::WordsVector Searches::simple(
     int offset
 ) {
     TatoHyperDb *tatoHyperDb = GET_DB_POINTER();
-	TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);
+    TatoHyperItemFetcher *fetcher = tato_hyper_item_fetcher_new(size, offset);
 
     results::WordsVector wordsVector(fetcher->size);
 
-	TatoHyperItemLang *tatoLang = NULL;
-	if (!lang.empty()) {
-		tatoLang = tato_hyper_db_lang_find(tatoHyperDb, lang.c_str());
+    TatoHyperItemLang *tatoLang = NULL;
+    if (!lang.empty()) {
+        tatoLang = tato_hyper_db_lang_find(tatoHyperDb, lang.c_str());
         if (tatoLang != NULL) {
 
             models::Words wordsModel;
@@ -40,8 +40,12 @@ results::WordsVector Searches::simple(
             );
 
             for(int i = 0; i < fetcher->size ; i++) {
-                wordsVector[i] = wordsModel.word_from_item(fetcher->items[i]);
+                wordsVector.push_back(
+                    wordsModel.word_from_item(fetcher->items[i])
+                );
             }
+            wordsVector.offset = offset;
+            wordsVector.maxsize = fetcher->max_size;
         }
     }
     tato_hyper_item_fetcher_free(fetcher);

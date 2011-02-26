@@ -22,11 +22,18 @@
         </div>
     <% end template %>
 
+    <% template word_alone() %>
+        <% c++ word_alone(content.words[0]); %>
+    <% end template %>
     <% template word_alone(results::Word word) %>
         <% word.text %> 
     <% end template %>
 
-    <% template word_meanings(results::Word word) %>
+    <% template word_meanings() %>
+        <% c++ word_meanings(content.words[0]); %>
+    <% end template %>
+
+    <% template word_meanings(results::Word &word) %>
 
         <% foreach mapItem in word.meanTransMap %>
             <ul>
@@ -43,7 +50,6 @@
                 <% end foreach %>
                 </li>
                 <% include add_trans_to_meaning_link(mapItem.first.id, word.id) %>
-                <% include edit_meaning_link(mapItem.first.id, word.id) %>
                 <% include delete_meaning_link(mapItem.first.id) %>
 
             <% end %>
@@ -58,7 +64,7 @@
     <% end template %>
 
     <% template edit_meaning_link(int meaningId, int wordId) %>
-        <a href="<% url "/meanings/edit/{1}/{2}" using meaningId, wordId %>" >
+        <a href="<% url "/meanings/show/{1}/{2}" using meaningId, wordId %>" >
             edit
         </a>
     <% end template %>
@@ -70,7 +76,7 @@
     <% end template %>
 
 
-    <% template word_metas(results::Word word) %>
+    <% template word_metas(results::Word &word) %>
         <% foreach meta in word.metas %> 
             <ul>
             <% item %>
@@ -78,6 +84,8 @@
                     <% meta.first %>
                     :
                     <% meta.second %>
+                    <% c++ out() << " "; %>
+                    <% include edit_meta_link(word.id, meta.first) %>
                 </li>
             <% end %>
             </ul>
@@ -101,17 +109,19 @@
 
 
 
-    <% template word_all_translations(results::Word word) %>
+    <% template word_all_translations(results::Word &word) %>
         <h4>Definitions</h4>
         <% foreach meaningMapItem in word.meanTransMap %>
             <ol>
             <% item %>
                 <li>
                     <% c++ int meaningId = meaningMapItem.first.id; %>
+                    <% c++ edit_meaning_link(meaningId, word.id); %>
                     <% c++ remove_meaning_link(meaningId); %>
                     <br /> 
                     <h5>Translations</h5>
                     <% c++ meanings_pack(meaningMapItem.second, word.id, meaningMapItem.first); %>
+                    <br />
                     <% c++ add_trans_to_meaning_link(meaningId, word.id); %>
                 </li>
                 <br />
@@ -140,7 +150,6 @@
     <% template meanings_pack(TransMap transMap, int wordId, results::Meaning meaning) %>
         <% foreach definition in meaning.defsMap %>
             <% item %>
-                <div>
                 <% include flag_img(definition.first) %>
                 <% definition.second %>
                 <% c++ meaning_trans_lang(transMap[definition.first], meaning.id); %>
@@ -150,7 +159,7 @@
 
     <% end template %>
 
-    <% template meaning_trans_lang(WordsSet translations, int meaningId) %>
+    <% template meaning_trans_lang(WordsSet &translations, int meaningId) %>
         <% foreach translation in translations %>
             <ul>
             <% item %>
@@ -172,14 +181,14 @@
     <% end template %>
 
 
-    <% template translations_pack(TransMap transMap, int wordId) %>
+    <% template translations_pack(TransMap &transMap, int wordId) %>
         <% foreach language in transMap %>
             <% item %>
+                <% if (language.second.empty()) %>
+                    <% c++ continue; %>
+                <% end %>
                 <div>
                     <h6><% include flag_img(language.first) %></h6>
-                    <% if (language.second.empty()) %>
-                        <% c++ continue; %>
-                    <% end %>
                     <% foreach translation in language.second %>
                         <ul>
                         <% item %>
@@ -269,8 +278,16 @@
         </a>
     <% end template %>
 
+    <% template edit_word_link() %>
+        <% c++ edit_word_link(content.words[0].id); %> 
+    <% end template %>
+
     <% template edit_word_link(int wordId) %>
         <a href="<% url "/words/edit/{1}" using wordId %>">edit</a>
+    <% end template %>
+
+    <% template delete_word_link() %>
+        <% c++ delete_word_link(content.words[0].id); %> 
     <% end template %>
 
     <% template delete_word_link(int wordId) %>

@@ -5,10 +5,14 @@
 
 <% template main_content() %>
     <div class="module">
-        <h3>Information about</h3>
         <% if not whc.empty() %>
             <% c++ words_helper wh(out(), content.whc); %>
-            <% c++ wh.word_group(content.whc.words[0]) ;%> 
+            <h2>
+                <% c++ wh.flag_img(content.whc.words[0].lang); %>
+                <% c++ wh.word_alone(); %>
+                <% c++ wh.delete_word_link(); %>
+            </h2>
+            <% c++ wh.word_group() ;%> 
         <% else %>
             this word does not exist
         <% end %>
@@ -21,8 +25,6 @@
                 <% form as_p addMeaning %>
             </form>
         <% end if %>
-    </div>
-    <div class="module">
     </div>
 <% end %>
 

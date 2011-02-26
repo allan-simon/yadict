@@ -64,7 +64,10 @@ results::Meaning Meanings::get_meaning_by_id(int meaningId) {
 
     results::Meaning meaning;
     meaning.id = 0;
-    
+
+    if (relation == NULL) {
+        return meaning; 
+    }
  
     if (relation->type == SHDICT_MEANING_REL_FLAG) {
         meaning.id = relation->id;
@@ -90,10 +93,55 @@ results::Meaning Meanings::get_meaning_by_id(int meaningId) {
 /**
  *
  */
-bool Meanings::edit(
+bool Meanings::add_def_in(
     int meaningId,
-    std::string definitionText,
-    std::string definitionLang
+    std::string defText,
+    std::string defLang
+) { 
+    TatoHyperDb *tatoHyperDb = GET_DB_POINTER(); 
+
+
+    // if the meaning exist 
+    // NOTE we trust what is send by the request 
+    // so yep maybe the request is crafted , but i don't think there's any
+    // security threat there
+    TatoHyperRelation* meaning = tato_hyper_db_relation_find(
+        tatoHyperDb,
+        meaningId
+    );
+
+    if (meaning == NULL) {
+        return false;
+    }
+    if (meaning->type != SHDICT_MEANING_REL_FLAG) {
+        return false;
+    }
+
+
+    if (!tato_hyper_relation_meta_set(
+        meaning,
+        defLang.c_str(),
+        defText.c_str()
+    )) {
+        return tato_hyper_relation_meta_add(
+            meaning,
+            tato_hyper_db_common_str(tatoHyperDb, defLang.c_str()),
+            defText.c_str()
+        );
+    }
+
+    return true;
+}
+
+
+
+/**
+ *
+ */
+bool Meanings::edit_def_in(
+    int meaningId,
+    std::string defText,
+    std::string defLang
 ) {
     TatoHyperDb *tatoHyperDb = GET_DB_POINTER(); 
     TatoHyperRelation* relation = tato_hyper_db_relation_find(
@@ -107,13 +155,38 @@ bool Meanings::edit(
     if (relation->type == SHDICT_MEANING_REL_FLAG) {
         tato_hyper_relation_meta_set(
             relation,
-            definitionLang.c_str(),
-            definitionText.c_str()
+            defLang.c_str(),
+            defText.c_str()
         ); 
         return true;
     }
 
     return false;
+}
+
+bool Meanings::delete_def_in(
+    int meaningId,
+    std::string defLang
+) {
+
+    TatoHyperDb *tatoHyperDb = GET_DB_POINTER(); 
+    // TODO factorize this
+    TatoHyperRelation* relation = tato_hyper_db_relation_find(
+        tatoHyperDb,
+        meaningId
+    );
+
+    if (relation == NULL) {
+        return false;
+    }
+    if (relation->type != SHDICT_MEANING_REL_FLAG) {
+        return false;
+    }
+ 
+    return tato_hyper_relation_meta_delete(
+        relation,
+        defLang.c_str()
+    );
 }
 
 /**
@@ -126,6 +199,9 @@ bool Meanings::delete_by_id(int meaningId) {
         tatoHyperDb,
         meaningId
     );
+    if (relation == NULL) {
+        return false;
+    }
     
     // we check that we're really deleting a meaning relation
     // (as one can try random number and delete other relations,
