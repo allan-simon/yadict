@@ -21,6 +21,7 @@
     </div>
     <div class="module">
         <% if not whc.empty() %>
+            <h4>Add a new key/value</h4> 
             <form method="POST" action="<% url "/metas/add-treat" %>" >
                 <% form as_p addMeta %>
             </form>
