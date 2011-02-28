@@ -63,6 +63,7 @@ class Translations {
         );
 
         TransVector get_all_trans_id(int wordId);
+        TransVector get_all_trans_meaning(int meaningId);
 };
 
 }

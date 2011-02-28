@@ -1,8 +1,12 @@
 #ifndef SHDICT_MODELS_MEANINGS_H
 #define SHDICT_MODELS_MEANINGS_H 
 
+#include <map>
+#include <vector>
+
 #include "models/TatoHyperDB.h"
 #include "models/Relations.h"
+#include "models/Logs.h"
 
 extern "C" {
 #include "tato/fetcher.h"
@@ -11,10 +15,10 @@ extern "C" {
 #include "tato/hyperrelations.h"
 }
 
-#include <map>
 
 typedef std::map<std::string, std::string> DefsMap;
 typedef std::map<std::string, std::string> MetasMap;
+typedef std::vector<int> MeaningsVector;
 namespace results {
     struct Meaning {
         int id;
@@ -44,12 +48,15 @@ namespace std {
 namespace models {
 
 class Meanings {
+    private:
+        Logs logs;
     public:
         Meanings();
         bool add_to(
-            int fromWordId,
-            std::string definitionText,
-            std::string definitionLang
+            int wordId,
+            std::string defText,
+            std::string defLang,
+            int userId
         );
 
         results::Meaning get_meaning_by_id(
@@ -58,19 +65,32 @@ class Meanings {
 
         bool add_def_in(
             int meaningId,
-            std::string definitionText,
-            std::string definitionLang
+            std::string defText,
+            std::string defLang,
+            int userId
         );
 
 
         bool edit_def_in(
             int meaningId,
-            std::string definitionText,
-            std::string definitionLang
+            std::string defText,
+            std::string defLang,
+            int userId
         );
 
-        bool delete_def_in(int meaningId, std::string defLang);
-        bool delete_by_id(int meaningId); 
+        bool delete_def_in(
+            int meaningId,
+            std::string defLang,
+            int userId
+        );
+        bool delete_by_id(
+            int meaningId,
+            int userId
+        ); 
+
+        MeaningsVector get_all_meanings_on_word(
+            int wordId
+        );
 };
 
 }

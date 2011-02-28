@@ -265,9 +265,10 @@ void Words::edit_treat() {
         get_current_user_id()
     );
 
-
     response().set_redirect_header(
-        "/" + get_interface_lang() +"/words/show-all"
+        "/" + get_interface_lang() +"/words/show-in"
+        "/" + editWord.wordString.value() +
+        "/" +editWord.wordLang.selected_id()
     );
 }
 

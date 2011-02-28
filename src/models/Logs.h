@@ -44,6 +44,8 @@ typedef std::vector<WordsLogResult> WordsLogList;
 typedef std::vector<MetasLogResult> MetasLogList;
 
 
+//TODO divide this class in subclass (WordLog etc.)
+
 class Logs : public SqliteModel {
     private:
         statement insertWordLog;
@@ -53,6 +55,12 @@ class Logs : public SqliteModel {
         statement getLastMetaActions;
 
         statement insertTransLog;
+
+        statement insertMetaMeaningLog;
+
+        statement insertMeaningLog;
+
+        statement insertTransMeaningLog;
         //statement getLastTransActions;
 
 
@@ -76,7 +84,19 @@ class Logs : public SqliteModel {
             std::string prevText,
             int actionId
         );
-        
+ 
+        void insert_meta_log(
+            int wordId,
+            std::string wordLang,
+
+            std::string key,
+            std::string value,
+            int userId,
+            int eventType,
+
+            std::string prevValue
+        );
+               
 
         void insert_meta_log(
             int wordId,
@@ -105,6 +125,66 @@ class Logs : public SqliteModel {
             int wordId2,
             int eventType,
             int userId,
+            bool isMain,
+            int actionId
+        );
+
+        void insert_trans_meaning_log(
+            int meaningId,
+            int wordId,
+            int eventType,
+            int userId
+        );
+
+        void insert_trans_meaning_log(
+            int meaningId,
+            int wordId,
+            int eventType,
+            int userId,
+            bool isMain,
+            int actionId
+        );
+
+
+
+
+        void insert_meaning_log(
+            int meaningId,
+            int wordId,
+            int eventType,
+            int userId
+        );
+
+        void insert_meaning_log(
+            int meaningId,
+            int wordId,
+            int eventType,
+            int userId,
+            bool isMain,
+            int actionId
+        );
+
+        void insert_meta_meaning_log(
+            int meaningId,
+
+            std::string key,
+            std::string value,
+            int userId,
+            int eventType,
+
+            std::string prevValue
+        );
+
+
+        void insert_meta_meaning_log(
+            int meaningId,
+
+            std::string key,
+            std::string value,
+            int userId,
+            int eventType,
+
+            std::string prevValue,
             bool isMain,
             int actionId
         );
@@ -187,8 +267,77 @@ class Logs : public SqliteModel {
         );
 
 
+        //
+        void insert_add_meta_meaning(
+            int meaningId,
+            std::string key,
+            std::string value,
+            int userId
+        );
+        
+        void insert_edit_meta_meaning(
+            int meaningId,
+            std::string key,
+            std::string value,
+            int userId,
+            std::string prevValue
+        );
+        
+
+        void insert_delete_meta_meaning(
+            int meaningId,
+            std::string key,
+            std::string value,
+            int userId
+        );
+
+        void insert_delete_meta_meaning(
+            int meaningId,
+            std::string key,
+            std::string value,
+            int userId,
+            bool isMain,
+            int actionId
+        );
 
 
+        //
+        void insert_add_meaning(
+            int meaningId,
+            int wordId,
+            int userId
+        );
+
+
+        void insert_delete_meaning(
+            int meaningId,
+            int wordId,
+            int userId
+        );
+
+        void insert_delete_meaning(
+            int meaningId,
+            int wordId,
+            int userId,
+            bool isMain,
+            int actionId
+        );
+        //
+        
+        void insert_add_trans_meaning(
+            int meaningId,
+            int wordId,
+            int userId
+        );
+
+        void insert_delete_trans_meaning(
+            int meaningId,
+            int wordId,
+            int userId,
+            bool isMain,
+            int actionId
+        );
+        //
 
 
 };

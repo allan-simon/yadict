@@ -60,12 +60,14 @@ bool Metas::edit_meta(
     TatoHyperItem *word= tato_hyper_db_item_find(tatoHyperDb, wordId);
 
     if (word != NULL) {
-        std::string prevValue(
-            tato_hyper_item_meta_get(
-                word,
-                key.c_str()
-            )
+        const char* prevValueC = tato_hyper_item_meta_get(
+            word,
+            key.c_str()
         );
+        if (prevValueC == NULL) {
+            return false;
+        }
+        std::string prevValue(prevValueC);
 
         if(tato_hyper_item_meta_set(
             word,

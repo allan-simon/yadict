@@ -82,7 +82,8 @@ void Meanings::add_to_word_treat() {
         meaningsModel.add_to(
             origWordId,
             defText,
-            defLang
+            defLang,
+            get_current_user_id()
         );
 
 
@@ -198,7 +199,8 @@ void Meanings::add_def_in_treat() {
         meaningsModel.add_def_in(
             meaningId,
             defText,
-            defLang
+            defLang,
+            get_current_user_id()
         );
 
 
@@ -234,7 +236,8 @@ void Meanings::edit_def_in_treat() {
     meaningsModel.edit_def_in(
         meaningId,
         defText,
-        defLang
+        defLang,
+        get_current_user_id()
     );
    
 
@@ -266,10 +269,14 @@ void Meanings::delete_def_in(
     // TODO handle error
     meaningsModel.delete_def_in(
         meaningId,
-        defLang    
+        defLang ,
+        get_current_user_id()   
     );
 
-    go_back_to_previous_page();
+    //TODO redirect to word page
+    response().set_redirect_header(
+        "/" + get_interface_lang() +"/words/show-all"
+    );
 
 };
 
@@ -284,7 +291,10 @@ void Meanings::delete_by_id(std::string meaningIdStr) {
     int meaningId = atoi(meaningIdStr.c_str());
 
     // TODO handle error
-    meaningsModel.delete_by_id(meaningId);
+    meaningsModel.delete_by_id(
+        meaningId,
+        get_current_user_id()
+    );
 
     go_back_to_previous_page();
 }

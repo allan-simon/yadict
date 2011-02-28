@@ -254,4 +254,30 @@ TransVector Translations::get_all_trans_id(int wordId) {
     return transVector;
 }
 
+
+
+/**
+ *
+ */
+TransVector Translations::get_all_trans_meaning(int meaningId) {
+    TransVector transVector;
+
+    TatoHyperDb *tatoHyperDb = GET_DB_POINTER(); 
+    TatoHyperRelation *relation= tato_hyper_db_relation_find(tatoHyperDb, meaningId);
+    if (relation == NULL) {
+        return transVector;
+    }
+    if ( relation->type != SHDICT_MEANING_REL_FLAG) {
+        return transVector;
+    }
+
+    TatoHyperItemsNode *it;
+    TATO_HYPER_ITEMS_FOREACH(relation->ends, it) {
+        transVector.push_back(it->item->id);
+    }
+    return transVector;
+}
+
+
+
 }
