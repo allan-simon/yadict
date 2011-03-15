@@ -1,13 +1,13 @@
 <%c++ #include "contents/searches.h" %>
 <% skin %>
-<% view searches_show_result uses contents::SearchesSimple extends master %>
+<% view searches_show_result uses contents::SearchesShowResult extends master %>
 <% template title() %><% gt "Search Result"  %><% end template %>
 
 <% template main_content() %>
     <div class="module">
         <% if not whc.empty() %>
             <% c++ words_helper wh(out(), content.whc); %>
-            <% c++ wh.words_list("Search results") ;%> 
+            <% c++ wh.words_list("Search results", content.paginationSize); %> 
         <% else %>
             No Result
         <% end %>

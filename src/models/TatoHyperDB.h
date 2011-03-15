@@ -21,6 +21,7 @@ class TatoHyperDB : public Singleton<TatoHyperDB>{
     public:
         TatoHyperDb *get_database_pointer();
         void dump(std::string path);
+        void feed_search_engine();
         
 
 };

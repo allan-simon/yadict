@@ -8,7 +8,7 @@
     <div class="module">
         <% if not whc.empty() %>
             <% c++ words_helper wh(out(), content.whc); %>
-            <% c++ wh.words_list("All words") ;%> 
+            <% c++ wh.words_list("All words", content.paginationSize) ;%> 
         <% else %>
             No words in the database yet
         <% end %>

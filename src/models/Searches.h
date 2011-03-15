@@ -4,8 +4,10 @@
 #include <string>
 #include <set>
 #include <map>
+#include <laputa.h>
 
 #include "models/Words.h"
+
 
 extern "C" {
 #include "tato/fetcher.h"
@@ -23,6 +25,15 @@ class Searches {
 
         results::WordsVector simple(std::string query, std::string lang);
         results::WordsVector simple(
+            std::string query,
+            std::string lang,
+            int size,
+            int offset
+        );
+
+
+        results::WordsVector advance(std::string query, std::string lang);
+        results::WordsVector advance(
             std::string query,
             std::string lang,
             int size,

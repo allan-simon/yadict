@@ -1,6 +1,7 @@
 #include "TatoHyperDB.h"
+#include "SearchEngine.h"
 
-
+#include <cstring>
 /**
  *
  */
@@ -34,3 +35,29 @@ TatoHyperDB::~TatoHyperDB() {
     tato_hyper_db_free(tatoHyperDb);
 }
 
+
+/**
+ *
+ */
+void TatoHyperDB::feed_search_engine() {
+	TatoTreeIntNode *it = NULL;
+    TatoHyperItem *item = NULL;
+	RB_FOREACH(it, TatoTreeInt_, tatoHyperDb->items) {
+        item = (TatoHyperItem*) it->value;
+        SearchEngine::get_instance()->add_word(
+            item->id,
+            std::string(item->str),
+            std::string(item->lang->code)
+        );
+
+        TatoKvListNode *itkv;
+        TATO_KVLIST_FOREACH(item->metas, itkv) {
+            SearchEngine::get_instance()->add_meta(
+                item->id,
+                std::string(itkv->key),
+                std::string(itkv->value),
+                std::string(item->lang->code)
+            );
+        }
+	}
+}

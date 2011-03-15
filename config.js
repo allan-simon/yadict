@@ -1,7 +1,7 @@
 {
 	"service" : {
 		"api" : "http",
-		"port" : 4224
+		"port" : 4244
 	},
 	"http" : {
 		"script_names" : ["/shanghainesedict"]
@@ -23,14 +23,17 @@
         }
     },
 	"shanghainesedict" : {
-        "dictxml" : "../doc/shdict.xml",
-        "dictxml2" : "../doc/cfdict.xml",
+        "dictxml2" : "../doc/shdict.xml",
+        "dictxml" : "../doc/cfdict.xml",
 		"css" : "/css",
 		"img" : "/img",
-        "web" : "http://127.0.0.1:4224/",
+        "web" : "http://127.0.0.1:4244/",
         "languages" : {
             "eng" : "en_GB.UTF-8",
             "fra" : "fr_FR.UTF-8"
+        },
+        "indexedMetas" : {
+            "cmn" : [ "pinyin" , "traditional"]
         }
 	}
 }

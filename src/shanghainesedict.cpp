@@ -36,6 +36,7 @@ Shanghainesedict::Shanghainesedict(cppcms::service &serv) :
     //as its regexp is more global
 	add(pc,"(.*)",1);
 
+    // TODO to move in the language singleton
     cppcms::json::object langs = settings().at("shanghainesedict.languages").object();
     for(cppcms::json::object::const_iterator p=langs.begin();p!=langs.end();++p) {
         lang_map[p->first]=p->second.str();

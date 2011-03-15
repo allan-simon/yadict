@@ -95,6 +95,7 @@ void Words::show_all(std::string offsetStr, std::string sizeStr) {
     whc.words = wordModel.get_all_words(offset, size);
 
     c.whc = whc;
+    c.paginationSize = size;
     render ("words_show_all", c);
 }
 /**
@@ -119,6 +120,7 @@ void Words::show_all_in(std::string filterLang, std::string offsetStr, std::stri
     whc.words = wordModel.get_all_words_in_lang(filterLang, offset, size);
 
     c.whc = whc;
+    c.paginationSize = size;
     render ("words_show_all_in", c);
 }
 

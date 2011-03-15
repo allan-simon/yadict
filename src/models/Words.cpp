@@ -1,6 +1,7 @@
 #include <sstream>
 #include "models/Words.h"
 #include "models/Translations.h"
+#include "models/SearchEngine.h"
 
 namespace models {
 
@@ -204,6 +205,12 @@ results::Word Words::add_word(
             lang,
             str,
             userId
+        );
+
+        SearchEngine::get_instance()->add_word(
+            newItem->id,
+            str,
+            lang
         );
     
     }

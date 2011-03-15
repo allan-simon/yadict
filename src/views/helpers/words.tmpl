@@ -218,10 +218,10 @@
 
     <% end template %>
 
-    <% template words_list(std::string title) %>
+    <% template words_list(std::string title, int size) %>
         <% c++ contents::PaginationsHelper phc( %>
         <% c++ content.words.offset, %>
-        <% c++ content.words.size(), %>
+        <% c++ size, %>
         <% c++ content.words.maxsize, %>
         <% c++ content.baseUrl, %>
         <% c++ content.lang %>

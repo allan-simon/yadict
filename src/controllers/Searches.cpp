@@ -55,7 +55,7 @@ void Searches::show_result (
     unsigned int size = atoi(sizeStr.c_str());
     unsigned int offset = atoi(offsetStr.c_str()) - 1;
 
-	contents::SearchesSimple c;
+	contents::SearchesShowResult c;
 	contents::WordsHelper whc;
     init_content(c);
     // TODO filter this as otherwise it will produce strange result
@@ -64,7 +64,8 @@ void Searches::show_result (
     whc.lang = c.lang;
     c.queryStr = query;
     c.queryLang = lang;
-    whc.words = searchesModel.simple(query, lang, size, offset);
+    c.paginationSize = size;
+    whc.words = searchesModel.advance(query, lang, size, offset);
     c.whc = whc;
 
     render ("searches_show_result", c);

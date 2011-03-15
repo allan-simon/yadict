@@ -11,6 +11,7 @@ namespace contents {
 
 struct Words : public BaseContent {
     WordsHelper whc;
+    int paginationSize;
 };
 
 struct WordsShow : public Words {

@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
-
 project(shanghainesedict)
 include_directories(
     src
@@ -48,6 +47,7 @@ target_link_libraries(
     cppdb
     booster
     sqlite3
+    tokyodystopia
 )
 add_custom_command(
     OUTPUT templates.cpp

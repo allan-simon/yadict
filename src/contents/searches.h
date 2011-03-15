@@ -13,6 +13,11 @@ struct SearchesSimple : public BaseContent {
     std::string queryLang;
 };
 
+struct SearchesShowResult : public SearchesSimple {
+    int paginationSize;
+};
+
+
 
 };
 

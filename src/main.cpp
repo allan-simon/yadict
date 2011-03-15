@@ -3,10 +3,12 @@
 #include <iostream>
 
 #include <cppcms/service.h>
+#include <cppcms/json.h>
 #include <cppcms/applications_pool.h>
 #include <cppdb/frontend.h>
 
 #include "models/TatoHyperDB.h"
+#include "models/SearchEngine.h"
 #include "generics/Languages.h"
 #include "generics/ActionId.h"
 #include "contents/Config.h"
@@ -26,13 +28,20 @@ int main(int argc,char ** argv)
         string dictPath = app.settings().get<string>("shanghainesedict.dictxml");
         TatoHyperDB::get_instance(dictPath);
         Languages::get_instance();
+        SearchEngine::get_instance();
+        cppcms::json::object pouet = app.settings().at("shanghainesedict.indexedMetas").object();
+        SearchEngine::get_instance()->init_indexed_metas(
+            pouet
+        );
+        cout << "[NOTICE] database loaded" << endl;
+        TatoHyperDB::get_instance("")->feed_search_engine();
+        cout << "[NOTICE] search engine indexed" << endl;
         singletons::ActionId::get_instance();
         Config *conf = Config::get_instance();
 
 	    conf->cssPath = app.settings().get<string>("shanghainesedict.css");
 	    conf->imgPath = app.settings().get<string>("shanghainesedict.img");
         conf->webPath = app.settings().get<string>("shanghainesedict.web");
-        cout << "[NOTICE] database loaded" << endl;
 
 
         booster::intrusive_ptr<apps::Shanghainesedict> shdictapp = 
@@ -47,9 +56,10 @@ int main(int argc,char ** argv)
         // TODO add the dump path in the config.js
         //
         cout << "[NOTICE] going to dump the database" << endl;
-        TatoHyperDB::get_instance("")->dump("dump.xml");
+        //TatoHyperDB::get_instance("")->dump("dump.xml");
         cout << "[NOTICE] save into sql" << endl;
         singletons::ActionId::kill();
+        SearchEngine::kill();
         TatoHyperDB::kill();
         Config::kill();
         Languages::kill();
