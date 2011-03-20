@@ -271,6 +271,13 @@ bool Words::edit_word(
         prevText
     );
 
+    SearchEngine::get_instance()->edit_word(
+        word->id,
+        prevText,
+        str,
+        prevLang,
+        lang
+    );
 
     return true;
 }
@@ -293,6 +300,14 @@ bool Words::delete_word(int id, int userId) {
         std::string(word->str),
         userId
     );
+
+
+    SearchEngine::get_instance()->remove_word(
+        word->id,
+        std::string(word->lang->code)
+    );
+    
+    
 
     return tato_hyper_db_item_delete(tatoHyperDb, id);
 }

@@ -1,5 +1,6 @@
 #include "models/Metas.h"
 #include "models/Translations.h"
+#include "models/SearchEngine.h"
 
 extern "C" {
 #include "tato/kvlist.h"
@@ -40,6 +41,14 @@ bool Metas::add_meta(
                     key,
                     value,
                     userId
+                );
+
+
+                SearchEngine::get_instance()->add_meta(
+                    wordId,
+                    key,
+                    value,
+                    std::string(word->lang->code)
                 );
                 return true;
             }
@@ -83,6 +92,12 @@ bool Metas::edit_meta(
                 prevValue
             );
 
+            SearchEngine::get_instance()->edit_meta(
+                wordId,
+                key,
+                newValue,
+                std::string(word->lang->code)
+            );
             return true;
         }
     }
@@ -124,6 +139,12 @@ bool Metas::remove_meta(
                 0
             );
 
+            SearchEngine::get_instance()->remove_meta(
+                wordId,
+                key,
+                prevValue,
+                std::string(word->lang->code)
+            );
             return true;
         }
     }

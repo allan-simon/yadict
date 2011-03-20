@@ -73,7 +73,8 @@ class SearchEngine : public Singleton<SearchEngine>{
             int wordId,
             std::string oldText,
             std::string newText,
-            std::string lang
+            std::string oldLang,
+            std::string newLang
         );
 
         void edit_meta(
@@ -93,7 +94,6 @@ class SearchEngine : public Singleton<SearchEngine>{
 
         void remove_word(
             int wordId,
-            std::string text,
             std::string lang
         );
 

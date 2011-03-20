@@ -48,7 +48,7 @@ void SearchEngine::init_indexed_metas(
             continue;
         }
         cppcms::json::array indexedMetas = langsIndexedMetasJson[tempLang].array();
-        for(
+        for (
             cppcms::json::array::const_iterator jsonItr = indexedMetas.begin();
             jsonItr != indexedMetas.end();
             ++jsonItr
@@ -87,7 +87,6 @@ void SearchEngine::add_word(
         return;
     }
 
-    if (wordId % 100 == 0) std::cout << wordId << std::endl ;
     if (!tcidbput(langsDbs[lang], wordId, text.c_str())) {
         errorCode = tcidbecode(langsDbs[lang]);
         std::cerr << "add error: "<< tcidberrmsg(errorCode) << std::endl;
@@ -118,10 +117,28 @@ void SearchEngine::edit_word(
     int wordId,
     std::string oldText,
     std::string newText,
-    std::string lang
+    std::string oldLang,
+    std::string newLang
 ) {
+    if (
+        langsDbs.find(oldLang) == langsDbs.end() ||
+        langsDbs.find(newLang) == langsDbs.end()
+    ) {
+        return;
+    }
+
+    if (!tcidbout(langsDbs[oldLang], wordId)) {
+        errorCode = tcidbecode(langsDbs[newLang]);
+        std::cerr << "remove error: "<< tcidberrmsg(errorCode) << std::endl;
+        return;
+    }
 
 
+    if (!tcidbput(langsDbs[newLang], wordId, newText.c_str())) {
+        errorCode = tcidbecode(langsDbs[newLang]);
+        std::cerr << "add error: "<< tcidberrmsg(errorCode) << std::endl;
+        return;
+    }
 }
 
 /**
@@ -139,11 +156,88 @@ void SearchEngine::edit_lang(
 /**
  *
  */
-void SearchEngine::remove_word(
-    int wordId,
-    std::string text,
+void SearchEngine::edit_meta(
+    int wordId, 
+    std::string key,
+    std::string value,
     std::string lang
 ) {
+    std::string indexName(lang + "_" + key);
+    if (langsDbs.find(indexName) == langsDbs.end()) {
+        return;
+    }
+
+    if (!tcidbout(langsDbs[indexName], wordId)) {
+        errorCode = tcidbecode(langsDbs[indexName]);
+        std::cerr << "remove error: "<< tcidberrmsg(errorCode) << std::endl;
+        return;
+    }
+
+
+    if (!tcidbput(langsDbs[indexName], wordId, value.c_str())) {
+        errorCode = tcidbecode(langsDbs[indexName]);
+        std::cerr << "add error: "<< tcidberrmsg(errorCode) << std::endl;
+        return;
+    }
+
+}
+
+
+
+/**
+ *
+ */
+void SearchEngine::remove_word(
+    int wordId,
+    std::string lang
+) {
+    if (langsDbs.find(lang) == langsDbs.end()) {
+        return;
+    }
+
+    if (!tcidbout(langsDbs[lang], wordId)) {
+        errorCode = tcidbecode(langsDbs[lang]);
+        std::cerr << "remove error: "<< tcidberrmsg(errorCode) << std::endl;
+    }
+
+    // remove also the metas from the indexes
+    IndexedMetas::const_iterator end = langsIndexedMetas[lang].end();
+    for (
+        IndexedMetas::const_iterator itr = langsIndexedMetas[lang].begin();
+        itr != end;
+        ++itr
+    ) {
+        std::string indexName(lang + "_" + *itr);
+        if (!tcidbout(langsDbs[indexName], wordId)) {
+            errorCode = tcidbecode(langsDbs[indexName]);
+            std::cerr << "remove error: "<< tcidberrmsg(errorCode) << std::endl;
+        }
+       
+    }
+
+}
+
+
+/**
+ *
+ */
+void SearchEngine::remove_meta(
+    int wordId,
+    std::string key,
+    std::string value,
+    std::string lang
+) {
+    std::string indexName(lang + "_" + key);
+    if (langsDbs.find(indexName) == langsDbs.end()) {
+        return;
+    }
+
+    if (!tcidbout(langsDbs[indexName], wordId)) {
+        errorCode = tcidbecode(langsDbs[indexName]);
+        std::cerr << "remove error: "<< tcidberrmsg(errorCode) << std::endl;
+        return;
+    }
+
 
 }
 
