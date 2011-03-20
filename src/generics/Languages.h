@@ -3,6 +3,7 @@
 
 #include <map>
 #include "Singleton.h"
+#include <cppcms/json.h>
 
 typedef std::map<std::string, std::string> ISOToNameMap;
 typedef std::map<int, std::string> IdToISOMap;
@@ -19,6 +20,7 @@ class Languages : public Singleton<Languages> {
 
     public:
         ISOToNameMap get_iso_to_name_map();
+        void init(cppcms::json::object langsJson);
         int get_id_from_iso(std::string isoCode);
         std::string get_iso_from_id(int id);
 

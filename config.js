@@ -29,8 +29,12 @@
 		"img" : "/img",
         "web" : "http://127.0.0.1:4244/",
         "languages" : {
-            "eng" : "en_GB.UTF-8",
-            "fra" : "fr_FR.UTF-8"
+            "wuu" : ["Shanghainese", 61],
+            "eng" : ["English", 17],
+            "fra" : ["French", 23],
+            "deu" : ["German", 15],
+            "cmn" : ["Chinese", 12],
+            "yue" : ["Cantonese", 63]
         },
         "indexedMetas" : {
             "cmn" : [ "pinyin" , "traditional"]

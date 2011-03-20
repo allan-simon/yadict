@@ -28,10 +28,13 @@ int main(int argc,char ** argv)
         string dictPath = app.settings().get<string>("shanghainesedict.dictxml");
         TatoHyperDB::get_instance(dictPath);
         Languages::get_instance();
+        Languages::get_instance()->init(
+            app.settings().at("shanghainesedict.languages").object()
+        );
         SearchEngine::get_instance();
-        cppcms::json::object pouet = app.settings().at("shanghainesedict.indexedMetas").object();
+        
         SearchEngine::get_instance()->init_indexed_metas(
-            pouet
+            app.settings().at("shanghainesedict.indexedMetas").object()
         );
         cout << "[NOTICE] database loaded" << endl;
         TatoHyperDB::get_instance("")->feed_search_engine();

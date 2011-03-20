@@ -1,31 +1,29 @@
 #include "Languages.h"
 
-Languages::Languages() {
-    isoToName["wuu"] = "Shanghainese";
-    isoToName["fra"] = "French";
-    isoToName["eng"] = "English";
-    isoToName["deu"] = "German";
-    isoToName["cmn"] = "Mandarin";
-    isoToName["yue"] = "Cantonese";
+Languages::Languages() {}
 
+void Languages::init(
+    cppcms::json::object langsJson
+) {
+    cppcms::json::object::const_iterator end = langsJson.end();
 
-    idToISO[61] = "wuu";
-    idToISO[23] = "fra";
-    idToISO[17] = "eng";
-    idToISO[15] = "deu";
-    idToISO[12] = "cmn";
-    idToISO[63] = "yue";
- 
-    isoToId["wuu"] = 61;
-    isoToId["fra"] = 23;
-    isoToId["eng"] = 17;
-    isoToId["deu"] = 15;
-    isoToId["cmn"] = 12;
-    isoToId["yue"] = 63;
+    for (
+        cppcms::json::object::const_iterator itr = langsJson.begin();
+        itr != end;
+        ++itr
+    ) { 
+        cppcms::json::array lang = itr->second.array();
+    
+        isoToName[itr->first] = lang[0].str(); 
+        int langId = (int) lang[1].number();
 
+        isoToId[itr->first] = langId; 
+        idToISO[langId] = itr->first;
 
-
+    }
 }
+
+
 /**
  *
  */
