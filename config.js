@@ -38,9 +38,11 @@
             "fra" : ["French", 23],
             "deu" : ["German", 15],
             "cmn" : ["Chinese", 12],
-            "yue" : ["Cantonese", 63]
+            "yue" : ["Cantonese", 63],
+            "jpn" : ["Japanese", 32]
         },
         "indexedMetas" : {
+            "jpn" : [ "reading" ],
             "cmn" : [ "pinyin" , "traditional"]
         }
 	}
