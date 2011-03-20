@@ -28,6 +28,10 @@
 		"css" : "/css",
 		"img" : "/img",
         "web" : "http://127.0.0.1:4244/",
+        "interfacelangs" : {
+            "fra" : "en_GB.UTF-8",
+            "eng" : "fr_FR.UTF-8"
+        },
         "languages" : {
             "wuu" : ["Shanghainese", 61],
             "eng" : ["English", 17],

@@ -37,7 +37,7 @@ Shanghainesedict::Shanghainesedict(cppcms::service &serv) :
 	add(pc,"(.*)",1);
 
     // TODO to move in the language singleton
-    cppcms::json::object langs = settings().at("shanghainesedict.languages").object();
+    cppcms::json::object langs = settings().at("shanghainesedict.interfacelangs").object();
     for(cppcms::json::object::const_iterator p=langs.begin();p!=langs.end();++p) {
         lang_map[p->first]=p->second.str();
     }
