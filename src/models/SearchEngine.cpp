@@ -1,7 +1,6 @@
 #include "SearchEngine.h"
 #include "generics/Languages.h"
 #include <cmath>
-#include <set>
 
 
 SearchEngine::SearchEngine() {
@@ -247,30 +246,37 @@ SearchResults SearchEngine::search(
     int size,
     int offset
 ) {
+    std::set<int> uniqueResults;
+    SearchResults results;
 
-    SearchResults results = search_one_index(
+
+    search_one_index(
         request,
         lang,
         size,
-        offset 
+        offset,
+        results,
+        uniqueResults
     );
 
-    if (results.empty()) {
-        IndexedMetas::const_iterator end = langsIndexedMetas[lang].end();
-        for (
-            IndexedMetas::const_iterator it = langsIndexedMetas[lang].begin();
-            it != end && results.empty();
-            ++it
-        ) {
-            results = search_one_index(
-                request,
-                lang + "_" + *it,
-                size,
-                offset 
-            );
-        }
+    IndexedMetas::const_iterator end = langsIndexedMetas[lang].end();
+    for (
+        IndexedMetas::const_iterator it = langsIndexedMetas[lang].begin();
+        it != end && (size - results.size()) > 0; 
+        ++it
+    ) {
+        search_one_index(
+            request,
+            lang + "_" + *it,
+            size - results.size(),
+            std::max(0, offset- (int)uniqueResults.size()),
+            results,
+            uniqueResults
+        );
+        SearchResults::iterator insertIt = results.end();
     }
-
+    results.offset = offset;
+    results.maxsize = uniqueResults.size();
     return results;
 }
 /**
@@ -281,14 +287,15 @@ SearchResults SearchEngine::search_one_index(
     std::string request,
     std::string indexName,
     int size,
-    int offset
+    int offset,
+    SearchResults& results,
+    std::set<int>& uniqueResults
 ) {
     if (langsDbs.find(indexName) == langsDbs.end()) {
         return SearchResults();
     }
     /* search records */
-    std::set<int> uniqueResults;
-    SearchResults results;
+
     int rnum = 0;
 
     //we first search for words beginning with the
@@ -351,12 +358,15 @@ SearchResults SearchEngine::search_one_index(
                 }
             }
         }
+
+        for (int i = 0; i < rnum; i++) {
+            int wordId = (int)dystopiaResult[i];
+            uniqueResults.insert(wordId);
+        }
         free(dystopiaResult);
     } else {
         errorCode = tcidbecode(langsDbs[indexName]);
         std::cerr << "search error: "<< tcidberrmsg(errorCode) << std::endl;
     }
-    results.offset = offset;
-    results.maxsize = rnum;
     return results;
 }

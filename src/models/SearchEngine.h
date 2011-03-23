@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include <set>
 
 #include <cppcms/json.h>
 #include <booster/thread.h>
@@ -41,7 +42,9 @@ class SearchEngine : public Singleton<SearchEngine>{
             std::string request,
             std::string lang,
             int size,
-            int offset
+            int offset,
+            SearchResults &results,
+            std::set<int> &uniqueResults
         );
         
 
