@@ -6,6 +6,7 @@
 
 extern "C" {
 #include "tato/hyperdb.h"
+#include "tato/tree_str.h"
 }
 
 #define GET_DB_POINTER() TatoHyperDB::get_instance("")->get_database_pointer()
@@ -22,7 +23,10 @@ class TatoHyperDB : public Singleton<TatoHyperDB>{
         TatoHyperDb *get_database_pointer();
         void dump(std::string path);
         void feed_search_engine();
-        
+        void startdict_export(
+            std::string src,
+            std::string dest
+        );        
 
 };
 

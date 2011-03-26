@@ -2,7 +2,7 @@
 #include "controllers/Words.h"
 #include "shanghainesedict.h"
 #include "contents/words.h"
-
+#include "models/TatoHyperDB.h"
 
 namespace controllers {
 
@@ -30,6 +30,8 @@ Words::Words(cppcms::service &serv) : Controller(serv) {
   	disp->assign("/edit-treat$", &Words::edit_treat, this);
 
   	disp->assign("/delete-by-id/(\\d+)$", &Words::delete_by_id, this, 1);
+
+  	disp->assign("/stardict-export/(\\w+)/(\\w+)$", &Words::startdict_export, this, 1, 2);
 }
 
 /**
@@ -290,6 +292,17 @@ void Words::delete_by_id(std::string wordId) {
     go_back_to_previous_page();
 }
 
-
+/**
+ *
+ */
+void Words::startdict_export(
+    std::string src,
+    std::string dest
+) {
+    CHECK_PERMISSION_OR_GO_TO_LOGIN();
+    TatoHyperDB::get_instance("")->startdict_export(src, dest);
+    
+    go_back_to_previous_page();
+}
 
 } // End namespace

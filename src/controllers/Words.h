@@ -36,6 +36,11 @@ class Words : public Controller {
         void edit_treat();
 
         void delete_by_id(std::string wordId);
+
+        void startdict_export(
+            std::string src,
+            std::string dest
+        );
 };
 
 } // End namespace
